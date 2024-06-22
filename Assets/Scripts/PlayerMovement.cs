@@ -1,16 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Functional Options")]
-    [Tooltip("Enables or disables moving functionality.")]
     [SerializeField] private bool canMove = true;
-    [Tooltip("Enables or disables jumping functionality.")]
     [SerializeField] private bool canJump = true;
-    [Tooltip("Enables or disables shooting functionality.")]
     [SerializeField] private bool canShoot = true;
 
     [Header("Movement")]
@@ -21,25 +17,26 @@ public class PlayerMovement : MonoBehaviour
     [Header("Jumping")]
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private float jumpMultiplier = 1f;
-    [Tooltip("How long I should buffer your jump input for (seconds)")]
     [SerializeField] private float jumpBufferTime = 0.125f;
-    [Tooltip("How long you have to jump after leaving a ledge (seconds)")]
     [SerializeField] private float coyoteTime = 0.125f;
-    private bool isJumping; // indicates whether the player is CURRENTLY in the PROCESS of JUMPING
-    private bool jumpButtonPressed = false; // indicates whether the JUMP button is CURRENTLY PRESSED
+    private bool isJumping;
+    private bool jumpButtonPressed = false;
     private float lastGroundedTime;
     private float lastJumpTime;
 
-    [Header("Ladder Movement")]
+    [Header("Ladder Climbing")]
     [SerializeField] private float climbSpeed = 2.5f;
-    private bool isClimbing = false; // indicates whether the player is CURRENTLY climbing a ladder
-    private bool isCloseToLadder = false; // determine whether character can even start interacting with the ladder at the current position
-    private Transform ladder;
+    [SerializeField] private float climbSpriteHeight = 0.24f;
+    private bool isClimbing = false;
+    private bool atLaddersEnd;
+    private bool hasStartedClimbing;
+    private bool startedClimbTransition;
+    private bool finishedClimbTransition;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckDistance = 0.1f;
-    [SerializeField] private Vector2 groundCheckOffset = new(0f, -0.5f);
+    [SerializeField] private Vector2 groundCheckOffset = new Vector2(0f, -0.5f);
     [SerializeField] private float groundCheckWidth = 0.5f;
 
     private Rigidbody2D rb;
@@ -57,49 +54,23 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (canJump && !isClimbing)
+        if (canJump)
         {
             CheckJump();
         }
 
-        // Animator integration
-        /*animator.SetBool("isGrounded", isGrounded());
-        animator.SetBool("isJumping", isJumping);
-        animator.SetFloat("speed", Mathf.Abs(moveInput.x));
-        animator.SetBool("isClimbing", isClimbing);*/
+        if (isClimbing)
+        {
+            Climb();
+        }
     }
 
     void FixedUpdate()
     {
-        if (isClimbing)
-        {
-            LadderClimb();
-        }
-        else
-        {
-            Move();
-        }
+        Move();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Ladder"))
-        {
-            isCloseToLadder = true;
-            this.ladder = other.transform;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Ladder"))
-        {
-            isCloseToLadder = false;
-            isClimbing = false;
-            rb.bodyType = RigidbodyType2D.Dynamic;
-        }
-    }
-
+    #region Collision detection
     private bool IsGrounded()
     {
         Vector2 position = (Vector2)transform.position + groundCheckOffset;
@@ -111,10 +82,6 @@ public class PlayerMovement : MonoBehaviour
         bool leftHit = Physics2D.Raycast(leftRayStart, Vector2.down, groundCheckDistance, groundLayer);
         bool rightHit = Physics2D.Raycast(rightRayStart, Vector2.down, groundCheckDistance, groundLayer);
 
-        Debug.DrawRay(position, Vector2.down * groundCheckDistance, centerHit ? Color.green : Color.red);
-        Debug.DrawRay(leftRayStart, Vector2.down * groundCheckDistance, leftHit ? Color.green : Color.red);
-        Debug.DrawRay(rightRayStart, Vector2.down * groundCheckDistance, rightHit ? Color.green : Color.red);
-
         if (centerHit || leftHit || rightHit)
         {
             lastGroundedTime = Time.time;
@@ -122,13 +89,24 @@ public class PlayerMovement : MonoBehaviour
         }
         return false;
     }
+    #endregion
 
+    #region Movement
     private void Move()
     {
         if (canMove)
         {
             Vector2 velocity = rb.velocity;
-            velocity.x = moveInput.x * speed;
+
+            if (!isClimbing)
+            {
+                velocity.x = moveInput.x * speed;
+            }
+            else
+            {
+                velocity.y = moveInput.y * climbSpeed;
+            }
+
             rb.velocity = velocity;
 
             if (moveInput.x > 0 && !facingRight)
@@ -149,7 +127,9 @@ public class PlayerMovement : MonoBehaviour
         scale.x *= -1;
         transform.localScale = scale;
     }
+    #endregion
 
+    #region Jump
     private void CheckJump()
     {
         if (isJumping && rb.velocity.y <= 0)
@@ -162,8 +142,12 @@ public class PlayerMovement : MonoBehaviour
             if ((Time.time - lastJumpTime <= jumpBufferTime) && (IsGrounded() || (Time.time - lastGroundedTime <= coyoteTime)))
             {
                 Jump();
-                Debug.Log("Jump");
             }
+        }
+
+        if (!jumpButtonPressed && rb.velocity.y > 0)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
     }
 
@@ -173,30 +157,95 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, jumpForce * jumpMultiplier);
         lastJumpTime = Time.time;
     }
+    #endregion
 
-    private void LadderClimb()
+    #region Ladder climb
+    private void Climb()
     {
-        Vector2 velocity = rb.velocity;
-        velocity.y = moveInput.y * climbSpeed;
-        rb.velocity = velocity;
-        rb.bodyType = RigidbodyType2D.Kinematic;
+        float verticalInput = moveInput.y;
 
-        // Align to ladder
-        if (ladder != null)
+        if (verticalInput != 0f)
         {
-            Vector2 position = transform.position;
-            position.x = ladder.position.x;
-            transform.position = position;
+            if (!startedClimbTransition && !finishedClimbTransition)
+            {
+                if (verticalInput > 0 && !atLaddersEnd)
+                {
+                    ClimbTransition(true);
+                }
+                else if (verticalInput < 0)
+                {
+                    if (atLaddersEnd)
+                    {
+                        ClimbTransition(false);
+                    }
+                    else
+                    {
+                        isClimbing = false;
+                        rb.bodyType = RigidbodyType2D.Dynamic;
+                    }
+                }
+            }
         }
     }
 
+    private void ClimbTransition(bool movingUp)
+    {
+        StartCoroutine(ClimbTransitionCo(movingUp));
+    }
+
+    private IEnumerator ClimbTransitionCo(bool movingUp)
+    {
+        FreezeInput(true);
+        finishedClimbTransition = false;
+
+        Vector3 newPos = Vector3.zero;
+
+        if (movingUp)
+        {
+            newPos = new Vector3(ladder.posX, transform.position.y + climbSpriteHeight, 0);
+        }
+        else
+        {
+            transform.position = new Vector3(ladder.posX, ladder.posBottomHandlerY - climbSpriteHeight, 0);
+            newPos = new Vector3(ladder.posX, ladder.posBottomHandlerY, 0);
+        }
+
+        while (transform.position != newPos)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, newPos, climbSpeed * Time.deltaTime);
+            animator.speed = 1;
+            animator.Play("Player_Climb");
+            yield return null;
+        }
+
+        if (!movingUp)
+        {
+            isClimbing = false;
+            rb.bodyType = RigidbodyType2D.Dynamic;
+        }
+
+        finishedClimbTransition = true;
+        FreezeInput(false);
+    }
+
+    private void FreezeInput(bool freeze)
+    {
+        if (freeze)
+        {
+            moveInput = Vector2.zero;
+            jumpButtonPressed = false;
+        }
+    }
+    #endregion
+
+    #region Input
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
 
-        if (isCloseToLadder && Mathf.Abs(moveInput.y) > 0f)
+        if (isClimbing)
         {
-            isClimbing = true;
+            moveInput.y = context.ReadValue<float>();
         }
     }
 
@@ -204,16 +253,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (context.started)
         {
-            if (isClimbing)
-            {
-                isClimbing = false;
-                rb.bodyType = RigidbodyType2D.Dynamic;
-            }
-            else
-            {
-                jumpButtonPressed = true;
-                lastJumpTime = Time.time;
-            }
+            jumpButtonPressed = true;
+            lastJumpTime = Time.time;
         }
 
         if (context.canceled)
@@ -230,7 +271,29 @@ public class PlayerMovement : MonoBehaviour
                 Debug.Log("Shoot");
         }
     }
+    #endregion
 
+    #region Trigger Events
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Ladder") && !isClimbing)
+        {
+            ladder = other.GetComponent<LadderHandlers>();
+            ladder.isNearLadder = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Ladder"))
+        {
+            ladder.isNearLadder = false;
+            ladder = null;
+        }
+    }
+    #endregion
+
+    #region Gizmos
     private void OnDrawGizmos()
     {
         Vector2 position = (Vector2)transform.position + groundCheckOffset;
@@ -243,4 +306,5 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawLine(leftRayStart, leftRayStart + Vector2.down * groundCheckDistance);
         Gizmos.DrawLine(rightRayStart, rightRayStart + Vector2.down * groundCheckDistance);
     }
+    #endregion
 }
