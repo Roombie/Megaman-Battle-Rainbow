@@ -32,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
     private bool hasStartedClimbing;
     private bool startedClimbTransition;
     private bool finishedClimbTransition;
+    [HideInInspector]
+    public LadderHandlers ladder;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayer;
