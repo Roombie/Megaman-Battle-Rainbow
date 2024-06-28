@@ -9,6 +9,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private bool canJump = true;
     [SerializeField] private bool canShoot = true;
 
+    [Header("Health state")]
+    public int currentHealth;
+    public int maxHealth = 28;
+    bool isTakingDamage;
+    bool isInvincible;
+    bool hitSideRight;
+
     [Header("Movement")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private bool facingRight = true;
@@ -24,21 +31,37 @@ public class PlayerMovement : MonoBehaviour
     private float lastGroundedTime;
     private float lastJumpTime;
 
+    [Header("Shooting")]
+    [SerializeField] int bulletDamage = 1;
+    [SerializeField] float bulletSpeed = 5f;
+    [SerializeField] Transform bulletShootPosition;
+    [SerializeField] GameObject bulletPrefab;
+    private bool isShooting;
+    private float shootTime;
+    private float shootTimeLength;
+    private bool shootButtonPressed;
+    private bool shootButtonRelease;
+    private float shootButtonReleaseTimeLength;
+
     [Header("Ladder Climbing")]
     [SerializeField] private float climbSpeed = 2.5f;
-    [SerializeField] private float climbSpriteHeight = 0.24f;
-    private bool isClimbing = false;
+    private bool isClimbing;
+    private float transformY;
+    private float transformHY;
+    private bool isClimbingDown;
     private bool atLaddersEnd;
     private bool hasStartedClimbing;
     private bool startedClimbTransition;
     private bool finishedClimbTransition;
-    [HideInInspector]
-    public LadderHandlers ladder;
+    [HideInInspector] public LadderHandlers ladder; // Don't delete this
+
+    [Header("Ladder Settings")]
+    [SerializeField] float climbSpriteHeight = 0.24f;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckDistance = 0.1f;
-    [SerializeField] private Vector2 groundCheckOffset = new Vector2(0f, -0.5f);
+    [SerializeField] private Vector2 groundCheckOffset = new(0f, -0.5f);
     [SerializeField] private float groundCheckWidth = 0.5f;
 
     private Rigidbody2D rb;
@@ -52,6 +75,9 @@ public class PlayerMovement : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         sprite = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+
+        // start at full health
+        currentHealth = maxHealth;
     }
 
     void Update()
@@ -61,9 +87,15 @@ public class PlayerMovement : MonoBehaviour
             CheckJump();
         }
 
-        if (isClimbing)
+        if (canShoot)
         {
-            Climb();
+            PlayerShoot();
+        }
+
+        if (isTakingDamage)
+        {
+            animator.Play("Player_Hit");
+            return;
         }
     }
 
@@ -93,22 +125,81 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
+    #region Health & Damage state
+    public void HitSide(bool rightSide)
+    {
+        // determines the push direction of the hit animation
+        hitSideRight = rightSide;
+    }
+
+    public void Invincible(bool invincibility)
+    {
+        isInvincible = invincibility;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        // take damage if not invincible
+        if (!isInvincible)
+        {
+            // take damage amount from health and update the health bar
+            currentHealth -= damage;
+            Mathf.Clamp(currentHealth, 0, maxHealth);
+            UIHealthBar.instance.SetValue(currentHealth / (float)maxHealth);
+            // no more health means defeat, otherwise take damage
+            if (currentHealth <= 0)
+            {
+                Defeat();
+            }
+            else
+            {
+                StartDamageAnimation();
+            }
+        }
+    }
+
+    private void Defeat()
+    {
+        // Logic for defeat (e.g., player death, game over screen)
+        Destroy(gameObject);
+    }
+
+    private void StartDamageAnimation()
+    {
+        // once isTakingDamage is true in the Update function we'll play the Hit animation
+        // here we go invincible so we don't repeatedly take damage, determine the X push force
+        // depending which side we were hit on, and then apply that force
+        if (!isTakingDamage)
+        {
+            isTakingDamage = true;
+            isInvincible = true;
+            float hitForceX = 0.50f;
+            float hitForceY = 1.5f;
+            if (hitSideRight) hitForceX = -hitForceX;
+            rb.velocity = Vector2.zero;
+            rb.AddForce(new Vector2(hitForceX, hitForceY), ForceMode2D.Impulse);
+        }
+    }
+    
+    // It's referenced as an Animation Event
+    void StopDamageAnimation()
+    {
+        // this function is called at the end of the Hit animation
+        // and we reset the animation because it doesn't loop otherwise
+        // we can end up stuck in it
+        isTakingDamage = false;
+        isInvincible = false;
+        animator.Play("Player_Hit", -1, 0f);
+    }
+    #endregion
+
     #region Movement
     private void Move()
     {
         if (canMove)
         {
             Vector2 velocity = rb.velocity;
-
-            if (!isClimbing)
-            {
-                velocity.x = moveInput.x * speed;
-            }
-            else
-            {
-                velocity.y = moveInput.y * climbSpeed;
-            }
-
+            velocity.x = moveInput.x * speed;
             rb.velocity = velocity;
 
             if (moveInput.x > 0 && !facingRight)
@@ -155,87 +246,73 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
+        Debug.Log("Jump");
         isJumping = true;
         rb.velocity = new Vector2(rb.velocity.x, jumpForce * jumpMultiplier);
         lastJumpTime = Time.time;
     }
     #endregion
 
-    #region Ladder climb
-    private void Climb()
+    #region Shoot
+    private void PlayerShoot()
     {
-        float verticalInput = moveInput.y;
+        shootTimeLength = 0;
+        shootButtonReleaseTimeLength = 0;
 
-        if (verticalInput != 0f)
+        // shoot key is being pressed and key release flag true
+        if (shootButtonPressed && shootButtonRelease)
         {
-            if (!startedClimbTransition && !finishedClimbTransition)
+            isShooting = true;
+            shootButtonRelease = false;
+            shootTime = Time.time;
+            Invoke("ShootBullet", 0.1f);
+            Debug.Log("Shoot Bullet"); // Shoot Bullet
+        }
+
+        // shoot key isn't being pressed and key release flag is false
+        if (!shootButtonPressed && !shootButtonRelease)
+        {
+            shootButtonReleaseTimeLength = Time.time - shootTime;
+            shootButtonRelease = true;
+        }
+
+        // while shooting limit its duration
+        if (isShooting)
+        {
+            shootTimeLength = Time.time - shootTime;
+            if (shootTimeLength >= 0.25f || shootButtonReleaseTimeLength > 0.15f)
             {
-                if (verticalInput > 0 && !atLaddersEnd)
-                {
-                    ClimbTransition(true);
-                }
-                else if (verticalInput < 0)
-                {
-                    if (atLaddersEnd)
-                    {
-                        ClimbTransition(false);
-                    }
-                    else
-                    {
-                        isClimbing = false;
-                        rb.bodyType = RigidbodyType2D.Dynamic;
-                    }
-                }
+                isShooting = false;
             }
         }
     }
 
-    private void ClimbTransition(bool movingUp)
+    private void ShootBullet()
     {
-        StartCoroutine(ClimbTransitionCo(movingUp));
+        GameObject bullet = Instantiate(bulletPrefab, bulletShootPosition.position, Quaternion.identity);
+        bullet.name = bulletPrefab.name;
+        bullet.GetComponent<Bullet>().SetDamageValue(bulletDamage);
+        bullet.GetComponent<Bullet>().SetBulletSpeed(bulletSpeed);
+        bullet.GetComponent<Bullet>().SetBulletDirection(facingRight ? Vector2.right : Vector2.left);
+        bullet.GetComponent<Bullet>().Shoot();
     }
+    #endregion
 
-    private IEnumerator ClimbTransitionCo(bool movingUp)
+    #region Ladder Climb
+    // reset our ladder climbing variables and 
+    // put back the animator speed and rigidbody type
+    private void ResetClimbing()
     {
-        FreezeInput(true);
-        finishedClimbTransition = false;
-
-        Vector3 newPos = Vector3.zero;
-
-        if (movingUp)
-        {
-            newPos = new Vector3(ladder.posX, transform.position.y + climbSpriteHeight, 0);
-        }
-        else
-        {
-            transform.position = new Vector3(ladder.posX, ladder.posBottomHandlerY - climbSpriteHeight, 0);
-            newPos = new Vector3(ladder.posX, ladder.posBottomHandlerY, 0);
-        }
-
-        while (transform.position != newPos)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, newPos, climbSpeed * Time.deltaTime);
-            animator.speed = 1;
-            animator.Play("Player_Climb");
-            yield return null;
-        }
-
-        if (!movingUp)
+        // reset climbing if we're climbing
+        if (isClimbing)
         {
             isClimbing = false;
+            atLaddersEnd = false;
+            startedClimbTransition = false;
+            finishedClimbTransition = false;
+            animator.speed = 1;
             rb.bodyType = RigidbodyType2D.Dynamic;
-        }
-
-        finishedClimbTransition = true;
-        FreezeInput(false);
-    }
-
-    private void FreezeInput(bool freeze)
-    {
-        if (freeze)
-        {
-            moveInput = Vector2.zero;
-            jumpButtonPressed = false;
+            rb.velocity = Vector2.zero;
         }
     }
     #endregion
@@ -244,11 +321,6 @@ public class PlayerMovement : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
-
-        if (isClimbing)
-        {
-            moveInput.y = context.ReadValue<float>();
-        }
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -269,8 +341,12 @@ public class PlayerMovement : MonoBehaviour
     {
         if (context.started)
         {
-            if (canShoot)
-                Debug.Log("Shoot");
+           shootButtonPressed = true;
+        }
+
+        if (context.canceled)
+        {
+            shootButtonPressed = false;
         }
     }
     #endregion
@@ -278,20 +354,12 @@ public class PlayerMovement : MonoBehaviour
     #region Trigger Events
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.CompareTag("Ladder") && !isClimbing)
-        {
-            ladder = other.GetComponent<LadderHandlers>();
-            ladder.isNearLadder = true;
-        }
+      
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Ladder"))
-        {
-            ladder.isNearLadder = false;
-            ladder = null;
-        }
+
     }
     #endregion
 
