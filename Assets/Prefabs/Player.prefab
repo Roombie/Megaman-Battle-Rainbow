@@ -25,9 +25,9 @@ Transform:
   m_GameObject: {fileID: 1256874063606750785}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7, y: 0, z: 0}
+  m_LocalPosition: {x: 0.1, y: 0.125, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7896349567260549571}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -40,10 +40,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7896349567260549571}
-  - component: {fileID: 6142762559337779873}
+  - component: {fileID: 5663759666540440996}
   - component: {fileID: 5113326230600032249}
-  - component: {fileID: 6186685781026092336}
-  - component: {fileID: 935749861934022715}
+  - component: {fileID: 4590164541980214054}
+  - component: {fileID: 6110860310967769817}
   - component: {fileID: 3372955503883790708}
   - component: {fileID: 1422703566580898831}
   m_Layer: 6
@@ -64,12 +64,12 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8295936617865368531}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6142762559337779873
+--- !u!114 &5663759666540440996
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -84,9 +84,11 @@ MonoBehaviour:
   canMove: 1
   canJump: 1
   canShoot: 1
-  speed: 3
+  currentHealth: 0
+  maxHealth: 28
+  speed: 1.5
   facingRight: 1
-  jumpForce: 7
+  jumpForce: 3.5
   jumpMultiplier: 1
   jumpBufferTime: 0.125
   coyoteTime: 0.125
@@ -94,15 +96,15 @@ MonoBehaviour:
   bulletSpeed: 5
   bulletShootPosition: {fileID: 8295936617865368531}
   bulletPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
-  climbSpeed: 1.5
+  climbSpeed: 0.5
   ladder: {fileID: 0}
   climbSpriteHeight: 0.24
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  groundCheckDistance: 0.1
-  groundCheckOffset: {x: 0, y: -0.7}
-  groundCheckWidth: 0.95
+  groundCheckDistance: 0.02
+  groundCheckOffset: {x: 0, y: 0.01}
+  groundCheckWidth: 0.2
 --- !u!212 &5113326230600032249
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -155,7 +157,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &6186685781026092336
+--- !u!61 &4590164541980214054
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -187,20 +189,20 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.119681}
+  m_Offset: {x: 0, y: 0.11179836}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.5, y: 1.5}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 0.24, y: 0.24}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.239362}
+  m_Size: {x: 0.20346022, y: 0.19486272}
   m_EdgeRadius: 0
---- !u!50 &935749861934022715
+--- !u!50 &6110860310967769817
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -215,7 +217,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 10ad3075dd95e684e9942e172224d6db, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
@@ -237,7 +239,7 @@ Animator:
   m_GameObject: {fileID: 1427787303008531883}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2e2741e4be8b77647be218ef0441af6a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -275,7 +277,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6142762559337779873}
+      - m_Target: {fileID: 5663759666540440996}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
@@ -291,7 +293,7 @@ MonoBehaviour:
     m_ActionName: Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6142762559337779873}
+      - m_Target: {fileID: 5663759666540440996}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: OnShoot
         m_Mode: 0
@@ -307,7 +309,7 @@ MonoBehaviour:
     m_ActionName: Player/Shoot[/Mouse/leftButton]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6142762559337779873}
+      - m_Target: {fileID: 5663759666540440996}
         m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
         m_MethodName: OnJump
         m_Mode: 0

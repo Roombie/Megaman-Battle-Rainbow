@@ -12,9 +12,9 @@ public class PlayerMovement : MonoBehaviour
     [Header("Health state")]
     public int currentHealth;
     public int maxHealth = 28;
-    bool isTakingDamage;
-    bool isInvincible;
-    bool hitSideRight;
+    private bool isTakingDamage;
+    private bool isInvincible;
+    private bool hitSideRight;
 
     [Header("Movement")]
     [SerializeField] private float speed = 5f;
