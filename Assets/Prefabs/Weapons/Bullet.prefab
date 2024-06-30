@@ -174,4 +174,4 @@ MonoBehaviour:
   damage: 1
   bulletSpeed: 5
   bulletDirection: {x: 1, y: 0}
-  destroyDelay: 2
+  destroyDelay: 1

@@ -33,13 +33,14 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Shooting")]
     [SerializeField] int bulletDamage = 1;
-    [SerializeField] float bulletSpeed = 5f;
+    [SerializeField] float bulletSpeed = 15f;
+    [SerializeField] float shootDelay = 0.2f;
     [SerializeField] Transform bulletShootPosition;
     [SerializeField] GameObject bulletPrefab;
     private bool isShooting;
     private float shootTime;
     private float shootTimeLength;
-    private bool shootButtonPressed;
+    private bool shootButtonPressed = false;
     private bool shootButtonRelease;
     private float shootButtonReleaseTimeLength;
 
@@ -66,18 +67,20 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
-    private SpriteRenderer sprite;
+    private SpriteRenderer spriteRenderer;
     private Animator animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
-        sprite = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
 
         // start at full health
         currentHealth = maxHealth;
+        // start facing right always
+        facingRight = true;
     }
 
     void Update()
@@ -143,9 +146,9 @@ public class PlayerMovement : MonoBehaviour
         if (!isInvincible)
         {
             // take damage amount from health and update the health bar
-            currentHealth -= damage;
-            Mathf.Clamp(currentHealth, 0, maxHealth);
+            currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
             UIHealthBar.instance.SetValue(currentHealth / (float)maxHealth);
+
             // no more health means defeat, otherwise take damage
             if (currentHealth <= 0)
             {
@@ -265,7 +268,7 @@ public class PlayerMovement : MonoBehaviour
             isShooting = true;
             shootButtonRelease = false;
             shootTime = Time.time;
-            Invoke("ShootBullet", 0.1f);
+            Invoke("ShootBullet", shootDelay);
             Debug.Log("Shoot Bullet"); // Shoot Bullet
         }
 
@@ -298,7 +301,7 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
-    #region Ladder Climb
+    #region Climbing
     // reset our ladder climbing variables and 
     // put back the animator speed and rigidbody type
     private void ResetClimbing()
@@ -329,9 +332,8 @@ public class PlayerMovement : MonoBehaviour
         {
             jumpButtonPressed = true;
             lastJumpTime = Time.time;
-        }
-
-        if (context.canceled)
+        } 
+        else if (context.canceled)
         {
             jumpButtonPressed = false;
         }
@@ -343,8 +345,7 @@ public class PlayerMovement : MonoBehaviour
         {
            shootButtonPressed = true;
         }
-
-        if (context.canceled)
+        else if (context.canceled)
         {
             shootButtonPressed = false;
         }
