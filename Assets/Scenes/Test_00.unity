@@ -345,7 +345,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -433,10 +433,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1206865205}
-  timeOffset: 0.25
-  offsetPos: {x: 0.5, y: 0, z: 0}
-  boundsMin: {x: -31, y: 0.5, z: 0}
-  boundsMax: {x: 41.2, y: 0, z: 0}
+  smoothDampTime: 0.25
+  lookAhead: {x: 0.5, y: 3.35, z: 0}
+  boundsMin: {x: -31, y: 1.5, z: 0}
+  boundsMax: {x: 39.4, y: 1.5, z: 0}
 --- !u!1001 &1167790922
 PrefabInstance:
   m_ObjectHideFlags: 0

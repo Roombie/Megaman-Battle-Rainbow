@@ -94,6 +94,7 @@ MonoBehaviour:
   coyoteTime: 0.125
   bulletDamage: 1
   bulletSpeed: 15
+  shootDelay: 0.2
   bulletShootPosition: {fileID: 8295936617865368531}
   bulletPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
   climbSpeed: 3.5

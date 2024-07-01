@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    [Tooltip("The transform of the player character that the camera will follow.")]
+     [Tooltip("The transform of the player character that the camera will follow.")]
     public Transform player;
 
     [Tooltip("The time it takes for the camera to smoothly follow the player.")]
-    public float timeOffset;
+    public float smoothDampTime;
 
     [Tooltip("The offset from the player's position to the camera's position.")]
-    public Vector3 offsetPos;
+    public Vector3 lookAhead;
 
     [Tooltip("The minimum boundary for the camera's position.")]
     public Vector3 boundsMin;
@@ -26,8 +26,8 @@ public class CameraFollow : MonoBehaviour
             Vector3 startPos = transform.position;
             Vector3 targetPos = player.position;
 
-            targetPos.x += offsetPos.x;
-            targetPos.y += offsetPos.y;
+            targetPos.x += lookAhead.x;
+            targetPos.y += lookAhead.y;
             targetPos.z = transform.position.z; // Keep the camera's Z position
 
             // Clamp the target position to stay within bounds
@@ -35,33 +35,18 @@ public class CameraFollow : MonoBehaviour
             targetPos.y = Mathf.Clamp(targetPos.y, boundsMin.y, boundsMax.y);
 
             // Smoothly interpolate between the current position and the target position
-            float t = 1f - Mathf.Pow(1f - timeOffset, Time.deltaTime * 30);
+            float t = 1f - Mathf.Pow(1f - smoothDampTime, Time.deltaTime * 30);
             transform.position = Vector3.Lerp(startPos, targetPos, t);
         }
     }
 
     private void OnDrawGizmos()
     {
-        // Draw min bounds in green
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(new Vector3(boundsMin.x, boundsMin.y, boundsMin.z), new Vector3(boundsMax.x, boundsMin.y, boundsMin.z));
-        Gizmos.DrawLine(new Vector3(boundsMin.x, boundsMin.y, boundsMin.z), new Vector3(boundsMin.x, boundsMax.y, boundsMin.z));
-        Gizmos.DrawLine(new Vector3(boundsMin.x, boundsMin.y, boundsMin.z), new Vector3(boundsMin.x, boundsMin.y, boundsMax.z));
-
-        // Draw max bounds in red
+        // Draw a rectangle representing the bounds
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(new Vector3(boundsMax.x, boundsMax.y, boundsMax.z), new Vector3(boundsMin.x, boundsMax.y, boundsMax.z));
-        Gizmos.DrawLine(new Vector3(boundsMax.x, boundsMax.y, boundsMax.z), new Vector3(boundsMax.x, boundsMin.y, boundsMax.z));
-        Gizmos.DrawLine(new Vector3(boundsMax.x, boundsMax.y, boundsMax.z), new Vector3(boundsMax.x, boundsMax.y, boundsMin.z));
-
-        // Connect min and max bounds
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(new Vector3(boundsMin.x, boundsMax.y, boundsMin.z), new Vector3(boundsMax.x, boundsMax.y, boundsMin.z));
-        Gizmos.DrawLine(new Vector3(boundsMin.x, boundsMin.y, boundsMax.z), new Vector3(boundsMax.x, boundsMin.y, boundsMax.z));
-        Gizmos.DrawLine(new Vector3(boundsMax.x, boundsMin.y, boundsMin.z), new Vector3(boundsMax.x, boundsMax.y, boundsMin.z));
-
-        Gizmos.DrawLine(new Vector3(boundsMin.x, boundsMax.y, boundsMax.z), new Vector3(boundsMax.x, boundsMax.y, boundsMax.z));
-        Gizmos.DrawLine(new Vector3(boundsMin.x, boundsMin.y, boundsMax.z), new Vector3(boundsMin.x, boundsMax.y, boundsMax.z));
-        Gizmos.DrawLine(new Vector3(boundsMax.x, boundsMin.y, boundsMax.z), new Vector3(boundsMax.x, boundsMin.y, boundsMin.z));
+        Gizmos.DrawLine(new Vector3(boundsMin.x, boundsMin.y, transform.position.z), new Vector3(boundsMax.x, boundsMin.y, transform.position.z));
+        Gizmos.DrawLine(new Vector3(boundsMax.x, boundsMin.y, transform.position.z), new Vector3(boundsMax.x, boundsMax.y, transform.position.z));
+        Gizmos.DrawLine(new Vector3(boundsMax.x, boundsMax.y, transform.position.z), new Vector3(boundsMin.x, boundsMax.y, transform.position.z));
+        Gizmos.DrawLine(new Vector3(boundsMin.x, boundsMax.y, transform.position.z), new Vector3(boundsMin.x, boundsMin.y, transform.position.z));
     }
 }
