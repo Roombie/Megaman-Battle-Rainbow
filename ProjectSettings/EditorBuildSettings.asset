@@ -8,5 +8,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TitleScreen.unity
     guid: 8904c4fc960416448b9c672c43695cb6
+  - enabled: 1
+    path: Assets/Scenes/LoadGameScreen.unity
+    guid: 800633ab56ee9af4b8e1920a467ff8b1
+  - enabled: 1
+    path: Assets/Scenes/OptionsScreen.unity
+    guid: f70b4049274faca4db09b532f9b16a45
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: a0646b35974f8f447bedc809fdd2fd8b, type: 2}

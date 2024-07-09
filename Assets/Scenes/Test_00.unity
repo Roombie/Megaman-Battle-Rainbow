@@ -447,7 +447,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1427787303008531883, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
       propertyPath: m_Name
-      value: Player
+      value: Megaman
+      objectReference: {fileID: 0}
+    - target: {fileID: 5663759666540440996, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
+      propertyPath: bulletShootOffset.y
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 7896349567260549571, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
       propertyPath: m_LocalPosition.x

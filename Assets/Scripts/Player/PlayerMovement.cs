@@ -22,10 +22,12 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 moveInput;
 
     [Header("Jumping")]
+    [SerializeField] private int maxJumps = 1;
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private float jumpMultiplier = 1f;
     [SerializeField] private float jumpBufferTime = 0.125f;
     [SerializeField] private float coyoteTime = 0.125f;
+    private int jumpsLeft;
     private bool isJumping;
     private bool jumpButtonPressed = false;
     private float lastGroundedTime;
@@ -35,7 +37,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] int bulletDamage = 1;
     [SerializeField] float bulletSpeed = 15f;
     [SerializeField] float shootDelay = 0.2f;
-    [SerializeField] Transform bulletShootPosition;
+    [SerializeField] Vector2 bulletShootOffset = new(0.5f, 1f);
+    [SerializeField] float shootRayLength = 5f;
     [SerializeField] GameObject bulletPrefab;
     private bool isShooting;
     private float shootTime;
@@ -65,9 +68,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Vector2 groundCheckOffset = new(0f, -0.5f);
     [SerializeField] private float groundCheckWidth = 0.5f;
 
+    [Header("Pause Menu")]
+    public bool isPaused = false;
+    public enum PlayerStates { Normal, Still, Frozen, Climb, Hurt, Fallen, Paused, Riding }
+    public PlayerStates state = PlayerStates.Normal;
+
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
     private SpriteRenderer spriteRenderer;
+    private AudioSource audioSource;
     private Animator animator;
 
     void Start()
@@ -97,9 +106,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (isTakingDamage)
         {
-            animator.Play("Player_Hit");
+            animator.Play("Megaman_Hit");
             return;
         }
+
+        animator.SetBool("isGrounded", IsGrounded());
+        animator.SetFloat("horizontal", Mathf.Abs(moveInput.x));
+        animator.SetBool("isShooting", isShooting);
     }
 
     void FixedUpdate()
@@ -192,7 +205,7 @@ public class PlayerMovement : MonoBehaviour
         // we can end up stuck in it
         isTakingDamage = false;
         isInvincible = false;
-        animator.Play("Player_Hit", -1, 0f);
+        animator.Play("Megaman_Hit", -1, 0f);
     }
     #endregion
 
@@ -228,22 +241,26 @@ public class PlayerMovement : MonoBehaviour
     #region Jump
     private void CheckJump()
     {
-        if (isJumping && rb.velocity.y <= 0)
+        // if the player is currently in the jumping state and if their vertical velocity is less than or equal to zero 
+        if (isJumping && rb.velocity.y <= 0) // the player is falling or has reached the peak of the jump
         {
-            isJumping = false;
+            isJumping = false; //  the player is no longer in the jumping state
         }
 
-        if (jumpButtonPressed)
+        if (jumpButtonPressed) // If you press the jump button
         {
+            // This condition checks if the jump button was pressed recently (within jumpBufferTime),
+            // and if the player is either grounded or within the coyote time (a short grace period after leaving the ground).
+            // It allows the player to jump if any of these conditions are true, enabling buffered and coyote time jumps.
             if ((Time.time - lastJumpTime <= jumpBufferTime) && (IsGrounded() || (Time.time - lastGroundedTime <= coyoteTime)))
             {
                 Jump();
             }
         }
 
-        if (!jumpButtonPressed && rb.velocity.y > 0)
+        if (!jumpButtonPressed && rb.velocity.y > 0) // if the jump button is not pressed and the player's vertical velocity is positive (i.e., the player is moving upwards)
         {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f); // it reduces the player's upward velocity, creating a variable jump height based on how long the jump button is held
         }
     }
 
@@ -292,7 +309,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void ShootBullet()
     {
-        GameObject bullet = Instantiate(bulletPrefab, bulletShootPosition.position, Quaternion.identity);
+        // Calculate the direction based on facingRight
+        Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
+        // Calculate the starting point of the raycast using the offset
+        Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
+        // Always use the maximum ray length for the shoot position
+        Vector2 shootPosition = shootStartPosition + shootDirection * shootRayLength;
+
+        GameObject bullet = Instantiate(bulletPrefab, shootPosition, Quaternion.identity);
         bullet.name = bulletPrefab.name;
         bullet.GetComponent<Bullet>().SetDamageValue(bulletDamage);
         bullet.GetComponent<Bullet>().SetBulletSpeed(bulletSpeed);
@@ -352,18 +376,6 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
-    #region Trigger Events
-    private void OnTriggerStay2D(Collider2D other)
-    {
-      
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-
-    }
-    #endregion
-
     #region Gizmos
     private void OnDrawGizmos()
     {
@@ -376,6 +388,36 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawLine(position, position + Vector2.down * groundCheckDistance);
         Gizmos.DrawLine(leftRayStart, leftRayStart + Vector2.down * groundCheckDistance);
         Gizmos.DrawLine(rightRayStart, rightRayStart + Vector2.down * groundCheckDistance);
+
+        // Draw the shoot raycast
+        Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
+        Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(shootStartPosition, shootStartPosition + shootDirection * shootRayLength);
     }
     #endregion
+
+    [System.Serializable]
+    public class PlayerSFX
+    {
+        public AudioClip land;
+        public AudioClip shoot;
+        public AudioClip charge;
+        public AudioClip shootBig;
+
+        public AudioClip hurt;
+        public AudioClip death;
+        public AudioClip TpOut;
+
+        public AudioClip deflect;
+
+        public AudioClip healthRecover;
+
+        public AudioClip menuMove;
+        public AudioClip menuOpen;
+
+        public AudioClip pharaohShot;
+        public AudioClip pharaohCharge;
+        public AudioClip geminiLaser;
+    }
 }

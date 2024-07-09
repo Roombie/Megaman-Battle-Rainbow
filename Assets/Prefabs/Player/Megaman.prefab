@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1256874063606750785
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8295936617865368531}
-  m_Layer: 6
-  m_Name: ShootPos
-  m_TagString: Untagged
-  m_Icon: {fileID: 3443629218296621865, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8295936617865368531
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1256874063606750785}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7, y: 0.7, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 7896349567260549571}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1427787303008531883
 GameObject:
   m_ObjectHideFlags: 0
@@ -47,7 +16,7 @@ GameObject:
   - component: {fileID: 3372955503883790708}
   - component: {fileID: 1422703566580898831}
   m_Layer: 6
-  m_Name: Player
+  m_Name: Megaman
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,8 +34,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
-  m_Children:
-  - {fileID: 8295936617865368531}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5663759666540440996
@@ -88,6 +56,7 @@ MonoBehaviour:
   maxHealth: 28
   speed: 5
   facingRight: 1
+  maxJumps: 2
   jumpForce: 7
   jumpMultiplier: 1
   jumpBufferTime: 0.125
@@ -95,7 +64,8 @@ MonoBehaviour:
   bulletDamage: 1
   bulletSpeed: 15
   shootDelay: 0.2
-  bulletShootPosition: {fileID: 8295936617865368531}
+  bulletShootOffset: {x: 0, y: 0.7}
+  shootRayLength: 1
   bulletPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
   climbSpeed: 3.5
   ladder: {fileID: 0}
@@ -106,6 +76,8 @@ MonoBehaviour:
   groundCheckDistance: 0.2
   groundCheckOffset: {x: -0.03, y: 0.05}
   groundCheckWidth: 1.3
+  isPaused: 0
+  state: 0
 --- !u!212 &5113326230600032249
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -146,8 +118,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 64c060de21ed5d6448fd228951448533, type: 3}
+  m_SortingOrder: 6
+  m_Sprite: {fileID: -706261057, guid: 14e97d3c49dd7854cb3a0441e15ad768, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -226,9 +198,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 0
-  m_CollisionDetection: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!95 &3372955503883790708
 Animator:
