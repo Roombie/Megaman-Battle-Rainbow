@@ -4,17 +4,23 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // MEGAMAN
     [Header("Functional Options")]
     [SerializeField] private bool canMove = true;
     [SerializeField] private bool canJump = true;
     [SerializeField] private bool canShoot = true;
+    [SerializeField] private bool canSlide = true;
 
     [Header("Health state")]
     public int currentHealth;
     public int maxHealth = 28;
+    [SerializeField] GameObject deathExplosion;
     private bool isTakingDamage;
     private bool isInvincible;
     private bool hitSideRight;
+
+    [Header("Gravity")]
+    [SerializeField] private float gravityScale = 1f;
 
     [Header("Movement")]
     [SerializeField] private float speed = 5f;
@@ -27,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpMultiplier = 1f;
     [SerializeField] private float jumpBufferTime = 0.125f;
     [SerializeField] private float coyoteTime = 0.125f;
-    private int jumpsLeft;
+    private int jumpsLeft = 0;
     private bool isJumping;
     private bool jumpButtonPressed = false;
     private float lastGroundedTime;
@@ -47,7 +53,12 @@ public class PlayerMovement : MonoBehaviour
     private bool shootButtonRelease;
     private float shootButtonReleaseTimeLength;
 
-    [Header("Ladder Climbing")]
+    [Header("Sliding")]
+    [SerializeField] public float slideSpeed = 6f;
+    [SerializeField] public float slideDuration = 0.8f;
+    private bool isSliding;
+
+    /*[Header("Ladder Climbing")]
     [SerializeField] private float climbSpeed = 2.5f;
     private bool isClimbing;
     private float transformY;
@@ -57,16 +68,18 @@ public class PlayerMovement : MonoBehaviour
     private bool hasStartedClimbing;
     private bool startedClimbTransition;
     private bool finishedClimbTransition;
-    [HideInInspector] public LadderHandlers ladder; // Don't delete this
-
-    [Header("Ladder Settings")]
-    [SerializeField] float climbSpriteHeight = 0.24f;
+    [SerializeField] float climbSpriteHeight = 0.24f;*/
+    [HideInInspector] public LadderHandlers ladder;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckDistance = 0.1f;
     [SerializeField] private Vector2 groundCheckOffset = new(0f, -0.5f);
     [SerializeField] private float groundCheckWidth = 0.5f;
+
+    [Header("Gear")]
+    public ParticleSystem gearSmoke;
+    public GameObject speedGearTrail;
 
     [Header("Pause Menu")]
     public bool isPaused = false;
@@ -76,8 +89,8 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
     private SpriteRenderer spriteRenderer;
-    private AudioSource audioSource;
     private Animator animator;
+    private AudioSource audioSource;
 
     void Start()
     {
@@ -110,14 +123,31 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
+        if (currentHealth <= 5)
+        {
+            if (!gearSmoke.isPlaying)
+            {
+                gearSmoke.Play();
+            }
+        }
+        else
+        {
+            if (gearSmoke.isPlaying)
+            {
+                gearSmoke.Stop();
+            }
+        }
+
         animator.SetBool("isGrounded", IsGrounded());
         animator.SetFloat("horizontal", Mathf.Abs(moveInput.x));
         animator.SetBool("isShooting", isShooting);
+        animator.SetBool("isSliding", isSliding);
     }
 
     void FixedUpdate()
     {
         Move();
+        ApplyGravity();
     }
 
     #region Collision detection
@@ -176,6 +206,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Defeat()
     {
+        GameObject deathPlayer = Instantiate(deathExplosion);
+        deathPlayer.transform.position = transform.position;
         // Logic for defeat (e.g., player death, game over screen)
         Destroy(gameObject);
     }
@@ -206,6 +238,14 @@ public class PlayerMovement : MonoBehaviour
         isTakingDamage = false;
         isInvincible = false;
         animator.Play("Megaman_Hit", -1, 0f);
+    }
+    #endregion
+
+    #region Gravity
+    public void ApplyGravity()
+    {
+        if (!rb.isKinematic && !isPaused)
+            rb.velocity += Vector2.down * gravityScale * rb.mass;
     }
     #endregion
 
@@ -325,10 +365,14 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
-    #region Climbing
+    #region Slide
+
+    #endregion
+
+    /*#region Climbing
     // reset our ladder climbing variables and 
     // put back the animator speed and rigidbody type
-    private void ResetClimbing()
+    /*private void ResetClimbing()
     {
         // reset climbing if we're climbing
         if (isClimbing)
@@ -342,7 +386,7 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = Vector2.zero;
         }
     }
-    #endregion
+    #endregion*/
 
     #region Input
     public void OnMove(InputAction.CallbackContext context)
@@ -396,28 +440,4 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawLine(shootStartPosition, shootStartPosition + shootDirection * shootRayLength);
     }
     #endregion
-
-    [System.Serializable]
-    public class PlayerSFX
-    {
-        public AudioClip land;
-        public AudioClip shoot;
-        public AudioClip charge;
-        public AudioClip shootBig;
-
-        public AudioClip hurt;
-        public AudioClip death;
-        public AudioClip TpOut;
-
-        public AudioClip deflect;
-
-        public AudioClip healthRecover;
-
-        public AudioClip menuMove;
-        public AudioClip menuOpen;
-
-        public AudioClip pharaohShot;
-        public AudioClip pharaohCharge;
-        public AudioClip geminiLaser;
-    }
 }

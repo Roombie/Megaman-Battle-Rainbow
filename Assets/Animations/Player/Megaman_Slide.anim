@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Megaman_ShootRun
+  m_Name: Megaman_Slide
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,19 +21,13 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: -665200237, guid: 369664a9bad28644baa93909960803ba, type: 3}
-    - time: 0.125
-      value: {fileID: 374379312, guid: 369664a9bad28644baa93909960803ba, type: 3}
-    - time: 0.25
-      value: {fileID: -1417745015, guid: 369664a9bad28644baa93909960803ba, type: 3}
-    - time: 0.375
-      value: {fileID: 374379312, guid: 369664a9bad28644baa93909960803ba, type: 3}
+      value: {fileID: 1044973505, guid: 369664a9bad28644baa93909960803ba, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
-  m_SampleRate: 8
+  m_SampleRate: 4
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -50,16 +44,13 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: -665200237, guid: 369664a9bad28644baa93909960803ba, type: 3}
-    - {fileID: 374379312, guid: 369664a9bad28644baa93909960803ba, type: 3}
-    - {fileID: -1417745015, guid: 369664a9bad28644baa93909960803ba, type: 3}
-    - {fileID: 374379312, guid: 369664a9bad28644baa93909960803ba, type: 3}
+    - {fileID: 1044973505, guid: 369664a9bad28644baa93909960803ba, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.5
+    m_StopTime: 0.25
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0

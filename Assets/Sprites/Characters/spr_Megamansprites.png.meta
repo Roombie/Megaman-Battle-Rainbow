@@ -100,7 +100,7 @@ TextureImporter:
       name: spr_Megamansprites_0
       rect:
         serializedVersion: 2
-        x: 238
+        x: 227
         y: 336
         width: 24
         height: 24
@@ -121,7 +121,7 @@ TextureImporter:
       name: spr_Megamansprites_1
       rect:
         serializedVersion: 2
-        x: 213
+        x: 202
         y: 336
         width: 24
         height: 24
@@ -142,7 +142,7 @@ TextureImporter:
       name: spr_Megamansprites_2
       rect:
         serializedVersion: 2
-        x: 187
+        x: 176
         y: 336
         width: 25
         height: 24
@@ -163,7 +163,7 @@ TextureImporter:
       name: spr_Megamansprites_3
       rect:
         serializedVersion: 2
-        x: 324
+        x: 316
         y: 336
         width: 24
         height: 24
@@ -184,7 +184,7 @@ TextureImporter:
       name: spr_Megamansprites_4
       rect:
         serializedVersion: 2
-        x: 299
+        x: 288
         y: 336
         width: 24
         height: 24
@@ -205,7 +205,7 @@ TextureImporter:
       name: spr_Megamansprites_5
       rect:
         serializedVersion: 2
-        x: 270
+        x: 259
         y: 336
         width: 24
         height: 24
@@ -226,7 +226,7 @@ TextureImporter:
       name: spr_Megamansprites_6
       rect:
         serializedVersion: 2
-        x: 143
+        x: 132
         y: 338
         width: 32
         height: 30
@@ -373,7 +373,7 @@ TextureImporter:
       name: spr_Megamansprites_13
       rect:
         serializedVersion: 2
-        x: 122
+        x: 111
         y: 339
         width: 16
         height: 29
@@ -394,7 +394,7 @@ TextureImporter:
       name: spr_Megamansprites_14
       rect:
         serializedVersion: 2
-        x: 105
+        x: 94
         y: 339
         width: 16
         height: 29
@@ -415,7 +415,7 @@ TextureImporter:
       name: spr_Megamansprites_15
       rect:
         serializedVersion: 2
-        x: 88
+        x: 77
         y: 338
         width: 16
         height: 22
@@ -436,7 +436,7 @@ TextureImporter:
       name: spr_Megamansprites_16
       rect:
         serializedVersion: 2
-        x: 51
+        x: 40
         y: 340
         width: 32
         height: 28

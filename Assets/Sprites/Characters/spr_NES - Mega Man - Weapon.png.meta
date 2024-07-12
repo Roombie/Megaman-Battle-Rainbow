@@ -105,7 +105,7 @@ TextureImporter:
         width: 8
         height: 8
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -113,6 +113,27 @@ TextureImporter:
       bones: []
       spriteID: 2d50eaf1eef5e0c4facaf8be3b2c71dc
       internalID: 589426476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_NES - Mega Man - Weapon_0
+      rect:
+        serializedVersion: 2
+        x: 509
+        y: 252
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eaf524d8de90f8247a38121fa1c0a69a
+      internalID: -1552291358
       vertices: []
       indices: 
       edges: []
@@ -129,6 +150,7 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       bullet: 589426476
+      spr_NES - Mega Man - Weapon_0: -1552291358
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
