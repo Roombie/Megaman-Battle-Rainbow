@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Health state")]
     public int currentHealth;
     public int maxHealth = 28;
-    [SerializeField] GameObject deathExplosion;
+    [SerializeField] GameObject deathExplosion; // Death explosion
     private bool isTakingDamage;
     private bool isInvincible;
     private bool hitSideRight;
@@ -28,16 +28,17 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 moveInput;
 
     [Header("Jumping")]
-    [SerializeField] private int maxJumps = 1;
     [SerializeField] private float jumpForce = 10f;
-    [SerializeField] private float jumpMultiplier = 1f;
+    [SerializeField] private int maxExtraJumps = 1;
+    [SerializeField] private float extraJumpForce = 5f;
     [SerializeField] private float jumpBufferTime = 0.125f;
     [SerializeField] private float coyoteTime = 0.125f;
-    private int jumpsLeft = 0;
-    private bool isJumping;
+    private bool isJumping; // Check if we are currently jumping
     private bool jumpButtonPressed = false;
+    private bool inAirFromJump;
     private float lastGroundedTime;
     private float lastJumpTime;
+    private int extraJumpCount;
 
     [Header("Shooting")]
     [SerializeField] int bulletDamage = 1;
@@ -46,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Vector2 bulletShootOffset = new(0.5f, 1f);
     [SerializeField] float shootRayLength = 5f;
     [SerializeField] GameObject bulletPrefab;
-    private bool isShooting;
+    private bool isShooting; // Check if we are currently shooting
     private float shootTime;
     private float shootTimeLength;
     private bool shootButtonPressed = false;
@@ -54,21 +55,15 @@ public class PlayerMovement : MonoBehaviour
     private float shootButtonReleaseTimeLength;
 
     [Header("Sliding")]
-    [SerializeField] public float slideSpeed = 6f;
-    [SerializeField] public float slideDuration = 0.8f;
-    private bool isSliding;
+    [SerializeField] private float slideSpeed = 6f;
+    [SerializeField] private float slideDuration = 0.35f;
+    [SerializeField] private Transform slideDustPos;
+    [SerializeField] private GameObject slideDustPrefab;
+    private bool isSliding; // Check if we are currently sliding
+    private float slideTime;
+    private float slideTimeLength;
 
-    /*[Header("Ladder Climbing")]
-    [SerializeField] private float climbSpeed = 2.5f;
-    private bool isClimbing;
-    private float transformY;
-    private float transformHY;
-    private bool isClimbingDown;
-    private bool atLaddersEnd;
-    private bool hasStartedClimbing;
-    private bool startedClimbTransition;
-    private bool finishedClimbTransition;
-    [SerializeField] float climbSpriteHeight = 0.24f;*/
+    // Ladder
     [HideInInspector] public LadderHandlers ladder;
 
     [Header("Ground Check")]
@@ -76,6 +71,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 0.1f;
     [SerializeField] private Vector2 groundCheckOffset = new(0f, -0.5f);
     [SerializeField] private float groundCheckWidth = 0.5f;
+
+    [Header("Ceiling Check")]
+    [SerializeField] private Vector2 ceilingCheckOffset = new Vector2(0f, 0.5f);
+    [SerializeField] private float ceilingCheckDistance = 0.1f;
 
     [Header("Gear")]
     public ParticleSystem gearSmoke;
@@ -98,6 +97,7 @@ public class PlayerMovement : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
         // start at full health
         currentHealth = maxHealth;
@@ -107,15 +107,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (canJump)
-        {
-            CheckJump();
-        }
-
-        if (canShoot)
-        {
-            PlayerShoot();
-        }
+        if (isPaused) return;
+        if (canJump) CheckJump();
+        if (canShoot) PlayerShoot();
 
         if (isTakingDamage)
         {
@@ -141,7 +135,7 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isGrounded", IsGrounded());
         animator.SetFloat("horizontal", Mathf.Abs(moveInput.x));
         animator.SetBool("isShooting", isShooting);
-        animator.SetBool("isSliding", isSliding);
+        animator.SetBool("isSliding", isSliding && IsGrounded());
     }
 
     void FixedUpdate()
@@ -169,6 +163,15 @@ public class PlayerMovement : MonoBehaviour
         }
         return false;
     }
+
+    // used when sliding
+    private bool IsColAbove()
+    {
+        Vector2 position = (Vector2)transform.position + ceilingCheckOffset;
+        bool centerHit = Physics2D.Raycast(position, Vector2.up, ceilingCheckDistance, groundLayer);
+        return centerHit;
+    }
+
     #endregion
 
     #region Health & Damage state
@@ -208,8 +211,8 @@ public class PlayerMovement : MonoBehaviour
     {
         GameObject deathPlayer = Instantiate(deathExplosion);
         deathPlayer.transform.position = transform.position;
-        // Logic for defeat (e.g., player death, game over screen)
         Destroy(gameObject);
+        // Logic for defeat (e.g., player death, game over screen)
     }
 
     private void StartDamageAnimation()
@@ -245,7 +248,7 @@ public class PlayerMovement : MonoBehaviour
     public void ApplyGravity()
     {
         if (!rb.isKinematic && !isPaused)
-            rb.velocity += Vector2.down * gravityScale * rb.mass;
+            rb.velocity += gravityScale * rb.mass * Vector2.down;
     }
     #endregion
 
@@ -281,34 +284,48 @@ public class PlayerMovement : MonoBehaviour
     #region Jump
     private void CheckJump()
     {
-        // if the player is currently in the jumping state and if their vertical velocity is less than or equal to zero 
-        if (isJumping && rb.velocity.y <= 0) // the player is falling or has reached the peak of the jump
+        // Check if the player is grounded and reset inAirFromJump flag
+        if (IsGrounded())
         {
-            isJumping = false; //  the player is no longer in the jumping state
+            inAirFromJump = false;
+            isJumping = false;
+            extraJumpCount = maxExtraJumps; // Reset extra jump count when grounded
         }
 
-        if (jumpButtonPressed) // If you press the jump button
+        // Check if the player is falling or has reached the peak of the jump
+        if (isJumping && rb.velocity.y <= 0)
         {
-            // This condition checks if the jump button was pressed recently (within jumpBufferTime),
-            // and if the player is either grounded or within the coyote time (a short grace period after leaving the ground).
-            // It allows the player to jump if any of these conditions are true, enabling buffered and coyote time jumps.
-            if ((Time.time - lastJumpTime <= jumpBufferTime) && (IsGrounded() || (Time.time - lastGroundedTime <= coyoteTime)))
+            isJumping = false;
+        }
+
+        // Handle normal jump
+        if (jumpButtonPressed && (Time.time - lastJumpTime <= jumpBufferTime)) // Check if the jump button is pressed and if the time since the last jump is within the jump buffer time
+        {
+            if (IsGrounded() || (Time.time - lastGroundedTime <= coyoteTime && !inAirFromJump)) // Check if the player is grounded or if within the coyote time and not in the air from a previous jump
             {
-                Jump();
+                Jump(jumpForce);
+                Debug.Log("Jump!");
+            }
+            else if (!IsGrounded() && extraJumpCount > 0 && !isJumping)  // If not grounded and there are extra jumps available and the player is not currently jumping
+            {
+                Jump(extraJumpForce);
+                extraJumpCount--;  // Decrease the count of available extra jumps
+                Debug.Log("Extra Jump!");
             }
         }
 
-        if (!jumpButtonPressed && rb.velocity.y > 0) // if the jump button is not pressed and the player's vertical velocity is positive (i.e., the player is moving upwards)
+        // Reduce upward velocity for variable jump height
+        if (!jumpButtonPressed && rb.velocity.y > 0)
         {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f); // it reduces the player's upward velocity, creating a variable jump height based on how long the jump button is held
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
     }
 
-    private void Jump()
+    private void Jump(float jumpForce)
     {
-        Debug.Log("Jump");
         isJumping = true;
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce * jumpMultiplier);
+        inAirFromJump = true;
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         lastJumpTime = Time.time;
     }
     #endregion
@@ -320,7 +337,7 @@ public class PlayerMovement : MonoBehaviour
         shootButtonReleaseTimeLength = 0;
 
         // shoot key is being pressed and key release flag true
-        if (shootButtonPressed && shootButtonRelease)
+        if (shootButtonPressed && shootButtonRelease && !isSliding)
         {
             isShooting = true;
             shootButtonRelease = false;
@@ -346,7 +363,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
     private void ShootBullet()
     {
         // Calculate the direction based on facingRight
@@ -364,29 +380,6 @@ public class PlayerMovement : MonoBehaviour
         bullet.GetComponent<Bullet>().Shoot();
     }
     #endregion
-
-    #region Slide
-
-    #endregion
-
-    /*#region Climbing
-    // reset our ladder climbing variables and 
-    // put back the animator speed and rigidbody type
-    /*private void ResetClimbing()
-    {
-        // reset climbing if we're climbing
-        if (isClimbing)
-        {
-            isClimbing = false;
-            atLaddersEnd = false;
-            startedClimbTransition = false;
-            finishedClimbTransition = false;
-            animator.speed = 1;
-            rb.bodyType = RigidbodyType2D.Dynamic;
-            rb.velocity = Vector2.zero;
-        }
-    }
-    #endregion*/
 
     #region Input
     public void OnMove(InputAction.CallbackContext context)
@@ -423,11 +416,13 @@ public class PlayerMovement : MonoBehaviour
     #region Gizmos
     private void OnDrawGizmos()
     {
+        // Determine ground check width and offset for each ground raycast
         Vector2 position = (Vector2)transform.position + groundCheckOffset;
         float halfWidth = groundCheckWidth / 2;
         Vector2 leftRayStart = position - new Vector2(halfWidth, 0);
         Vector2 rightRayStart = position + new Vector2(halfWidth, 0);
 
+        // Draw the ground raycast
         Gizmos.color = IsGrounded() ? Color.green : Color.red;
         Gizmos.DrawLine(position, position + Vector2.down * groundCheckDistance);
         Gizmos.DrawLine(leftRayStart, leftRayStart + Vector2.down * groundCheckDistance);
@@ -438,6 +433,11 @@ public class PlayerMovement : MonoBehaviour
         Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(shootStartPosition, shootStartPosition + shootDirection * shootRayLength);
+
+        // Ceiling check visualization when sliding
+        Vector2 onTopCollision = (Vector2)transform.position + ceilingCheckOffset;
+        Gizmos.color = IsColAbove() ? Color.green : Color.red;
+        Gizmos.DrawLine(onTopCollision, onTopCollision + Vector2.up * ceilingCheckDistance);
     }
     #endregion
 }
