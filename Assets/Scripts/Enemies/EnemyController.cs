@@ -49,7 +49,7 @@ public class EnemyController : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             // colliding with player inflicts damage and takes contact damage away from health
-            PlayerMovement player = other.gameObject.GetComponent<PlayerMovement>();
+            Megaman player = other.gameObject.GetComponent<Megaman>();
             player.HitSide(transform.position.x > player.transform.position.x);
             player.TakeDamage(this.contactDamage);
         }

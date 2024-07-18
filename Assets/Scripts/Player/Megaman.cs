@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMovement : MonoBehaviour
+public class Megaman : MonoBehaviour
 {
     // MEGAMAN
     [Header("Functional Options")]
@@ -28,9 +28,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 moveInput;
 
     [Header("Jumping")]
-    [SerializeField] private float jumpForce = 10f;
+    [SerializeField] private float jumpForce = 18f;
     [SerializeField] private int maxExtraJumps = 1;
-    [SerializeField] private float extraJumpForce = 5f;
+    [SerializeField] private float extraJumpForce = 9f;
     [SerializeField] private float jumpBufferTime = 0.125f;
     [SerializeField] private float coyoteTime = 0.125f;
     private bool isJumping; // Check if we are currently jumping
@@ -62,6 +62,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isSliding; // Check if we are currently sliding
     private float slideTime;
     private float slideTimeLength;
+    private float defaultBoxYSize;
 
     // Ladder
     [HideInInspector] public LadderHandlers ladder;
@@ -72,9 +73,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Vector2 groundCheckOffset = new(0f, -0.5f);
     [SerializeField] private float groundCheckWidth = 0.5f;
 
-    [Header("Ceiling Check")]
-    [SerializeField] private Vector2 ceilingCheckOffset = new Vector2(0f, 0.5f);
-    [SerializeField] private float ceilingCheckDistance = 0.1f;
+    [Header("Top Collision Check")]
+    [SerializeField] private Vector2 topCheckOffset = new Vector2(0f, 0.5f);
+    [SerializeField] private float topCheckDistance = 0.1f;
+
+    [Header("Front Collision Check")]
+    [SerializeField] private Vector2 frontCheckOffset = new Vector2(0.5f, 0f);
+    [SerializeField] private float frontCheckDistance = 0.1f;
 
     [Header("Gear")]
     public ParticleSystem gearSmoke;
@@ -103,13 +108,16 @@ public class PlayerMovement : MonoBehaviour
         currentHealth = maxHealth;
         // start facing right always
         facingRight = true;
+        defaultBoxYSize = boxCollider.size.y;
     }
 
     void Update()
     {
         if (isPaused) return;
+        if (canMove) Move();
         if (canJump) CheckJump();
         if (canShoot) PlayerShoot();
+        if (canSlide) StartSliding();
 
         if (isTakingDamage)
         {
@@ -167,11 +175,17 @@ public class PlayerMovement : MonoBehaviour
     // used when sliding
     private bool IsColAbove()
     {
-        Vector2 position = (Vector2)transform.position + ceilingCheckOffset;
-        bool centerHit = Physics2D.Raycast(position, Vector2.up, ceilingCheckDistance, groundLayer);
+        Vector2 position = (Vector2)transform.position + topCheckOffset;
+        bool centerHit = Physics2D.Raycast(position, Vector2.up, topCheckDistance, groundLayer);
         return centerHit;
     }
 
+    private bool IsFrontCollision()
+    {
+        Vector2 position = (Vector2)transform.position + (facingRight ? frontCheckOffset : new Vector2(-frontCheckOffset.x, frontCheckOffset.y));
+        bool frontHit = Physics2D.Raycast(position, facingRight ? Vector2.right : Vector2.left, frontCheckDistance, groundLayer);
+        return frontHit;
+    }
     #endregion
 
     #region Health & Damage state
@@ -255,20 +269,17 @@ public class PlayerMovement : MonoBehaviour
     #region Movement
     private void Move()
     {
-        if (canMove)
-        {
-            Vector2 velocity = rb.velocity;
-            velocity.x = moveInput.x * speed;
-            rb.velocity = velocity;
+        Vector2 velocity = rb.velocity;
+        velocity.x = moveInput.x * speed;
+        rb.velocity = velocity;
 
-            if (moveInput.x > 0 && !facingRight)
-            {
-                Flip();
-            }
-            else if (moveInput.x < 0 && facingRight)
-            {
-                Flip();
-            }
+        if (moveInput.x > 0 && !facingRight)
+        {
+            Flip();
+        }
+        else if (moveInput.x < 0 && facingRight)
+        {
+            Flip();
         }
     }
 
@@ -381,6 +392,30 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
+    #region Slide
+    private void StartSliding()
+    {
+        // When you press down + jump when grounded and not currently sliding will lead to sliding
+        if (moveInput.y < 0 && jumpButtonPressed && IsGrounded() && !isSliding)
+        {
+            if (!IsFrontCollision())
+            {
+                isSliding = true;
+                slideTime = Time.time;
+                slideTimeLength = 0;
+
+                GameObject slideDust = Instantiate(slideDustPrefab);
+                slideDust.name = slideDustPrefab.name;
+                slideDust.transform.position = slideDustPos.transform.position;
+                if (!facingRight)
+                {
+                    slideDust.transform.Rotate(0f, 180f, 0f);
+                }  
+            }
+        }
+    }
+    #endregion
+
     #region Input
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -435,9 +470,14 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawLine(shootStartPosition, shootStartPosition + shootDirection * shootRayLength);
 
         // Ceiling check visualization when sliding
-        Vector2 onTopCollision = (Vector2)transform.position + ceilingCheckOffset;
+        Vector2 onTopCollision = (Vector2)transform.position + topCheckOffset;
         Gizmos.color = IsColAbove() ? Color.green : Color.red;
-        Gizmos.DrawLine(onTopCollision, onTopCollision + Vector2.up * ceilingCheckDistance);
+        Gizmos.DrawLine(onTopCollision, onTopCollision + Vector2.up * topCheckDistance);
+
+        // Front collision check visualization
+        Vector2 frontPosition = (Vector2)transform.position + (facingRight ? frontCheckOffset : new Vector2(-frontCheckOffset.x, frontCheckOffset.y));
+        Gizmos.color = IsFrontCollision() ? Color.green : Color.red;
+        Gizmos.DrawLine(frontPosition, frontPosition + (facingRight ? Vector2.right : Vector2.left) * frontCheckDistance);
     }
     #endregion
 }

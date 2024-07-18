@@ -64,7 +64,7 @@ MonoBehaviour:
   facingRight: 1
   jumpForce: 18
   maxExtraJumps: 1
-  lowJumpForce: 5
+  extraJumpForce: 9
   jumpBufferTime: 0.125
   coyoteTime: 0.125
   bulletDamage: 1
@@ -75,8 +75,8 @@ MonoBehaviour:
   bulletPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
   slideSpeed: 6
   slideDuration: 0.35
-  speedDustPos: {fileID: 486739420861981772}
-  speedDustPrefab: {fileID: 3860316442206932606, guid: 1b56187c69eaac943b2a2e5a577328a3, type: 3}
+  slideDustPos: {fileID: 0}
+  slideDustPrefab: {fileID: 0}
   ladder: {fileID: 0}
   groundLayer:
     serializedVersion: 2
@@ -84,10 +84,12 @@ MonoBehaviour:
   groundCheckDistance: 0.2
   groundCheckOffset: {x: 0, y: 0.05}
   groundCheckWidth: 0.87
-  ceilingCheckOffset: {x: 0, y: 1.15}
-  ceilingCheckDistance: 0.15
+  topCheckOffset: {x: 0, y: 0.5}
+  topCheckDistance: 0.1
+  frontCheckOffset: {x: 0, y: 0.5}
+  frontCheckDistance: 0.7
   gearSmoke: {fileID: 2638606330931591780}
-  speedGearTrail: {fileID: 4273951928928416286, guid: e92e0e3e844c97943964df39fea52e9e, type: 3}
+  speedGearTrail: {fileID: 3860316442206932606, guid: 1b56187c69eaac943b2a2e5a577328a3, type: 3}
   isPaused: 0
   state: 0
 --- !u!212 &5113326230600032249
@@ -376,7 +378,7 @@ AudioSource:
   MinDistance: 1
   MaxDistance: 16
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -461,7 +463,7 @@ GameObject:
   m_Layer: 6
   m_Name: SpeedDustPos
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 4422084297763085224, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1

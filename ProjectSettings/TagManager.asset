@@ -50,3 +50,6 @@ TagManager:
   - name: Level
     uniqueID: 1000507611
     locked: 0
+  - name: GameOver
+    uniqueID: 53899151
+    locked: 0
