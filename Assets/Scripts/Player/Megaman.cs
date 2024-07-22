@@ -121,13 +121,16 @@ public class Megaman : MonoBehaviour
         if (canShoot) PlayerShoot();
         if (canSlide) PerformSlide();
 
-        if (isSliding)
+        // change box collider's size and offset if the player's currently sliding or not
+        if (isSliding) 
         {
+            // use slide box collider's parameters
             boxCollider.offset = slideBoxOffset;
             boxCollider.size = slideBoxSize;
         }
         else
         {
+            // use default parameters
             boxCollider.offset = defaultBoxOffset;
             boxCollider.size = defaultBoxSize;
         }
@@ -138,24 +141,25 @@ public class Megaman : MonoBehaviour
             return;
         }
 
-        if (slideParticles != null)
+        if (slideParticles != null) // if you add slide particles
         {
-            if (currentHealth <= 5)
+            if (currentHealth <= 5) // when player's current health is equals or less than 5
             {
                 if (!slideParticles.isPlaying)
                 {
-                    slideParticles.Play();
+                    slideParticles.Play(); // play the particles
                 }
             }
-            else
+            else // if it's not
             {
                 if (slideParticles.isPlaying)
                 {
-                    slideParticles.Stop();
+                    slideParticles.Stop(); // stop the particles
                 }
             }
         }
 
+        // change animations
         animator.SetBool("isGrounded", IsGrounded());
         animator.SetFloat("horizontal", Mathf.Abs(moveInput.x));
         animator.SetBool("isShooting", isShooting);
@@ -169,6 +173,7 @@ public class Megaman : MonoBehaviour
     }
 
     #region Collision detection
+    // ground
     private bool IsGrounded()
     {
         Vector2 position = (Vector2)transform.position + groundCheckOffset;
@@ -436,7 +441,7 @@ public class Megaman : MonoBehaviour
     {
         StartSliding();
 
-        if (isSliding)
+        if (isSliding) // if it's currently sliding
         {
             Debug.Log("Slide performed!");
             bool exitSlide = false;
@@ -444,53 +449,59 @@ public class Megaman : MonoBehaviour
             bool isTouchingFront = IsFrontCollision();
             slideTimeLength = Time.time - slideTime;
 
-            if (moveInput.x < 0)
+            if (moveInput.x < 0) // if you move to the right
             {
-                if (facingRight)
-                {
-                    if (isTouchingTop)
+                if (facingRight) // you're facing right
+                { 
+                    if (isTouchingTop) // there's a colliding object above
                     {
-                        Flip();
+                        Flip(); // change directions
                     }
-                    else
+                    else // if there's not
                     {
-                        exitSlide = true;
+                        exitSlide = true; // stop the slide
                     }
                 }
             }
-            else if (moveInput.x > 0)
+            // if you move to the left
+            // is the same as the previous if statement but on the opposite direction
+            else if (moveInput.x > 0) 
             {
-                if (!facingRight)
+                if (!facingRight) 
                 {
-                    if (isTouchingTop)
+                    if (isTouchingTop) 
                     {
-                        Flip();
+                        Flip(); // change directions
                         Debug.Log("Slide Flip!");
                     }
-                    else
+                    else 
                     {
-                        exitSlide = true;
+                        exitSlide = true; // stop the slide
                     }
                 }
             }
 
-            if (jumpButtonPressed && !isTouchingTop)
+            // when you press jump and there's no colliding object above the player during the sliding
+            if (jumpButtonPressed && !isTouchingTop) 
             {
                 exitSlide = true;
                 Debug.Log("Slide jump!");
             }
 
+            // when it detects a colliding object in front but not above and there's still slide time left
             if (isTouchingFront && !isTouchingTop && slideTimeLength >= 0.1f)
             {
                 exitSlide = true;
             }
 
+            // when slide time is over and there's no collding object above or you're not grounded or you exit the slide
+            // you stop sliding
             if ((slideTimeLength >= slideDuration && !isTouchingTop) || !IsGrounded() || exitSlide)
             {
                 Debug.Log("You're not sliding anymore!");
                 isSliding = false;
             }
-            else
+            else // the slide force is applied 
             {
                 Debug.Log("Slide force applied!");
                 rb.velocity = new Vector2(slideSpeed * ((facingRight) ? 1f : -1f), rb.velocity.y);
