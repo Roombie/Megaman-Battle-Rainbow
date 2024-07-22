@@ -141,19 +141,23 @@ public class Megaman : MonoBehaviour
             return;
         }
 
-        if (currentHealth <= 5)
+        if (gearSmoke != null)
         {
-            if (!gearSmoke.isPlaying)
+            if (currentHealth <= 5)
             {
-                gearSmoke.Play();
+                if (!gearSmoke.isPlaying)
+                {
+                    gearSmoke.Play();
+                }
             }
-        }
-        else
-        {
-            if (gearSmoke.isPlaying)
+            else
             {
-                gearSmoke.Stop();
+                if (gearSmoke.isPlaying)
+                {
+                    gearSmoke.Stop();
+                }
             }
+
         }
 
         animator.SetBool("isGrounded", IsGrounded());
