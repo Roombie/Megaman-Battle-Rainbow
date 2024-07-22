@@ -59,10 +59,13 @@ public class Megaman : MonoBehaviour
     [SerializeField] private float slideDuration = 0.35f;
     [SerializeField] private Transform slideDustPos;
     [SerializeField] private GameObject slideDustPrefab;
+    [SerializeField] private Vector2 slideBoxOffset;
+    [SerializeField] private Vector2 slideBoxSize;
     private bool isSliding; // Check if we are currently sliding
     private float slideTime;
     private float slideTimeLength;
-    private float defaultBoxYSize;
+    private Vector2 defaultBoxOffset;
+    private Vector2 defaultBoxSize;
 
     // Ladder
     [HideInInspector] public LadderHandlers ladder;
@@ -108,7 +111,9 @@ public class Megaman : MonoBehaviour
         currentHealth = maxHealth;
         // start facing right always
         facingRight = true;
-        defaultBoxYSize = boxCollider.size.y;
+        // store box collider's size and offset
+        defaultBoxOffset = new(boxCollider.offset.x, boxCollider.offset.y);
+        defaultBoxSize = new(boxCollider.size.x, boxCollider.size.y);
     }
 
     void Update()
@@ -117,7 +122,18 @@ public class Megaman : MonoBehaviour
         if (canMove) Move();
         if (canJump) CheckJump();
         if (canShoot) PlayerShoot();
-        if (canSlide) StartSliding();
+        if (canSlide) PerformSlide();
+
+        if (isSliding)
+        {
+            boxCollider.offset = slideBoxOffset;
+            boxCollider.size = slideBoxSize;
+        }
+        else
+        {
+            boxCollider.offset = defaultBoxOffset;
+            boxCollider.size = defaultBoxSize;
+        }
 
         if (isTakingDamage)
         {
@@ -400,6 +416,7 @@ public class Megaman : MonoBehaviour
         {
             if (!IsFrontCollision())
             {
+                Debug.Log("Start Slide!");
                 isSliding = true;
                 slideTime = Time.time;
                 slideTimeLength = 0;
@@ -411,6 +428,72 @@ public class Megaman : MonoBehaviour
                 {
                     slideDust.transform.Rotate(0f, 180f, 0f);
                 }  
+            }
+        }
+    }
+
+    private void PerformSlide()
+    {
+        StartSliding();
+
+        if (isSliding)
+        {
+            Debug.Log("Slide performed!");
+            bool exitSlide = false;
+            bool isTouchingTop = IsColAbove();
+            bool isTouchingFront = IsFrontCollision();
+            slideTimeLength = Time.time - slideTime;
+
+            if (moveInput.x < 0)
+            {
+                if (facingRight)
+                {
+                    if (isTouchingTop)
+                    {
+                        Flip();
+                    }
+                    else
+                    {
+                        exitSlide = true;
+                    }
+                }
+            }
+            else if (moveInput.x > 0)
+            {
+                if (!facingRight)
+                {
+                    if (isTouchingTop)
+                    {
+                        Flip();
+                        Debug.Log("Slide Flip!");
+                    }
+                    else
+                    {
+                        exitSlide = true;
+                    }
+                }
+            }
+
+            if (jumpButtonPressed && !isTouchingTop)
+            {
+                exitSlide = true;
+                Debug.Log("Slide jump!");
+            }
+
+            if (isTouchingFront && !isTouchingTop && slideTimeLength >= 0.1f)
+            {
+                exitSlide = true;
+            }
+
+            if ((slideTimeLength >= slideDuration && !isTouchingTop) || !IsGrounded() || exitSlide)
+            {
+                Debug.Log("You're not sliding anymore!");
+                isSliding = false;
+            }
+            else
+            {
+                Debug.Log("Slide force applied!");
+                rb.velocity = new Vector2(slideSpeed * ((facingRight) ? 1f : -1f), rb.velocity.y);
             }
         }
     }
@@ -478,6 +561,11 @@ public class Megaman : MonoBehaviour
         Vector2 frontPosition = (Vector2)transform.position + (facingRight ? frontCheckOffset : new Vector2(-frontCheckOffset.x, frontCheckOffset.y));
         Gizmos.color = IsFrontCollision() ? Color.green : Color.red;
         Gizmos.DrawLine(frontPosition, frontPosition + (facingRight ? Vector2.right : Vector2.left) * frontCheckDistance);
+
+        // Slide box collider visualization
+        Gizmos.color = Color.yellow;
+        Vector2 slideBoxPosition = (Vector2)transform.position + slideBoxOffset;
+        Gizmos.DrawWireCube(slideBoxPosition, slideBoxSize);
     }
     #endregion
 }

@@ -75,8 +75,10 @@ MonoBehaviour:
   bulletPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
   slideSpeed: 6
   slideDuration: 0.35
-  slideDustPos: {fileID: 0}
-  slideDustPrefab: {fileID: 0}
+  slideDustPos: {fileID: 486739420861981772}
+  slideDustPrefab: {fileID: 3860316442206932606, guid: 1b56187c69eaac943b2a2e5a577328a3, type: 3}
+  slideBoxOffset: {x: 0.002129734, y: 0.153441}
+  slideBoxSize: {x: 0.8771878, y: 0.3083358}
   ladder: {fileID: 0}
   groundLayer:
     serializedVersion: 2
@@ -651,7 +653,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 3
+      scalar: 2
       minScalar: 5
       maxCurve:
         serializedVersion: 2
