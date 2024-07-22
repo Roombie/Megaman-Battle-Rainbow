@@ -59,6 +59,7 @@ public class Megaman : MonoBehaviour
     [SerializeField] private float slideDuration = 0.35f;
     [SerializeField] private Transform slideDustPos;
     [SerializeField] private GameObject slideDustPrefab;
+    [SerializeField] private ParticleSystem slideParticles;
     [SerializeField] private Vector2 slideBoxOffset;
     [SerializeField] private Vector2 slideBoxSize;
     private bool isSliding; // Check if we are currently sliding
@@ -83,10 +84,6 @@ public class Megaman : MonoBehaviour
     [Header("Front Collision Check")]
     [SerializeField] private Vector2 frontCheckOffset = new Vector2(0.5f, 0f);
     [SerializeField] private float frontCheckDistance = 0.1f;
-
-    [Header("Gear")]
-    public ParticleSystem gearSmoke;
-    public GameObject speedGearTrail;
 
     [Header("Pause Menu")]
     public bool isPaused = false;
@@ -141,23 +138,22 @@ public class Megaman : MonoBehaviour
             return;
         }
 
-        if (gearSmoke != null)
+        if (slideParticles != null)
         {
             if (currentHealth <= 5)
             {
-                if (!gearSmoke.isPlaying)
+                if (!slideParticles.isPlaying)
                 {
-                    gearSmoke.Play();
+                    slideParticles.Play();
                 }
             }
             else
             {
-                if (gearSmoke.isPlaying)
+                if (slideParticles.isPlaying)
                 {
-                    gearSmoke.Stop();
+                    slideParticles.Stop();
                 }
             }
-
         }
 
         animator.SetBool("isGrounded", IsGrounded());
