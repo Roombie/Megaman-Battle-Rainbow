@@ -579,6 +579,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Megaman
       objectReference: {fileID: 0}
+    - target: {fileID: 5663759666540440996, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
+      propertyPath: slideParticles
+      value: 
+      objectReference: {fileID: 1167790923}
     - target: {fileID: 7896349567260549571, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.638
@@ -624,6 +628,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
+--- !u!198 &1167790923 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2638606330931591780, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
+  m_PrefabInstance: {fileID: 1167790922}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1206865205 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7896349567260549571, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}

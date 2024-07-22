@@ -494,7 +494,7 @@ public class Megaman : MonoBehaviour
                 exitSlide = true;
             }
 
-            // when slide time is over and there's no collding object above or you're not grounded or you exit the slide
+            // when slide time is over AND there's no collding object above OR you're not grounded OR you exit the slide
             // you stop sliding
             if ((slideTimeLength >= slideDuration && !isTouchingTop) || !IsGrounded() || exitSlide)
             {
