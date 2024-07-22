@@ -42,7 +42,7 @@ public class Megaman : MonoBehaviour
 
     [Header("Shooting")]
     [SerializeField] int bulletDamage = 1;
-    [SerializeField] float bulletSpeed = 15f;
+    [SerializeField] float bulletSpeed = 20f;
     [SerializeField] float shootDelay = 0.2f;
     [SerializeField] Vector2 bulletShootOffset = new(0.5f, 1f);
     [SerializeField] float shootRayLength = 5f;
@@ -159,7 +159,7 @@ public class Megaman : MonoBehaviour
         animator.SetBool("isGrounded", IsGrounded());
         animator.SetFloat("horizontal", Mathf.Abs(moveInput.x));
         animator.SetBool("isShooting", isShooting);
-        animator.SetBool("isSliding", isSliding && IsGrounded());
+        animator.SetBool("isSliding", isSliding);
     }
 
     void FixedUpdate()
