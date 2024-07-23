@@ -417,7 +417,7 @@ public class Megaman : MonoBehaviour
     private void StartSliding()
     {
         // When you press down + jump when grounded and not currently sliding will lead to sliding
-        if (moveInput.y < 0 && jumpButtonPressed && IsGrounded() && !isSliding)
+        if (moveInput.y < 0 /*&& jumpButtonPressed*/ && IsGrounded() && !isSliding)
         {
             if (!IsFrontCollision())
             {

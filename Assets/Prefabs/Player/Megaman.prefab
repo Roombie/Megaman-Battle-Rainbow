@@ -88,7 +88,7 @@ MonoBehaviour:
   groundCheckOffset: {x: 0, y: 0.05}
   groundCheckWidth: 0.87
   topCheckOffset: {x: 0, y: 0.5}
-  topCheckDistance: 0.1
+  topCheckDistance: 0.55
   frontCheckOffset: {x: 0, y: 0.5}
   frontCheckDistance: 0.7
   isPaused: 0
