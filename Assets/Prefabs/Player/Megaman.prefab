@@ -77,6 +77,7 @@ MonoBehaviour:
   slideDuration: 0.35
   slideDustPos: {fileID: 486739420861981772}
   slideDustPrefab: {fileID: 3860316442206932606, guid: 1b56187c69eaac943b2a2e5a577328a3, type: 3}
+  slideParticles: {fileID: 2638606330931591780}
   slideBoxOffset: {x: 0.002129734, y: 0.153441}
   slideBoxSize: {x: 0.8771878, y: 0.3083358}
   ladder: {fileID: 0}
@@ -90,8 +91,6 @@ MonoBehaviour:
   topCheckDistance: 0.1
   frontCheckOffset: {x: 0, y: 0.5}
   frontCheckDistance: 0.7
-  gearSmoke: {fileID: 2638606330931591780}
-  speedGearTrail: {fileID: 3860316442206932606, guid: 1b56187c69eaac943b2a2e5a577328a3, type: 3}
   isPaused: 0
   state: 0
 --- !u!212 &5113326230600032249

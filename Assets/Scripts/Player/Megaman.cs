@@ -122,7 +122,7 @@ public class Megaman : MonoBehaviour
         if (canSlide) PerformSlide();
 
         // change box collider's size and offset if the player's currently sliding or not
-        if (isSliding) 
+        if (isSliding)
         {
             // use slide box collider's parameters
             boxCollider.offset = slideBoxOffset;
@@ -266,7 +266,7 @@ public class Megaman : MonoBehaviour
             rb.AddForce(new Vector2(hitForceX, hitForceY), ForceMode2D.Impulse);
         }
     }
-    
+
     // It's referenced as an Animation Event
     void StopDamageAnimation()
     {
@@ -432,15 +432,13 @@ public class Megaman : MonoBehaviour
                 if (!facingRight)
                 {
                     slideDust.transform.Rotate(0f, 180f, 0f);
-                }  
+                }
             }
         }
     }
 
     private void PerformSlide()
     {
-        StartSliding();
-
         if (isSliding) // if it's currently sliding
         {
             Debug.Log("Slide performed!");
@@ -452,7 +450,7 @@ public class Megaman : MonoBehaviour
             if (moveInput.x < 0) // if you move to the right
             {
                 if (facingRight) // you're facing right
-                { 
+                {
                     if (isTouchingTop) // there's a colliding object above
                     {
                         Flip(); // change directions
@@ -465,16 +463,16 @@ public class Megaman : MonoBehaviour
             }
             // if you move to the left
             // is the same as the previous if statement but on the opposite direction
-            else if (moveInput.x > 0) 
+            else if (moveInput.x > 0)
             {
-                if (!facingRight) 
+                if (!facingRight)
                 {
-                    if (isTouchingTop) 
+                    if (isTouchingTop)
                     {
                         Flip(); // change directions
                         Debug.Log("Slide Flip!");
                     }
-                    else 
+                    else
                     {
                         exitSlide = true; // stop the slide
                     }
@@ -482,7 +480,7 @@ public class Megaman : MonoBehaviour
             }
 
             // when you press jump and there's no colliding object above the player during the sliding
-            if (jumpButtonPressed && !isTouchingTop) 
+            if (jumpButtonPressed && !isTouchingTop)
             {
                 exitSlide = true;
                 Debug.Log("Slide jump!");
@@ -507,6 +505,10 @@ public class Megaman : MonoBehaviour
                 rb.velocity = new Vector2(slideSpeed * ((facingRight) ? 1f : -1f), rb.velocity.y);
             }
         }
+        else // if it's not sliding
+        {
+            StartSliding();
+        }
     }
     #endregion
 
@@ -522,7 +524,7 @@ public class Megaman : MonoBehaviour
         {
             jumpButtonPressed = true;
             lastJumpTime = Time.time;
-        } 
+        }
         else if (context.canceled)
         {
             jumpButtonPressed = false;
@@ -533,7 +535,7 @@ public class Megaman : MonoBehaviour
     {
         if (context.started)
         {
-           shootButtonPressed = true;
+            shootButtonPressed = true;
         }
         else if (context.canceled)
         {
