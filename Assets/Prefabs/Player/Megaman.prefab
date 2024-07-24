@@ -73,7 +73,7 @@ MonoBehaviour:
   bulletShootOffset: {x: 0, y: 0.8}
   shootRayLength: 1.3
   bulletPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
-  slideSpeed: 6
+  slideSpeed: 7.5
   slideDuration: 0.35
   slideDustPos: {fileID: 486739420861981772}
   slideDustPrefab: {fileID: 3860316442206932606, guid: 1b56187c69eaac943b2a2e5a577328a3, type: 3}
@@ -87,10 +87,10 @@ MonoBehaviour:
   groundCheckDistance: 0.2
   groundCheckOffset: {x: 0, y: 0.05}
   groundCheckWidth: 0.87
-  topCheckOffset: {x: 0, y: 0.5}
-  topCheckDistance: 0.55
-  frontCheckOffset: {x: 0, y: 0.5}
-  frontCheckDistance: 0.7
+  topCheckOffset: {x: 0, y: 1.25}
+  topCheckSize: {x: 0.8, y: 0.2}
+  frontCheckOffset: {x: 0.55, y: 0.55}
+  frontCheckSize: {x: 0.2, y: 0.75}
   isPaused: 0
   state: 0
 --- !u!212 &5113326230600032249

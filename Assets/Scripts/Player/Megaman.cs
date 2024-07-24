@@ -79,11 +79,11 @@ public class Megaman : MonoBehaviour
 
     [Header("Top Collision Check")]
     [SerializeField] private Vector2 topCheckOffset = new Vector2(0f, 0.5f);
-    [SerializeField] private float topCheckDistance = 0.1f;
+    [SerializeField] private Vector2 topCheckSize = new Vector2(1f, 0.2f);
 
     [Header("Front Collision Check")]
     [SerializeField] private Vector2 frontCheckOffset = new Vector2(0.5f, 0f);
-    [SerializeField] private float frontCheckDistance = 0.1f;
+    [SerializeField] private Vector2 frontCheckSize = new Vector2(0.2f, 1f);
 
     [Header("Pause Menu")]
     public bool isPaused = false;
@@ -122,18 +122,8 @@ public class Megaman : MonoBehaviour
         if (canSlide) PerformSlide();
 
         // change box collider's size and offset if the player's currently sliding or not
-        if (isSliding)
-        {
-            // use slide box collider's parameters
-            boxCollider.offset = slideBoxOffset;
-            boxCollider.size = slideBoxSize;
-        }
-        else
-        {
-            // use default parameters
-            boxCollider.offset = defaultBoxOffset;
-            boxCollider.size = defaultBoxSize;
-        }
+        boxCollider.offset = isSliding ? slideBoxOffset : defaultBoxOffset;
+        boxCollider.size = isSliding ? slideBoxSize : defaultBoxSize;
 
         if (isTakingDamage)
         {
@@ -197,14 +187,15 @@ public class Megaman : MonoBehaviour
     private bool IsColAbove()
     {
         Vector2 position = (Vector2)transform.position + topCheckOffset;
-        bool centerHit = Physics2D.Raycast(position, Vector2.up, topCheckDistance, groundLayer);
-        return centerHit;
+        bool colAbove = Physics2D.OverlapBox(position, topCheckSize, 0f, groundLayer) != null;
+        return colAbove;
     }
 
     private bool IsFrontCollision()
     {
+        // Calculate the position and size for the front check
         Vector2 position = (Vector2)transform.position + (facingRight ? frontCheckOffset : new Vector2(-frontCheckOffset.x, frontCheckOffset.y));
-        bool frontHit = Physics2D.Raycast(position, facingRight ? Vector2.right : Vector2.left, frontCheckDistance, groundLayer);
+        bool frontHit = Physics2D.OverlapBox(position, frontCheckSize, 0f, groundLayer) != null;
         return frontHit;
     }
     #endregion
@@ -290,6 +281,8 @@ public class Megaman : MonoBehaviour
     #region Movement
     private void Move()
     {
+        if (isSliding) return;
+
         Vector2 velocity = rb.velocity;
         velocity.x = moveInput.x * speed;
         rb.velocity = velocity;
@@ -445,35 +438,36 @@ public class Megaman : MonoBehaviour
             bool exitSlide = false;
             bool isTouchingTop = IsColAbove();
             bool isTouchingFront = IsFrontCollision();
-            slideTimeLength = Time.time - slideTime;
+            slideTimeLength = Time.time - slideTime; // get how long the slide has run for
 
-            if (moveInput.x < 0) // if you move to the right
+            if (moveInput.x < 0) // if you move to the left
             {
-                if (facingRight) // you're facing right
+                if (facingRight) // you change direction to right
                 {
-                    if (isTouchingTop) // there's a colliding object above
+                    if (isTouchingTop)// there's no colliding object above
                     {
-                        Flip(); // change directions
+                        Flip();
                     }
-                    else // if there's not
+                    else
                     {
+                        Debug.Log("There's nothing above and you move to the right, exit slide");
                         exitSlide = true; // stop the slide
                     }
                 }
             }
-            // if you move to the left
             // is the same as the previous if statement but on the opposite direction
+            // if you move to the right
             else if (moveInput.x > 0)
             {
-                if (!facingRight)
+                if (!facingRight) // you change direction to left
                 {
-                    if (isTouchingTop)
+                    if (isTouchingTop)// there's no colliding object above
                     {
-                        Flip(); // change directions
-                        Debug.Log("Slide Flip!");
-                    }
+                        Flip();
+                    } 
                     else
                     {
+                        Debug.Log("There's nothing above and you move to the left, exit slide");
                         exitSlide = true; // stop the slide
                     }
                 }
@@ -482,13 +476,14 @@ public class Megaman : MonoBehaviour
             // when you press jump and there's no colliding object above the player during the sliding
             if (jumpButtonPressed && !isTouchingTop)
             {
-                exitSlide = true;
                 Debug.Log("Slide jump!");
+                exitSlide = true;
             }
 
             // when it detects a colliding object in front but not above and there's still slide time left
             if (isTouchingFront && !isTouchingTop && slideTimeLength >= 0.1f)
             {
+                Debug.Log("There's something in front, stopping sliding!");
                 exitSlide = true;
             }
 
@@ -565,15 +560,15 @@ public class Megaman : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(shootStartPosition, shootStartPosition + shootDirection * shootRayLength);
 
-        // Ceiling check visualization when sliding
-        Vector2 onTopCollision = (Vector2)transform.position + topCheckOffset;
+        // Top check position and size
+        Vector2 topCheckPos = (Vector2)transform.position + topCheckOffset;
         Gizmos.color = IsColAbove() ? Color.green : Color.red;
-        Gizmos.DrawLine(onTopCollision, onTopCollision + Vector2.up * topCheckDistance);
+        Gizmos.DrawWireCube(topCheckPos, topCheckSize);
 
-        // Front collision check visualization
-        Vector2 frontPosition = (Vector2)transform.position + (facingRight ? frontCheckOffset : new Vector2(-frontCheckOffset.x, frontCheckOffset.y));
+        // Front collision check position and size
+        Vector2 frontCheckPos = (Vector2)transform.position + (facingRight ? frontCheckOffset : new Vector2(-frontCheckOffset.x, frontCheckOffset.y));
         Gizmos.color = IsFrontCollision() ? Color.green : Color.red;
-        Gizmos.DrawLine(frontPosition, frontPosition + (facingRight ? Vector2.right : Vector2.left) * frontCheckDistance);
+        Gizmos.DrawWireCube(frontCheckPos, frontCheckSize);
 
         // Slide box collider visualization
         Gizmos.color = Color.yellow;
