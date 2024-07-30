@@ -88,7 +88,7 @@ MonoBehaviour:
   groundCheckOffset: {x: 0, y: 0.05}
   groundCheckWidth: 0.87
   topCheckOffset: {x: 0, y: 1.25}
-  topCheckSize: {x: 1, y: 0.2}
+  topCheckSize: {x: 0.79, y: 0.2}
   frontCheckOffset: {x: 0.54, y: 0.57}
   frontCheckSize: {x: 0.2, y: 0.75}
   isPaused: 0
@@ -266,7 +266,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5663759666540440996}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_TargetAssemblyTypeName: Megaman, Assembly-CSharp
         m_MethodName: OnMove
         m_Mode: 0
         m_Arguments:
@@ -351,6 +351,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 7b389988-2f19-488f-b3ab-cd3f828dd400
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5663759666540440996}
+        m_TargetAssemblyTypeName: Megaman, Assembly-CSharp
+        m_MethodName: OnSlide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 5990b3f8-22ae-4946-be86-e2eb91241279
+    m_ActionName: Player/Slide[/Keyboard/c]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

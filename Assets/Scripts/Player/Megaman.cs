@@ -65,6 +65,8 @@ public class Megaman : MonoBehaviour
     private bool isSliding; // Check if we are currently sliding
     private float slideTime;
     private float slideTimeLength;
+    private bool slideButtonPressed = false;
+    private bool slideButtonRelease;
     private Vector2 defaultBoxOffset;
     private Vector2 defaultBoxSize;
 
@@ -279,7 +281,7 @@ public class Megaman : MonoBehaviour
     #region Movement
     private void Move()
     {
-        if (isSliding) return;
+        if (isSliding) return; // Player will use the slide movement if is true
 
         rb.velocity = new Vector2(moveInput.x * speed, rb.velocity.y);
 
@@ -319,6 +321,12 @@ public class Megaman : MonoBehaviour
             isJumping = false;
         }
 
+        // Prevent jumping if sliding and there's a collision above
+        if (isSliding && IsColAbove())
+        {
+            jumpButtonPressed = false;
+        }
+
         // Handle normal jump
         if (jumpButtonPressed && (Time.time - lastJumpTime <= jumpBufferTime)) // Check if the jump button is pressed and if the time since the last jump is within the jump buffer time
         {
@@ -333,7 +341,7 @@ public class Megaman : MonoBehaviour
                 extraJumpCount--;  // Decrease the count of available extra jumps
                 Debug.Log("Extra Jump!");
             }
-        }        
+        }
 
         // Reduce upward velocity for variable jump height
         if (!jumpButtonPressed && rb.velocity.y > 0)
@@ -405,8 +413,8 @@ public class Megaman : MonoBehaviour
     #region Slide
     private void StartSliding()
     {
-        // When you press down + jump when grounded and not currently sliding will lead to sliding
-        if (moveInput.y < 0 && jumpButtonPressed && IsGrounded() && !isSliding)
+        // When you press slide button when grounded and not currently sliding will lead to sliding
+        if (slideButtonPressed && slideButtonRelease && IsGrounded() && !isSliding)
         {
             if (!IsFrontCollision())
             {
@@ -422,6 +430,9 @@ public class Megaman : MonoBehaviour
                 {
                     slideDust.transform.Rotate(0f, 180f, 0f);
                 }
+
+                slideButtonPressed = false;
+                slideButtonRelease = false;
             }
         }
     }
@@ -491,6 +502,7 @@ public class Megaman : MonoBehaviour
             {
                 Debug.Log("You're not sliding anymore!");
                 isSliding = false;
+                slideButtonRelease = true;
             }
             else // the slide force is applied 
             {
@@ -534,6 +546,19 @@ public class Megaman : MonoBehaviour
         else if (context.canceled)
         {
             shootButtonPressed = false;
+        }
+    }
+
+    public void OnSlide(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            slideButtonPressed = true;
+        }
+        else if (context.canceled)
+        {
+            slideButtonPressed = false; 
+            slideButtonRelease = true; // Allow sliding again
         }
     }
     #endregion
