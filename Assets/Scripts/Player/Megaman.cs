@@ -158,7 +158,6 @@ public class Megaman : MonoBehaviour
 
     void FixedUpdate()
     {
-        Move();
         ApplyGravity();
     }
 
@@ -273,8 +272,7 @@ public class Megaman : MonoBehaviour
     #region Gravity
     public void ApplyGravity()
     {
-        if (!rb.isKinematic && !isPaused)
-            rb.velocity += gravityScale * rb.mass * Vector2.down;
+        if (!rb.isKinematic) rb.velocity += gravityScale * rb.mass * Vector2.down;
     }
     #endregion
 
@@ -283,9 +281,7 @@ public class Megaman : MonoBehaviour
     {
         if (isSliding) return;
 
-        Vector2 velocity = rb.velocity;
-        velocity.x = moveInput.x * speed;
-        rb.velocity = velocity;
+        rb.velocity = new Vector2(moveInput.x * speed, rb.velocity.y);
 
         if (moveInput.x > 0 && !facingRight)
         {
@@ -337,7 +333,7 @@ public class Megaman : MonoBehaviour
                 extraJumpCount--;  // Decrease the count of available extra jumps
                 Debug.Log("Extra Jump!");
             }
-        }
+        }        
 
         // Reduce upward velocity for variable jump height
         if (!jumpButtonPressed && rb.velocity.y > 0)
@@ -410,7 +406,7 @@ public class Megaman : MonoBehaviour
     private void StartSliding()
     {
         // When you press down + jump when grounded and not currently sliding will lead to sliding
-        if (moveInput.y < 0 /*&& jumpButtonPressed*/ && IsGrounded() && !isSliding)
+        if (moveInput.y < 0 && jumpButtonPressed && IsGrounded() && !isSliding)
         {
             if (!IsFrontCollision())
             {
@@ -432,6 +428,8 @@ public class Megaman : MonoBehaviour
 
     private void PerformSlide()
     {
+        if (state == PlayerStates.Climb) return;
+
         if (isSliding) // if it's currently sliding
         {
             Debug.Log("Slide performed!");
@@ -511,6 +509,7 @@ public class Megaman : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
+        Debug.Log("Move values: " + moveInput);
     }
 
     public void OnJump(InputAction.CallbackContext context)
