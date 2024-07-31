@@ -30,7 +30,7 @@ public class Megaman : MonoBehaviour
     [Header("Jumping")]
     [SerializeField] private float jumpForce = 18f;
     [SerializeField] private int maxExtraJumps = 1;
-    [SerializeField] private float extraJumpForce = 9f;
+    [SerializeField] private float extraJumpForce = 12f;
     [SerializeField] private float jumpBufferTime = 0.125f;
     [SerializeField] private float coyoteTime = 0.125f;
     private bool isJumping; // Check if we are currently jumping
@@ -55,6 +55,8 @@ public class Megaman : MonoBehaviour
     private float shootButtonReleaseTimeLength;
 
     [Header("Sliding")]
+    [Tooltip("Do you want to be able to slide with jump + down?")]
+    public bool canSlideWithDownJump = true;
     [SerializeField] private float slideSpeed = 6f;
     [SerializeField] private float slideDuration = 0.35f;
     [SerializeField] private Transform slideDustPos;
@@ -66,7 +68,7 @@ public class Megaman : MonoBehaviour
     private float slideTime;
     private float slideTimeLength;
     private bool slideButtonPressed = false;
-    private bool slideButtonRelease;
+    private bool slideButtonRelease = true;
     private Vector2 defaultBoxOffset;
     private Vector2 defaultBoxSize;
 
@@ -80,12 +82,12 @@ public class Megaman : MonoBehaviour
     [SerializeField] private float groundCheckWidth = 0.5f;
 
     [Header("Top Collision Check")]
-    [SerializeField] private Vector2 topCheckOffset = new Vector2(0f, 0.5f);
-    [SerializeField] private Vector2 topCheckSize = new Vector2(1f, 0.2f);
+    [SerializeField] private Vector2 topCheckOffset = new(0f, 0.5f);
+    [SerializeField] private Vector2 topCheckSize = new(1f, 0.2f);
 
     [Header("Front Collision Check")]
-    [SerializeField] private Vector2 frontCheckOffset = new Vector2(0.5f, 0f);
-    [SerializeField] private Vector2 frontCheckSize = new Vector2(0.2f, 1f);
+    [SerializeField] private Vector2 frontCheckOffset = new(0.5f, 0f);
+    [SerializeField] private Vector2 frontCheckSize = new(0.2f, 1f);
 
     [Header("Pause Menu")]
     public bool isPaused = false;
@@ -411,10 +413,20 @@ public class Megaman : MonoBehaviour
     #endregion
 
     #region Slide
+    private bool CanSlideWithDownJump()
+    {
+        if (canSlideWithDownJump)
+        {
+            // Ensure the player is pressing the down and jump buttons
+            return moveInput.y < 0 && jumpButtonPressed;
+        }
+        return false;
+    }
+
     private void StartSliding()
     {
-        // When you press slide button when grounded and not currently sliding will lead to sliding
-        if (slideButtonPressed && slideButtonRelease && IsGrounded() && !isSliding)
+        // When you press slide button OR jump + down (if you want) when grounded and not currently sliding will lead to sliding
+        if (((slideButtonPressed && slideButtonRelease) || CanSlideWithDownJump()) && IsGrounded() && !isSliding)
         {
             if (!IsFrontCollision())
             {
@@ -557,8 +569,7 @@ public class Megaman : MonoBehaviour
         }
         else if (context.canceled)
         {
-            slideButtonPressed = false; 
-            slideButtonRelease = true; // Allow sliding again
+            slideButtonPressed = false;
         }
     }
     #endregion
