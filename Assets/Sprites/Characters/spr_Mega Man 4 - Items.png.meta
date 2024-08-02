@@ -159,6 +159,346 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: bubble
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 111
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8aef0c3027ecb94e89d6b7956cc3e68
+      internalID: -1098446539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_4
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 103
+        width: 32
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f895d1facabe46a45b2e7e28d2772f5c
+      internalID: 97302707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_6
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 103
+        width: 32
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -12, y: -2}
+        - {x: -12, y: -2}
+        - {x: -9, y: -2}
+        - {x: -9, y: -2}
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 294982df4a37f864c9e4a66cfba1735b
+      internalID: 1723689565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_7
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 103
+        width: 32
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5aefdadae06229f48b74ba599967cd1b
+      internalID: 188504390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_5
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 103
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8a00b6a5d022cc1488bf18e041ebb063
+      internalID: 2064891942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_8
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 132
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f5ada7623f00b941b18247a30179177
+      internalID: -1645638713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_9
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 132
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: beb7c08153dd7624d8d65a5d7cf35fbd
+      internalID: -421102636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_10
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 132
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1c46543575712e4d9bfd0e0392a4b7a
+      internalID: -710452163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_11
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 132
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9442f7089cf4d5940a4716708ba94688
+      internalID: 1731357124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_12
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 132
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 036290425151ea448bf459fbe260a26a
+      internalID: -622047509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_13
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 136
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 157bc1eafd5ddb54e85f2884df0d9e8d
+      internalID: 928627257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_14
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 136
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9cb8eb760d43d4949a48a7945d62a3af
+      internalID: -1027202883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_15
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 136
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6cfaf76c1236a04459679819ddd0de04
+      internalID: -1208077277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_16
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 136
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 993bf319b5c2cf742a2588108cbcdc86
+      internalID: -524877796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_17
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 132
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be429256c6f125c4a8af394e1b617dd6
+      internalID: 1558157432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_18
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 132
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e92e79789a0c57642b75baf7d344a30f
+      internalID: -445062880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -170,9 +510,25 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
+      bubble: -1098446539
       spr_Mega Man 4 - Items_0: 1011537049
       spr_Mega Man 4 - Items_1: 237360393
+      spr_Mega Man 4 - Items_10: -710452163
+      spr_Mega Man 4 - Items_11: 1731357124
+      spr_Mega Man 4 - Items_12: -622047509
+      spr_Mega Man 4 - Items_13: 928627257
+      spr_Mega Man 4 - Items_14: -1027202883
+      spr_Mega Man 4 - Items_15: -1208077277
+      spr_Mega Man 4 - Items_16: -524877796
+      spr_Mega Man 4 - Items_17: 1558157432
+      spr_Mega Man 4 - Items_18: -445062880
       spr_Mega Man 4 - Items_2: 652042343
+      spr_Mega Man 4 - Items_4: 97302707
+      spr_Mega Man 4 - Items_5: 2064891942
+      spr_Mega Man 4 - Items_6: 1723689565
+      spr_Mega Man 4 - Items_7: 188504390
+      spr_Mega Man 4 - Items_8: -1645638713
+      spr_Mega Man 4 - Items_9: -421102636
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

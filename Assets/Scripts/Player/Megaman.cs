@@ -21,6 +21,7 @@ public class Megaman : MonoBehaviour
 
     [Header("Gravity")]
     [SerializeField] private float gravityScale = 1f;
+    [SerializeField] private float waterGravityScale = 0.5f;
 
     [Header("Movement")]
     [SerializeField] private float speed = 5f;
@@ -71,6 +72,15 @@ public class Megaman : MonoBehaviour
     private bool slideButtonRelease = true;
     private Vector2 defaultBoxOffset;
     private Vector2 defaultBoxSize;
+
+    [Header("Climbing")]
+    private bool isClimbing; // Check if we are currently climbing
+
+    [Header("Under Water")]
+    [SerializeField] private LayerMask waterLayer;
+    [SerializeField] private GameObject bubblePrefab;
+    [SerializeField] private Transform bubblePos;
+    private GameObject currentBubble = null;
 
     // Ladder
     [HideInInspector] public LadderHandlers ladder;
@@ -153,11 +163,18 @@ public class Megaman : MonoBehaviour
             }
         }
 
+        if (IsInWater())
+        {
+            SpawnBubble();
+        }
+
         // change animations
         animator.SetBool("isGrounded", IsGrounded());
         animator.SetFloat("horizontal", Mathf.Abs(moveInput.x));
+        animator.SetFloat("vertical", Mathf.Abs(moveInput.y));
         animator.SetBool("isShooting", isShooting);
         animator.SetBool("isSliding", isSliding);
+        animator.SetBool("isClimbing", isClimbing);
     }
 
     void FixedUpdate()
@@ -165,7 +182,7 @@ public class Megaman : MonoBehaviour
         ApplyGravity();
     }
 
-    #region Collision detection
+    #region Collision detection (ground, above collision, front collision)
     // ground
     private bool IsGrounded()
     {
@@ -276,7 +293,11 @@ public class Megaman : MonoBehaviour
     #region Gravity
     public void ApplyGravity()
     {
-        if (!rb.isKinematic) rb.velocity += gravityScale * rb.mass * Vector2.down;
+        if (!rb.isKinematic)
+        {
+            float gravity = IsInWater() ? gravityScale * waterGravityScale : gravityScale;
+            rb.velocity += gravity * rb.mass * Vector2.down;
+        }
     }
     #endregion
 
@@ -380,7 +401,7 @@ public class Megaman : MonoBehaviour
             isShooting = true;
             shootButtonRelease = false;
             shootTime = Time.time;
-            Invoke("ShootBullet", shootDelay);
+            Invoke(nameof(ShootBullet), shootDelay);
             Debug.Log("Shoot Bullet"); // Shoot Bullet
         }
 
@@ -536,6 +557,68 @@ public class Megaman : MonoBehaviour
     }
     #endregion
 
+    #region Climb
+    private void StartClimbing()
+    {
+
+    }
+    #endregion
+
+    #region Underwater behavior
+    private bool IsInWater()
+    {
+        return Physics2D.OverlapBox((Vector2)transform.position + boxCollider.offset, boxCollider.size, 0f, waterLayer) != null;
+    }
+
+    private void SpawnBubble()
+    {
+        if (bubblePrefab != null)
+        {
+            // Define the player's collider bounds
+            Bounds playerBounds = boxCollider.bounds;
+
+            // Check if the player's collider is fully within the water layer
+            bool isFullyInWater = IsColliderFullyInWater(playerBounds);
+
+            if (isFullyInWater && currentBubble == null)
+            {
+                currentBubble = Instantiate(bubblePrefab, bubblePos.position, Quaternion.identity);
+                Debug.Log("Bubble spawned!");
+            }
+        }
+    }
+
+    private bool IsColliderFullyInWater(Bounds colliderBounds)
+    {
+        // Get the corners of the collider bounds
+        Vector2[] points = new Vector2[]
+        {
+        new Vector2(colliderBounds.min.x, colliderBounds.min.y),
+        new Vector2(colliderBounds.min.x, colliderBounds.max.y),
+        new Vector2(colliderBounds.max.x, colliderBounds.min.y),
+        new Vector2(colliderBounds.max.x, colliderBounds.max.y)
+        };
+
+        // Check if all the points are within the water layer
+        foreach (Vector2 point in points)
+        {
+            if (!IsPointInWater(point))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool IsPointInWater(Vector2 point)
+    {
+        // Check if the point is within the water layer
+        // Make sure waterLayer is a LayerMask and adjust as needed
+        return Physics2D.OverlapPoint(point, waterLayer) != null;
+    }
+    #endregion
+
     #region Input
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -582,7 +665,7 @@ public class Megaman : MonoBehaviour
     #endregion
 
     #region Gizmos
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         // Determine ground check width and offset for each ground raycast
         Vector2 position = (Vector2)transform.position + groundCheckOffset;

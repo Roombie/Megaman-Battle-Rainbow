@@ -38,6 +38,7 @@ Transform:
   m_Children:
   - {fileID: 2543711141176009594}
   - {fileID: 486739420861981772}
+  - {fileID: 7796161887118062734}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5663759666540440996
@@ -60,6 +61,7 @@ MonoBehaviour:
   maxHealth: 28
   deathExplosion: {fileID: 5852499799356427380, guid: c9da3dc231b24dd419fd3ea0f5fedf4d, type: 3}
   gravityScale: 1
+  waterGravityScale: 0.5
   speed: 5
   facingRight: 0
   jumpForce: 18
@@ -81,6 +83,13 @@ MonoBehaviour:
   slideParticles: {fileID: 2638606330931591780}
   slideBoxOffset: {x: 0.002129734, y: 0.153441}
   slideBoxSize: {x: 0.8771878, y: 0.3083358}
+  waterCheckSize: {x: 0.83, y: 1.1}
+  waterCheckOffset: {x: 0, y: 0.6}
+  waterLayer:
+    serializedVersion: 2
+    m_Bits: 16
+  bubblePrefab: {fileID: 8161795095344734019, guid: 9dc72996c68ecf340a889b6246b37db3, type: 3}
+  bubblePos: {fileID: 7796161887118062734}
   ladder: {fileID: 0}
   groundLayer:
     serializedVersion: 2
@@ -469,6 +478,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &3137224801792183357
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7796161887118062734}
+  m_Layer: 6
+  m_Name: BubblePos
+  m_TagString: Untagged
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7796161887118062734
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3137224801792183357}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7896349567260549571}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6766025759018991331
 GameObject:
   m_ObjectHideFlags: 0
