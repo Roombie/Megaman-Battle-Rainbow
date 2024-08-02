@@ -323,10 +323,17 @@ public class Megaman : MonoBehaviour
             isJumping = false;
         }
 
-        // Prevent jumping if sliding and there's a collision above
+        // Prevent jumping if sliding and there's a colliding object above the player
         if (isSliding && IsColAbove())
         {
             jumpButtonPressed = false;
+        }
+
+        if (CanSlideWithDownJump() && IsGrounded() && !isSliding)
+        {
+            PerformSlide(); // Start sliding if conditions are met
+            jumpButtonPressed = false; // Ensure jump button press is not registered after sliding
+            return; // Skip the jump logic
         }
 
         // Handle normal jump

@@ -61,7 +61,7 @@ MonoBehaviour:
   deathExplosion: {fileID: 5852499799356427380, guid: c9da3dc231b24dd419fd3ea0f5fedf4d, type: 3}
   gravityScale: 1
   speed: 5
-  facingRight: 1
+  facingRight: 0
   jumpForce: 18
   maxExtraJumps: 1
   extraJumpForce: 12
@@ -85,7 +85,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  groundCheckDistance: 0.2
+  groundCheckDistance: 0.1
   groundCheckOffset: {x: 0, y: 0.05}
   groundCheckWidth: 0.87
   topCheckOffset: {x: 0, y: 1.25}
