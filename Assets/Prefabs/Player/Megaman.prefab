@@ -83,13 +83,13 @@ MonoBehaviour:
   slideParticles: {fileID: 2638606330931591780}
   slideBoxOffset: {x: 0.002129734, y: 0.153441}
   slideBoxSize: {x: 0.8771878, y: 0.3083358}
-  waterCheckSize: {x: 0.83, y: 1.1}
-  waterCheckOffset: {x: 0, y: 0.6}
   waterLayer:
     serializedVersion: 2
     m_Bits: 16
   bubblePrefab: {fileID: 8161795095344734019, guid: 9dc72996c68ecf340a889b6246b37db3, type: 3}
   bubblePos: {fileID: 7796161887118062734}
+  bubbleType: 0
+  spawnInterval: 1.25
   ladder: {fileID: 0}
   groundLayer:
     serializedVersion: 2

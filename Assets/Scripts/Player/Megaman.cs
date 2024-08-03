@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEditor;
 using UnityEngine.InputSystem;
 
 public class Megaman : MonoBehaviour
@@ -80,7 +81,17 @@ public class Megaman : MonoBehaviour
     [SerializeField] private LayerMask waterLayer;
     [SerializeField] private GameObject bubblePrefab;
     [SerializeField] private Transform bubblePos;
-    private GameObject currentBubble = null;
+    public BubbleType bubbleType = BubbleType.NextBubble;
+    public float spawnInterval = 1.25f;
+    private float timer;                        // Timer based
+    private GameObject currentBubble = null;    // Next bubble
+
+    [System.Serializable]
+    public enum BubbleType
+    {
+        NextBubble,    // For bubbles that spawn after the other disappears
+        TimerBased    // For bubbles that spawn based on a timer
+    }
 
     // Ladder
     [HideInInspector] public LadderHandlers ladder;
@@ -163,9 +174,14 @@ public class Megaman : MonoBehaviour
             }
         }
 
-        if (IsInWater())
+        switch (bubbleType)
         {
-            SpawnBubble();
+            case BubbleType.NextBubble:
+                SpawnBubble();             
+                break;
+            case BubbleType.TimerBased:
+                TimerBasedSpawnBubble();
+                break;
         }
 
         // change animations
@@ -572,18 +588,45 @@ public class Megaman : MonoBehaviour
 
     private void SpawnBubble()
     {
-        if (bubblePrefab != null)
+        if (IsInWater())
         {
-            // Define the player's collider bounds
-            Bounds playerBounds = boxCollider.bounds;
-
-            // Check if the player's collider is fully within the water layer
-            bool isFullyInWater = IsColliderFullyInWater(playerBounds);
-
-            if (isFullyInWater && currentBubble == null)
+            if (bubblePrefab != null)
             {
-                currentBubble = Instantiate(bubblePrefab, bubblePos.position, Quaternion.identity);
-                Debug.Log("Bubble spawned!");
+                // Define the player's collider bounds
+                Bounds playerBounds = boxCollider.bounds;
+
+                // Check if the player's collider is fully within the water layer
+                bool isFullyInWater = IsColliderFullyInWater(playerBounds);
+
+                if (isFullyInWater && currentBubble == null)
+                {
+                    currentBubble = Instantiate(bubblePrefab, bubblePos.position, Quaternion.identity);
+                }
+            }
+        }       
+    }
+
+    private void TimerBasedSpawnBubble()
+    {
+        if (IsInWater())
+        {
+            if (bubblePrefab != null)
+            {
+                // Define the player's collider bounds
+                Bounds playerBounds = boxCollider.bounds;
+                // Check if the player's collider is fully within the water layer
+                bool isFullyInWater = IsColliderFullyInWater(playerBounds);
+
+                if (isFullyInWater)
+                {
+                    timer = 0f;
+                    timer += Time.deltaTime;
+                    if (timer >= spawnInterval)
+                    {
+                        Instantiate(bubblePrefab, bubblePos.position, Quaternion.identity);
+                        timer = 0f; // Reset timer
+                    }
+                }
             }
         }
     }
