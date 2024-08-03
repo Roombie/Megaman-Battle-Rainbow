@@ -57,6 +57,7 @@ MonoBehaviour:
   canJump: 1
   canShoot: 1
   canSlide: 1
+  canClimb: 1
   currentHealth: 0
   maxHealth: 28
   deathExplosion: {fileID: 5852499799356427380, guid: c9da3dc231b24dd419fd3ea0f5fedf4d, type: 3}
@@ -64,6 +65,9 @@ MonoBehaviour:
   waterGravityScale: 0.5
   speed: 5
   facingRight: 0
+  useStepDelay: 1
+  stepDelay: 0.1
+  stepDistance: 2
   jumpForce: 18
   maxExtraJumps: 1
   extraJumpForce: 12
@@ -83,6 +87,8 @@ MonoBehaviour:
   slideParticles: {fileID: 2638606330931591780}
   slideBoxOffset: {x: 0.002129734, y: 0.153441}
   slideBoxSize: {x: 0.8771878, y: 0.3083358}
+  climbSpeed: 3.5
+  ladder: {fileID: 0}
   waterLayer:
     serializedVersion: 2
     m_Bits: 16
@@ -90,7 +96,6 @@ MonoBehaviour:
   bubblePos: {fileID: 7796161887118062734}
   bubbleType: 0
   spawnInterval: 1.25
-  ladder: {fileID: 0}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8

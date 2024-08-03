@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class Megaman : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Megaman : MonoBehaviour
     [SerializeField] private bool canJump = true;
     [SerializeField] private bool canShoot = true;
     [SerializeField] private bool canSlide = true;
+    [SerializeField] private bool canClimb = true;
 
     [Header("Health state")]
     public int currentHealth;
@@ -27,7 +29,13 @@ public class Megaman : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private bool facingRight = true;
+    [SerializeField] private bool useStepDelay = true;
+    [SerializeField] private float stepDelay = 0.1f;  // Time for the 1-pixel step
+    [SerializeField] private float stepDistance = 2f; // Amount of the 1-pixel step
     private Vector2 moveInput;
+    private bool isMoving = false;
+    private bool hasStepped = false;    
+    private float stepTimer = 0f;
 
     [Header("Jumping")]
     [SerializeField] private float jumpForce = 18f;
@@ -75,14 +83,19 @@ public class Megaman : MonoBehaviour
     private Vector2 defaultBoxSize;
 
     [Header("Climbing")]
+    [SerializeField] private float climbSpeed = 3.5f;
+    private bool isCloseToLadder = false;
+    private bool hasStartedClimb = false;
     private bool isClimbing; // Check if we are currently climbing
+    private bool isUnderPlatform = false;
+    [HideInInspector] public LadderHandlers ladder; // Ladder
 
     [Header("Under Water")]
     [SerializeField] private LayerMask waterLayer;
     [SerializeField] private GameObject bubblePrefab;
     [SerializeField] private Transform bubblePos;
-    public BubbleType bubbleType = BubbleType.NextBubble;
-    public float spawnInterval = 1.25f;
+    [SerializeField] private BubbleType bubbleType = BubbleType.NextBubble;
+    [SerializeField] private float spawnInterval = 1.25f;
     private float timer;                        // Timer based
     private GameObject currentBubble = null;    // Next bubble
 
@@ -92,9 +105,6 @@ public class Megaman : MonoBehaviour
         NextBubble,    // For bubbles that spawn after the other disappears
         TimerBased    // For bubbles that spawn based on a timer
     }
-
-    // Ladder
-    [HideInInspector] public LadderHandlers ladder;
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask groundLayer;
@@ -145,6 +155,7 @@ public class Megaman : MonoBehaviour
         if (canJump) CheckJump();
         if (canShoot) PlayerShoot();
         if (canSlide) PerformSlide();
+        if (canClimb) StartClimbing();
 
         // change box collider's size and offset if the player's currently sliding or not
         boxCollider.offset = isSliding ? slideBoxOffset : defaultBoxOffset;
@@ -185,6 +196,8 @@ public class Megaman : MonoBehaviour
         }
 
         // change animations
+        animator.SetBool("isStepping", useStepDelay && isMoving && !hasStepped);
+        animator.SetBool("useStep", useStepDelay);
         animator.SetBool("isGrounded", IsGrounded());
         animator.SetFloat("horizontal", Mathf.Abs(moveInput.x));
         animator.SetFloat("vertical", Mathf.Abs(moveInput.y));
@@ -322,7 +335,44 @@ public class Megaman : MonoBehaviour
     {
         if (isSliding) return; // Player will use the slide movement if is true
 
-        rb.velocity = new Vector2(moveInput.x * speed, rb.velocity.y);
+        // Check if there is an horizontal input
+        if (moveInput.x != 0)
+        {
+            if (!isMoving)
+            {
+                // Start moving with a step delay
+                isMoving = true;
+                hasStepped = false;
+                stepTimer = stepDelay; // Start the timer for the step delay
+            }
+            else
+            {
+                if (!hasStepped && IsGrounded())
+                {
+                    //Apply step
+                    rb.velocity = new Vector2(moveInput.x * stepDistance, rb.velocity.y);
+
+                    stepTimer -= Time.deltaTime; // Decrease the step timer
+                    if (stepTimer <= 0)
+                    {
+                       // Start with step distance
+                        hasStepped = true; // the step has been completed
+                        stepTimer = stepDelay; // Reset timer for next step
+                    }
+                }
+                else
+                {
+                    rb.velocity = new Vector2(moveInput.x * speed, rb.velocity.y); // Normal speed after stepping
+                }
+            }
+        }
+        else
+        {
+            // Stop movement when no input
+            isMoving = false;
+            hasStepped = false;
+            rb.velocity = new Vector2(0, rb.velocity.y); // Stop movement when no input
+        }
 
         if (moveInput.x > 0 && !facingRight)
         {
@@ -577,6 +627,11 @@ public class Megaman : MonoBehaviour
     private void StartClimbing()
     {
 
+    }
+
+    private void EndClimbing()
+    {
+        
     }
     #endregion
 
