@@ -11,6 +11,8 @@ public class Bullet : MonoBehaviour
 
     private float destroyTime;
 
+    public delegate void BulletDestroyed();
+    public event BulletDestroyed OnBulletDestroyed;
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
 
@@ -74,5 +76,11 @@ public class Bullet : MonoBehaviour
             // remove the bullet - just not immediately
             Destroy(gameObject, 0.01f);
         }
+    }
+
+    void OnBecameInvisible()
+    {
+        OnBulletDestroyed?.Invoke(); // Notify listeners that the bullet is destroyed
+        Destroy(gameObject);
     }
 }

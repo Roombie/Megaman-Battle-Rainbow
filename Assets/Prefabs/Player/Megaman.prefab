@@ -79,6 +79,8 @@ MonoBehaviour:
   bulletShootOffset: {x: 0, y: 0.8}
   shootRayLength: 1.3
   bulletPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
+  limitBulletsOnScreen: 0
+  maxBulletsOnScreen: 3
   canSlideWithDownJump: 1
   slideSpeed: 7.5
   slideDuration: 0.35

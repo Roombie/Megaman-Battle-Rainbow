@@ -57,6 +57,9 @@ public class Megaman : MonoBehaviour
     [SerializeField] Vector2 bulletShootOffset = new(0.5f, 1f);
     [SerializeField] float shootRayLength = 5f;
     [SerializeField] GameObject bulletPrefab;
+    [SerializeField] private bool limitBulletsOnScreen = true; // Control whether to limit bullets or not
+    [SerializeField] private int maxBulletsOnScreen = 3;
+    private List<GameObject> activeBullets = new();  // Track active bullets
     private bool isShooting; // Check if we are currently shooting
     private float shootTime;
     private float shootTimeLength;
@@ -464,11 +467,14 @@ public class Megaman : MonoBehaviour
         // shoot key is being pressed and key release flag true
         if (shootButtonPressed && shootButtonRelease && !isSliding)
         {
-            isShooting = true;
-            shootButtonRelease = false;
-            shootTime = Time.time;
-            Invoke(nameof(ShootBullet), shootDelay);
-            Debug.Log("Shoot Bullet"); // Shoot Bullet
+            if (!limitBulletsOnScreen || activeBullets.Count < maxBulletsOnScreen)
+            {
+                isShooting = true;
+                shootButtonRelease = false;
+                shootTime = Time.time;
+                Invoke(nameof(ShootBullet), shootDelay);
+                Debug.Log("Shoot Bullet"); // Shoot Bullet
+            }      
         }
 
         // shoot key isn't being pressed and key release flag is false
@@ -503,6 +509,15 @@ public class Megaman : MonoBehaviour
         bullet.GetComponent<Bullet>().SetBulletSpeed(bulletSpeed);
         bullet.GetComponent<Bullet>().SetBulletDirection(facingRight ? Vector2.right : Vector2.left);
         bullet.GetComponent<Bullet>().Shoot();
+
+        // Add bullet to the active bullets list
+        activeBullets.Add(bullet);
+
+        // Add a listener to remove the bullet from the list when it is destroyed
+        bullet.GetComponent<Bullet>().OnBulletDestroyed += () => {
+            activeBullets.Remove(bullet);
+            Destroy(bullet); // Ensure the bullet is destroyed
+        };
     }
     #endregion
 

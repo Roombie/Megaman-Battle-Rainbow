@@ -177,9 +177,9 @@ AnimatorTransition:
   - m_ConditionMode: 1
     m_ConditionEvent: isGrounded
     m_EventTreshold: 0
-  - m_ConditionMode: 4
-    m_ConditionEvent: horizontal
-    m_EventTreshold: 0.1
+  - m_ConditionMode: 2
+    m_ConditionEvent: isShooting
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: -1352876989853176515}
   m_DstState: {fileID: 0}
   m_Solo: 0
@@ -1075,6 +1075,9 @@ AnimatorTransition:
   - m_ConditionMode: 3
     m_ConditionEvent: horizontal
     m_EventTreshold: 0.5
+  - m_ConditionMode: 2
+    m_ConditionEvent: isShooting
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 8738820446366422316}
   m_Solo: 0
