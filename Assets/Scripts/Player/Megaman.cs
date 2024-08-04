@@ -622,6 +622,7 @@ public class Megaman : MonoBehaviour
             if ((slideTimeLength >= slideDuration && !isTouchingTop) || !IsGrounded() || exitSlide)
             {
                 Debug.Log("You're not sliding anymore!");
+                rb.velocity = new Vector2(0, rb.velocity.y);
                 isSliding = false;
                 slideButtonRelease = true;
             }
