@@ -46,9 +46,10 @@ public class LadderHandlers : MonoBehaviour
         // only ladder climber we have is the player
         if (other.gameObject.CompareTag("Player"))
         {
+            isNearLadder = true;
             // if the player is within the range (center-ish of the ladder)
-            isNearLadder = (other.gameObject.transform.position.x > (posX - 0.05f) &&
-                    other.gameObject.transform.position.x < (posX + 0.05f));
+            /*isNearLadder = (other.gameObject.transform.position.x > (posX - 0.05f) &&
+                    other.gameObject.transform.position.x < (posX + 0.05f));*/
             other.gameObject.GetComponent<Megaman>().ladder = this;
         }
     }

@@ -64,7 +64,7 @@ MonoBehaviour:
   gravityScale: 1
   waterGravityScale: 0.5
   speed: 5
-  facingRight: 0
+  facingRight: 1
   useStepDelay: 1
   stepDelay: 0.1
   stepDistance: 2
@@ -89,7 +89,7 @@ MonoBehaviour:
   slideParticles: {fileID: 2638606330931591780}
   slideBoxOffset: {x: 0.002129734, y: 0.153441}
   slideBoxSize: {x: 0.8771878, y: 0.3083358}
-  climbSpeed: 3.5
+  climbSpeed: 2.5
   ladder: {fileID: 0}
   waterLayer:
     serializedVersion: 2

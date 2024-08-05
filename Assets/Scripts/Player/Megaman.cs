@@ -158,7 +158,7 @@ public class Megaman : MonoBehaviour
         if (canJump) CheckJump();
         if (canShoot) PlayerShoot();
         if (canSlide) PerformSlide();
-        if (canClimb) StartClimbing();
+        if (canClimb) HandleClimbing();
 
         // change box collider's size and offset if the player's currently sliding or not
         boxCollider.offset = isSliding ? slideBoxOffset : defaultBoxOffset;
@@ -207,6 +207,7 @@ public class Megaman : MonoBehaviour
         animator.SetBool("isShooting", isShooting);
         animator.SetBool("isSliding", isSliding);
         animator.SetBool("isClimbing", isClimbing);
+        // animator.SetBool("isClimbingToTop")
     }
 
     void FixedUpdate()
@@ -302,6 +303,7 @@ public class Megaman : MonoBehaviour
         {
             isTakingDamage = true;
             isInvincible = true;
+            ResetClimbing();
             float hitForceX = 0.50f;
             float hitForceY = 1.5f;
             if (hitSideRight) hitForceX = -hitForceX;
@@ -337,6 +339,7 @@ public class Megaman : MonoBehaviour
     private void Move()
     {
         if (isSliding) return; // Player will use the slide movement if is true
+        if (isClimbing) return;
 
         // Check if there is an horizontal input
         if (moveInput.x != 0)
@@ -399,6 +402,8 @@ public class Megaman : MonoBehaviour
     #region Jump
     private void CheckJump()
     {
+        if (isClimbing) return;
+
         // Check if the player is grounded and reset inAirFromJump flag
         if (IsGrounded())
         {
@@ -639,15 +644,77 @@ public class Megaman : MonoBehaviour
     }
     #endregion
 
-    #region Climb
-    private void StartClimbing()
+    #region Climbing
+    private void HandleClimbing()
     {
+        Debug.Log("Is player close to a ladder? " + isCloseToLadder);
 
+        // Check if player is near ladder and handle start of climbing
+        if (ladder != null && ladder.isNearLadder)
+        {       
+            isCloseToLadder = true;              
+        }
+        else
+        {
+            isCloseToLadder = false;
+        }
+
+        if (isCloseToLadder) // If the player is close to a ladder AND detects a vertical input
+        {          
+            if (moveInput.y != 0)
+            {
+                StartClimbing();
+                rb.velocity = new Vector2(0, moveInput.y * climbSpeed);
+            }
+            else if (isClimbing) // If climbing but no vertical input, stop all movement
+            {
+                rb.velocity = new Vector2(0, 0); // Stop climbing movement
+                animator.speed = 0;
+            }
+        } 
+
+        if (isClimbing)
+        {
+            if (isShooting)
+            {
+                if (moveInput.x > 0 && !facingRight)
+                {
+                    Flip();
+                }
+                else if (moveInput.x < 0 && facingRight)
+                {
+                    Flip();
+                }
+            }
+
+            if (jumpButtonPressed)
+            {
+                ResetClimbing();
+            }
+        }       
     }
 
-    private void EndClimbing()
+    private void StartClimbing()
     {
-        
+        isClimbing = true;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        animator.speed = 1;
+
+        // Align the player with the ladder's X position
+        Vector3 ladderPosition = ladder.transform.position;
+        transform.position = new Vector3(ladderPosition.x, transform.position.y, transform.position.z);
+    }
+
+    private void ResetClimbing()
+    {
+        // reset climbing if we're climbing
+        if (isClimbing)
+        {
+            isClimbing = false;
+            animator.speed = 1;
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.velocity = Vector2.zero;
+        }
     }
     #endregion
 
