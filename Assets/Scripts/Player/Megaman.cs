@@ -159,17 +159,19 @@ public class Megaman : MonoBehaviour
         if (canShoot) PlayerShoot();
         if (canSlide) PerformSlide();
         if (canClimb) HandleClimbing();
+        HandleBubbleState();
+        HandleSlideParticles();
+        UpdateAnimations();
+    }
 
-        // change box collider's size and offset if the player's currently sliding or not
-        boxCollider.offset = isSliding ? slideBoxOffset : defaultBoxOffset;
-        boxCollider.size = isSliding ? slideBoxSize : defaultBoxSize;
+    void FixedUpdate()
+    {
+        ApplyGravity();
+    }
 
-        if (isTakingDamage)
-        {
-            animator.Play("Megaman_Hit");
-            return;
-        }
-
+    #region Particle Handling
+    void HandleSlideParticles()
+    {
         if (slideParticles != null) // if you add slide particles
         {
             if (currentHealth <= 5) // when player's current health is equals or less than 5
@@ -187,18 +189,18 @@ public class Megaman : MonoBehaviour
                 }
             }
         }
+    }
+    #endregion
 
-        switch (bubbleType)
+    #region Animation Updates
+    void UpdateAnimations()
+    {
+        if (isTakingDamage)
         {
-            case BubbleType.NextBubble:
-                SpawnBubble();             
-                break;
-            case BubbleType.TimerBased:
-                TimerBasedSpawnBubble();
-                break;
+            animator.Play("Megaman_Hit");
+            return;
         }
 
-        // change animations
         animator.SetBool("isStepping", useStepDelay && isMoving && !hasStepped);
         animator.SetBool("useStep", useStepDelay);
         animator.SetBool("isGrounded", IsGrounded());
@@ -207,13 +209,9 @@ public class Megaman : MonoBehaviour
         animator.SetBool("isShooting", isShooting);
         animator.SetBool("isSliding", isSliding);
         animator.SetBool("isClimbing", isClimbing);
-        // animator.SetBool("isClimbingToTop")
+        // animator.SetBool("isClimbingToTop") // Uncomment if needed
     }
-
-    void FixedUpdate()
-    {
-        ApplyGravity();
-    }
+    #endregion
 
     #region Collision detection (ground, above collision, front collision)
     // ground
@@ -399,7 +397,7 @@ public class Megaman : MonoBehaviour
     }
     #endregion
 
-    #region Jump
+    #region Jumping
     private void CheckJump()
     {
         if (isClimbing) return;
@@ -463,7 +461,7 @@ public class Megaman : MonoBehaviour
     }
     #endregion
 
-    #region Shoot
+    #region Shooting
     private void PlayerShoot()
     {
         shootTimeLength = 0;
@@ -526,7 +524,7 @@ public class Megaman : MonoBehaviour
     }
     #endregion
 
-    #region Slide
+    #region Sliding
     private bool CanSlideWithDownJump()
     {
         if (canSlideWithDownJump)
@@ -566,6 +564,10 @@ public class Megaman : MonoBehaviour
     private void PerformSlide()
     {
         if (state == PlayerStates.Climb) return;
+
+        // change box collider's size and offset if the player's currently sliding or not
+        boxCollider.offset = isSliding ? slideBoxOffset : defaultBoxOffset;
+        boxCollider.size = isSliding ? slideBoxSize : defaultBoxSize;
 
         if (isSliding) // if it's currently sliding
         {
@@ -659,24 +661,25 @@ public class Megaman : MonoBehaviour
             isCloseToLadder = false;
         }
 
-        if (isCloseToLadder) // If the player is close to a ladder AND detects a vertical input
+        if (isCloseToLadder) // If the player is close to a ladder 
         {          
-            if (moveInput.y != 0)
+            if (moveInput.y != 0) // if it detects a vertical input
             {
                 StartClimbing();
                 rb.velocity = new Vector2(0, moveInput.y * climbSpeed);
             }
-            else if (isClimbing) // If climbing but no vertical input, stop all movement
+            else if (isClimbing) // If climbing but no vertical input, stop all movement and animation
             {
                 rb.velocity = new Vector2(0, 0); // Stop climbing movement
                 animator.speed = 0;
             }
-        } 
+        }
 
-        if (isClimbing)
+        if (isClimbing) // when you're climbing
         {
-            if (isShooting)
+            if (isShooting) // and you're shooting
             {
+                // depending where you're facing, it'll flip the sprite to where you'll shoot on the horizontal direction
                 if (moveInput.x > 0 && !facingRight)
                 {
                     Flip();
@@ -687,15 +690,17 @@ public class Megaman : MonoBehaviour
                 }
             }
 
-            if (jumpButtonPressed)
+            // if you want to jump of ladder, you have to press the jump button and not be pressing vertical input
+            if (jumpButtonPressed && moveInput.y == 0)
             {
                 ResetClimbing();
             }
-        }       
-    }
+        }
+    }   
 
     private void StartClimbing()
     {
+        Debug.Log("You started climbing");
         isClimbing = true;
         rb.bodyType = RigidbodyType2D.Kinematic;
         animator.speed = 1;
@@ -710,6 +715,8 @@ public class Megaman : MonoBehaviour
         // reset climbing if we're climbing
         if (isClimbing)
         {
+            Debug.Log("No longer climbing");
+            jumpButtonPressed = false; // to avoid executing the extra jump as soon as you jump off the ladder
             isClimbing = false;
             animator.speed = 1;
             rb.bodyType = RigidbodyType2D.Dynamic;
@@ -722,6 +729,19 @@ public class Megaman : MonoBehaviour
     private bool IsInWater()
     {
         return Physics2D.OverlapBox((Vector2)transform.position + boxCollider.offset, boxCollider.size, 0f, waterLayer) != null;
+    }
+
+    private void HandleBubbleState()
+    {
+        switch (bubbleType)
+        {
+            case BubbleType.NextBubble:
+                SpawnBubble();
+                break;
+            case BubbleType.TimerBased:
+                TimerBasedSpawnBubble();
+                break;
+        }
     }
 
     private void SpawnBubble()
