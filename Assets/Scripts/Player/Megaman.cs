@@ -200,6 +200,8 @@ public class Megaman : MonoBehaviour
             return;
         }
 
+        bool isClimbingToTop = ladder != null && isClimbing && Mathf.Abs(transform.position.y - ladder.posTopHandlerY) < 0.5f;
+
         animator.SetBool("isStepping", useStepDelay && isMoving && !hasStepped);
         animator.SetBool("useStep", useStepDelay);
         animator.SetBool("isGrounded", IsGrounded());
@@ -207,7 +209,7 @@ public class Megaman : MonoBehaviour
         animator.SetBool("isShooting", isShooting);
         animator.SetBool("isSliding", isSliding);
         animator.SetBool("isClimbing", isClimbing);
-        animator.SetBool("isClimbingToTop", IsAtLadderTop());
+        animator.SetBool("isClimbingToTop", isClimbingToTop);
     }
     #endregion
 
@@ -683,8 +685,11 @@ public class Megaman : MonoBehaviour
         }
 
         if (isClimbing)
-        {            
-            if ((IsAtLadderTop() && moveInput.y > 0) || (IsAtLadderBottom() || IsGrounded() && moveInput.y < 0 && !IsAtLadderTop())) // ladder boundaries
+        {
+            // If the player is at the top of the ladder and trying to move up
+            // Or if the player is at the bottom of the ladder
+             // Or if the player is on the ground, trying to move down, and not at the top of the ladder
+            if ((IsAtLadderTop() && moveInput.y > 0) || IsAtLadderBottom() || IsGrounded() && moveInput.y < 0 && !IsAtLadderTop()) // ladder boundaries
             {
                 ResetClimbing();
                 return;
@@ -725,7 +730,7 @@ public class Megaman : MonoBehaviour
     {
         if (ladder == null || !isClimbing) return false;
         //Debug.Log("You reached the top of the ladder, congrats!");
-        return Mathf.Abs(transform.position.y - ladder.posTopHandlerY) < 0.5f;
+        return Mathf.Abs(transform.position.y - ladder.posTopHandlerY) < 0.1f;
     }
 
     private bool IsAtLadderBottom()
