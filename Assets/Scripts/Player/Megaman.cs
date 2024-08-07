@@ -59,7 +59,7 @@ public class Megaman : MonoBehaviour
     [SerializeField] GameObject bulletPrefab;
     [SerializeField] private bool limitBulletsOnScreen = true; // Control whether to limit bullets or not
     [SerializeField] private int maxBulletsOnScreen = 3;
-    private List<GameObject> activeBullets = new();  // Track active bullets
+    private readonly List<GameObject> activeBullets = new();  // Track active bullets
     private bool isShooting; // Check if we are currently shooting
     private float shootTime;
     private float shootTimeLength;
@@ -88,9 +88,8 @@ public class Megaman : MonoBehaviour
     [Header("Climbing")]
     [SerializeField] private float climbSpeed = 3.5f;
     private bool isCloseToLadder = false;
-    private bool hasStartedClimb = false;
     private bool isClimbing; // Check if we are currently climbing
-    private bool isUnderPlatform = false;
+    private readonly bool isUnderPlatform = false;
     [HideInInspector] public LadderHandlers ladder; // Ladder
 
     [Header("Under Water")]
@@ -205,11 +204,10 @@ public class Megaman : MonoBehaviour
         animator.SetBool("useStep", useStepDelay);
         animator.SetBool("isGrounded", IsGrounded());
         animator.SetFloat("horizontal", Mathf.Abs(moveInput.x));
-        animator.SetFloat("vertical", Mathf.Abs(moveInput.y));
         animator.SetBool("isShooting", isShooting);
         animator.SetBool("isSliding", isSliding);
         animator.SetBool("isClimbing", isClimbing);
-        // animator.SetBool("isClimbingToTop") // Uncomment if needed
+        animator.SetBool("isClimbingToTop", IsAtLadderTop());
     }
     #endregion
 
@@ -435,13 +433,13 @@ public class Megaman : MonoBehaviour
             if (IsGrounded() || (Time.time - lastGroundedTime <= coyoteTime && !inAirFromJump)) // Check if the player is grounded or if within the coyote time and not in the air from a previous jump
             {
                 Jump(jumpForce);
-                Debug.Log("Jump!");
+                //Debug.Log("Jump!");
             }
             else if (!IsGrounded() && extraJumpCount > 0 && !isJumping)  // If not grounded and there are extra jumps available and the player is not currently jumping
             {
                 Jump(extraJumpForce);
                 extraJumpCount--;  // Decrease the count of available extra jumps
-                Debug.Log("Extra Jump!");
+                //Debug.Log("Extra Jump!");
             }
         }
 
@@ -476,7 +474,7 @@ public class Megaman : MonoBehaviour
                 shootButtonRelease = false;
                 shootTime = Time.time;
                 Invoke(nameof(ShootBullet), shootDelay);
-                Debug.Log("Shoot Bullet"); // Shoot Bullet
+                //Debug.Log("Shoot Bullet"); // Shoot Bullet
             }      
         }
 
@@ -542,7 +540,7 @@ public class Megaman : MonoBehaviour
         {
             if (!IsFrontCollision())
             {
-                Debug.Log("Start Slide!");
+                //Debug.Log("Start Slide!");
                 isSliding = true;
                 slideTime = Time.time;
                 slideTimeLength = 0;
@@ -571,7 +569,7 @@ public class Megaman : MonoBehaviour
 
         if (isSliding) // if it's currently sliding
         {
-            Debug.Log("Slide performed!");
+            //Debug.Log("Slide performed!");
             bool exitSlide = false;
             bool isTouchingTop = IsColAbove();
             bool isTouchingFront = IsFrontCollision();
@@ -587,7 +585,7 @@ public class Megaman : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log("There's nothing above and you move to the right, exit slide");
+                        //Debug.Log("There's nothing above and you move to the right, exit slide");
                         exitSlide = true; // stop the slide
                     }
                 }
@@ -604,7 +602,7 @@ public class Megaman : MonoBehaviour
                     } 
                     else
                     {
-                        Debug.Log("There's nothing above and you move to the left, exit slide");
+                        //Debug.Log("There's nothing above and you move to the left, exit slide");
                         exitSlide = true; // stop the slide
                     }
                 }
@@ -613,14 +611,14 @@ public class Megaman : MonoBehaviour
             // when you press jump and there's no colliding object above the player during the sliding
             if (jumpButtonPressed && !isTouchingTop)
             {
-                Debug.Log("Slide jump!");
+                //Debug.Log("Slide jump!");
                 exitSlide = true;
             }
 
             // when it detects a colliding object in front but not above and there's still slide time left
             if (isTouchingFront && !isTouchingTop && slideTimeLength >= 0.1f)
             {
-                Debug.Log("There's something in front, stopping sliding!");
+                //Debug.Log("There's something in front, stopping sliding!");
                 exitSlide = true;
             }
 
@@ -628,14 +626,14 @@ public class Megaman : MonoBehaviour
             // you stop sliding
             if ((slideTimeLength >= slideDuration && !isTouchingTop) || !IsGrounded() || exitSlide)
             {
-                Debug.Log("You're not sliding anymore!");
+                //Debug.Log("You're not sliding anymore!");
                 rb.velocity = new Vector2(0, rb.velocity.y);
                 isSliding = false;
                 slideButtonRelease = true;
             }
             else // the slide force is applied 
             {
-                Debug.Log("Slide force applied!");
+                //Debug.Log("Slide force applied!");
                 rb.velocity = new Vector2(slideSpeed * ((facingRight) ? 1f : -1f), rb.velocity.y);
             }
         }
@@ -649,54 +647,55 @@ public class Megaman : MonoBehaviour
     #region Climbing
     private void HandleClimbing()
     {
-        Debug.Log("Is player close to a ladder? " + isCloseToLadder);
+        Debug.Log("Are you closed to a ladder? " + isCloseToLadder);
+        bool nearLadder = ladder != null && ladder.isNearLadder;
+        isCloseToLadder = nearLadder;
 
-        // Check if player is near ladder and handle start of climbing
-        if (ladder != null && ladder.isNearLadder)
-        {       
-            isCloseToLadder = true;              
-        }
-        else
+        // Reset climbing if necessary
+        if (!isCloseToLadder || isUnderPlatform)
         {
-            isCloseToLadder = false;
+            if (isClimbing)
+            {
+;                ResetClimbing();
+            }
+            return;
         }
 
-        if (isCloseToLadder) // If the player is close to a ladder 
-        {          
-            if (moveInput.y != 0) // if it detects a vertical input
-            {
-                StartClimbing();
-                rb.velocity = new Vector2(0, moveInput.y * climbSpeed);
-            }
-            else if (isClimbing) // If climbing but no vertical input, stop all movement and animation
-            {
-                rb.velocity = new Vector2(0, 0); // Stop climbing movement
-                animator.speed = 0;
-            }
-        }
-
-        if (isClimbing) // when you're climbing
+        // Climbing logic 
+        if (moveInput.y != 0 && !isShooting)
         {
-            if (isShooting) // and you're shooting
-            {
-                // depending where you're facing, it'll flip the sprite to where you'll shoot on the horizontal direction
-                if (moveInput.x > 0 && !facingRight)
-                {
-                    Flip();
-                }
-                else if (moveInput.x < 0 && facingRight)
-                {
-                    Flip();
-                }
-            }
+            StartClimbing();
+            rb.velocity = new Vector2(0, moveInput.y * climbSpeed);
+        }
+        else if (isClimbing) 
+        {
+            rb.velocity = Vector2.zero;
+            animator.speed = 0;
+        }
 
-            // if you want to jump of ladder, you have to press the jump button and not be pressing vertical input
-            if (jumpButtonPressed && moveInput.y == 0)
+        // Shooting while climbing
+        if (isClimbing && isShooting)
+        {
+            if (moveInput.x > 0 && !facingRight || moveInput.x < 0 && facingRight) // flip sprite
+            {
+                Flip();
+            }
+        }
+
+        if (isClimbing)
+        {            
+            if ((IsAtLadderTop() && moveInput.y > 0) || (IsAtLadderBottom() || IsGrounded() && moveInput.y < 0 && !IsAtLadderTop())) // ladder boundaries
+            {
+                ResetClimbing();
+                return;
+            }
+         
+            if (jumpButtonPressed && moveInput.y == 0) // jumping off the ladder
             {
                 ResetClimbing();
             }
         }
-    }   
+    }
 
     private void StartClimbing()
     {
@@ -706,22 +705,34 @@ public class Megaman : MonoBehaviour
         animator.speed = 1;
 
         // Align the player with the ladder's X position
-        Vector3 ladderPosition = ladder.transform.position;
-        transform.position = new Vector3(ladderPosition.x, transform.position.y, transform.position.z);
+        transform.position = new Vector3(ladder.transform.position.x, transform.position.y, transform.position.z);
     }
 
     private void ResetClimbing()
     {
-        // reset climbing if we're climbing
         if (isClimbing)
         {
             Debug.Log("No longer climbing");
-            jumpButtonPressed = false; // to avoid executing the extra jump as soon as you jump off the ladder
+            jumpButtonPressed = false; // Avoid immediate jump after climbing
             isClimbing = false;
             animator.speed = 1;
             rb.bodyType = RigidbodyType2D.Dynamic;
             rb.velocity = Vector2.zero;
         }
+    }
+
+    private bool IsAtLadderTop()
+    {
+        if (ladder == null || !isClimbing) return false;
+        //Debug.Log("You reached the top of the ladder, congrats!");
+        return Mathf.Abs(transform.position.y - ladder.posTopHandlerY) < 0.5f;
+    }
+
+    private bool IsAtLadderBottom()
+    {
+        if (ladder == null || !isClimbing) return false;
+        //Debug.Log("You reached the bottom of the ladder, congrats!");
+        return Mathf.Abs(transform.position.y - ladder.posBottomHandlerY) < 0.005f;
     }
     #endregion
 
@@ -824,7 +835,7 @@ public class Megaman : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
-        Debug.Log("Move values: " + moveInput);
+        //Debug.Log("Move values: " + moveInput);
     }
 
     public void OnJump(InputAction.CallbackContext context)
