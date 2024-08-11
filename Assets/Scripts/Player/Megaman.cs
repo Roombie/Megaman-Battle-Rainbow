@@ -89,8 +89,8 @@ public class Megaman : MonoBehaviour
     [SerializeField] private float climbSpeed = 3.5f;
     private bool isCloseToLadder = false; // Indicates if the player is close to a ladder
     private bool isClimbing; // Check if we are currently climbing
-    private bool isClimbingDown; // Determines if the player is climbing down
     private bool isOnPlatformLadder;
+    private bool atLadderTop;
     private bool atLaddersEnd; // Indicates if the player has reached the end of the ladder.
     [HideInInspector] public LadderHandlers ladder; // Ladder
 
@@ -665,14 +665,15 @@ public class Megaman : MonoBehaviour
         }
 
         isOnPlatformLadder = IsPlayerOnPlatformLadder();
+        atLadderTop = IsAtLadderTop();
         atLaddersEnd = IsAtLadderBottom();
        
         // Determine if we should start climbing
         bool shouldStartClimbing =
-            // if the player is grounded, on the platform ladder, moving down, and not shooting
+            // Start climbing if the player is grounded, on the platform ladder, moving down, and not shooting
             (IsGrounded() && isOnPlatformLadder && moveInput.y < 0 && !isShooting) ||
-            // if the player is grounded, not at the bottom of the ladder, not on the platform ladder, moving up, and not shooting
-            (IsGrounded() && !IsAtLadderBottom() && !isOnPlatformLadder && moveInput.y > 0 && !isShooting) ||
+            // Start climbing if the player is grounded, not at the bottom of the ladder, not on the platform ladder, moving up, and not shooting
+            (IsGrounded() && !atLaddersEnd && !isOnPlatformLadder && moveInput.y > 0 && !isShooting) ||
             // Start climbing when not grounded and pressing up or down without shooting|
             (!IsGrounded() && moveInput.y != 0 && !isShooting);
 
@@ -709,16 +710,14 @@ public class Megaman : MonoBehaviour
             }
 
             // Prevent climbing down if you're ground before reaching the bottom of the ladder and if you're at the platform ladder and ladder top
-            if (IsGrounded() && !atLaddersEnd && !IsAtLadderTop() && !isOnPlatformLadder && moveInput.y < 0)
+            if (IsGrounded() && !atLaddersEnd && !atLadderTop && !isOnPlatformLadder && moveInput.y < 0)
             {
-                // Debug.Log("Close to bottom, stopping climbing");
                 EndClimbing();
             }
 
             // Jump off the ladder
             if (jumpButtonPressed)
             {
-                // Debug.Log("Jump off the ladder");
                 EndClimbing();
             }
         }
