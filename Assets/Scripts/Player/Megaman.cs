@@ -34,7 +34,7 @@ public class Megaman : MonoBehaviour
     [SerializeField] private float stepDistance = 2f; // Amount of the 1-pixel step
     private Vector2 moveInput;
     private bool isMoving = false;
-    private bool hasStepped = false;    
+    private bool hasStepped = false;
     private float stepTimer = 0f;
 
     [Header("Jumping")]
@@ -135,14 +135,17 @@ public class Megaman : MonoBehaviour
     private Animator animator;
     private AudioSource audioSource;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+    }
 
+    void Start()
+    {
         // start at full health
         currentHealth = maxHealth;
         // start facing right always
@@ -154,6 +157,12 @@ public class Megaman : MonoBehaviour
 
     void Update()
     {
+        if (isTakingDamage)
+        {
+            animator.Play("Megaman_Hit");
+            return;
+        }
+
         if (isPaused) return;
         if (canMove) Move();
         if (canJump) CheckJump();
@@ -196,12 +205,6 @@ public class Megaman : MonoBehaviour
     #region Animation Updates
     void UpdateAnimations()
     {
-        if (isTakingDamage)
-        {
-            animator.Play("Megaman_Hit");
-            return;
-        }
-
         bool isClimbingToTop = ladder != null && isClimbing && Mathf.Abs(transform.position.y - ladder.posTopHandlerY) < 0.5f;
 
         animator.SetBool("isStepping", useStepDelay && isMoving && !hasStepped);
@@ -215,7 +218,7 @@ public class Megaman : MonoBehaviour
     }
     #endregion
 
-    #region Collision detection (ground, above collision, front collision)
+    #region Collision Detection (ground, above collision, front collision)
     // ground
     private bool IsGrounded()
     {
@@ -302,7 +305,7 @@ public class Megaman : MonoBehaviour
         if (!isTakingDamage)
         {
             isTakingDamage = true;
-            isInvincible = true;
+            Invincible(true);
             EndClimbing();
             float hitForceX = 0.50f;
             float hitForceY = 1.5f;
@@ -319,8 +322,14 @@ public class Megaman : MonoBehaviour
         // and we reset the animation because it doesn't loop otherwise
         // we can end up stuck in it
         isTakingDamage = false;
-        isInvincible = false;
         animator.Play("Megaman_Hit", -1, 0f);
+        StartCoroutine(FlashAfterDamage());
+    }
+
+    private IEnumerator FlashAfterDamage()
+    {
+        yield return new WaitForSeconds(0.083f);
+        Invincible(false);
     }
     #endregion
 
@@ -338,13 +347,12 @@ public class Megaman : MonoBehaviour
     #region Movement
     private void Move()
     {
-        if (isSliding) return; // Player will use the slide movement if is true
-        if (isClimbing) return;
+        if (isSliding || isClimbing) return; // Player will use the slide or climbing if is true
 
         // Check if there is an horizontal input
         if (moveInput.x != 0)
         {
-            if (!isMoving)
+            if (!isMoving) // If you're not moving
             {
                 // Start moving with a step delay
                 isMoving = true;
@@ -353,12 +361,12 @@ public class Megaman : MonoBehaviour
             }
             else
             {
-                if (!hasStepped && IsGrounded())
+                if (useStepDelay && !hasStepped && IsGrounded())
                 {
                     //Apply step
                     rb.velocity = new Vector2(moveInput.x * stepDistance, rb.velocity.y);
-
                     stepTimer -= Time.deltaTime; // Decrease the step timer
+
                     if (stepTimer <= 0)
                     {
                        // Start with step distance
@@ -715,8 +723,8 @@ public class Megaman : MonoBehaviour
                 EndClimbing();
             }
 
-            // Jump off the ladder
-            if (jumpButtonPressed)
+            // Jump off the ladder when you press the jump button and not moving vertically
+            if (moveInput.y == 0 && jumpButtonPressed)
             {
                 EndClimbing();
             }
