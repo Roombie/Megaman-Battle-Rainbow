@@ -13,6 +13,7 @@ public class Megaman : MonoBehaviour
     [SerializeField] private bool canShoot = true;
     [SerializeField] private bool canSlide = true;
     [SerializeField] private bool canClimb = true;
+    private bool isInputFrozen = false;
 
     [Header("Health state")]
     public int currentHealth;
@@ -157,21 +158,19 @@ public class Megaman : MonoBehaviour
 
     void Update()
     {
-        if (isTakingDamage)
-        {
-            animator.Play("Megaman_Hit");
-            return;
-        }
-
+     
         if (isPaused) return;
-        if (canMove) Move();
-        if (canJump) CheckJump();
-        if (canShoot) PlayerShoot();
-        if (canSlide) PerformSlide();
-        if (canClimb) HandleClimbing();
+        if (!isInputFrozen)
+        {
+            if (canMove) Move();
+            if (canJump) CheckJump();
+            if (canShoot) PlayerShoot();
+            if (canSlide) PerformSlide();
+            if (canClimb) HandleClimbing();
+        }
+        UpdateAnimations();
         HandleBubbleState();
         HandleSlideParticles();
-        UpdateAnimations();
     }
 
     void FixedUpdate()
@@ -205,6 +204,14 @@ public class Megaman : MonoBehaviour
     #region Animation Updates
     void UpdateAnimations()
     {
+        animator.SetBool("isTakingDamage", isTakingDamage);
+        if (isTakingDamage)
+        {
+            animator.SetTrigger("hit");
+            Debug.Log("hit");
+            return;
+        }
+
         bool isClimbingToTop = ladder != null && isClimbing && Mathf.Abs(transform.position.y - ladder.posTopHandlerY) < 0.5f;
 
         animator.SetBool("isStepping", useStepDelay && isMoving && !hasStepped);
@@ -257,6 +264,11 @@ public class Megaman : MonoBehaviour
     #endregion
 
     #region Health & Damage state
+    public void FreezeInput(bool freeze)
+    {
+        isInputFrozen = freeze;
+    }
+
     public void HitSide(bool rightSide)
     {
         // determines the push direction of the hit animation
@@ -273,19 +285,22 @@ public class Megaman : MonoBehaviour
         // take damage if not invincible
         if (!isInvincible)
         {
-            // take damage amount from health and update the health bar
-            currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
-            UIHealthBar.instance.SetValue(currentHealth / (float)maxHealth);
+            if (damage > 0)
+            {
+                // take damage amount from health and update the health bar
+                currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
+                UIHealthBar.instance.SetValue(currentHealth / (float)maxHealth);
 
-            // no more health means defeat, otherwise take damage
-            if (currentHealth <= 0)
-            {
-                Defeat();
-            }
-            else
-            {
-                StartDamageAnimation();
-            }
+                // no more health means defeat, otherwise take damage
+                if (currentHealth <= 0)
+                {
+                    Defeat();
+                }
+                else
+                {
+                    StartDamageAnimation();
+                }
+            }         
         }
     }
 
@@ -306,6 +321,7 @@ public class Megaman : MonoBehaviour
         {
             isTakingDamage = true;
             Invincible(true);
+            FreezeInput(true);
             EndClimbing();
             float hitForceX = 0.50f;
             float hitForceY = 1.5f;
@@ -315,20 +331,25 @@ public class Megaman : MonoBehaviour
         }
     }
 
-    // It's referenced as an Animation Event
     void StopDamageAnimation()
     {
-        // this function is called at the end of the Hit animation
-        // and we reset the animation because it doesn't loop otherwise
-        // we can end up stuck in it
+        // It's referenced as an Animation Event, this function is called at the end of the Hit animation
         isTakingDamage = false;
-        animator.Play("Megaman_Hit", -1, 0f);
+        FreezeInput(false);
         StartCoroutine(FlashAfterDamage());
     }
 
     private IEnumerator FlashAfterDamage()
     {
-        yield return new WaitForSeconds(0.083f);
+        // hit animation is 12 samples, keep flashing consistent with 1/12 secs
+        float flashDelay = 0.0833f;
+        for (int i = 0; i < 10; i++)
+        {
+            spriteRenderer.color = Color.clear;
+            yield return new WaitForSeconds(flashDelay);
+            spriteRenderer.color = Color.white;
+            yield return new WaitForSeconds(flashDelay);
+        }
         Invincible(false);
     }
     #endregion

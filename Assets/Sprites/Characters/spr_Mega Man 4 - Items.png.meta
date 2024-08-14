@@ -499,6 +499,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: spr_Mega Man 4 - Items_3
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 103
+        width: 24
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b3e189bd16042e4f9e84489e719acd0
+      internalID: -364859739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -523,6 +544,7 @@ TextureImporter:
       spr_Mega Man 4 - Items_17: 1558157432
       spr_Mega Man 4 - Items_18: -445062880
       spr_Mega Man 4 - Items_2: 652042343
+      spr_Mega Man 4 - Items_3: -364859739
       spr_Mega Man 4 - Items_4: 97302707
       spr_Mega Man 4 - Items_5: 2064891942
       spr_Mega Man 4 - Items_6: 1723689565
