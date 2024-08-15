@@ -13,15 +13,18 @@ public class Megaman : MonoBehaviour
     [SerializeField] private bool canShoot = true;
     [SerializeField] private bool canSlide = true;
     [SerializeField] private bool canClimb = true;
-    private bool isInputFrozen = false;
 
     [Header("Health state")]
     public int currentHealth;
     public int maxHealth = 28;
     [SerializeField] GameObject deathExplosion; // Death explosion
+    [SerializeField] private float delayBeforeDeath = 0.5f;
     private bool isTakingDamage;
     private bool isInvincible;
     private bool hitSideRight;
+    private bool freezeInput = false;
+    private bool freezePlayer = false;
+    private RigidbodyConstraints2D rb2dConstraints;
 
     [Header("Gravity")]
     [SerializeField] private float gravityScale = 1f;
@@ -45,6 +48,7 @@ public class Megaman : MonoBehaviour
     [SerializeField] private float jumpBufferTime = 0.125f;
     [SerializeField] private float coyoteTime = 0.125f;
     private bool isJumping; // Check if we are currently jumping
+    private bool isFalling = false;
     private bool jumpButtonPressed = false;
     private bool inAirFromJump;
     private float lastGroundedTime;
@@ -130,6 +134,11 @@ public class Megaman : MonoBehaviour
     public enum PlayerStates { Normal, Still, Frozen, Climb, Hurt, Fallen, Paused, Riding }
     public PlayerStates state = PlayerStates.Normal;
 
+    [Header("Audio Clips")]
+    [SerializeField] private AudioClip megaBuster;
+    [SerializeField] private AudioClip land;
+    [SerializeField] private AudioClip damage;
+
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider;
     private SpriteRenderer spriteRenderer;
@@ -158,9 +167,8 @@ public class Megaman : MonoBehaviour
 
     void Update()
     {
-     
         if (isPaused) return;
-        if (!isInputFrozen)
+        if (!freezeInput)
         {
             if (canMove) Move();
             if (canJump) CheckJump();
@@ -183,7 +191,7 @@ public class Megaman : MonoBehaviour
     {
         if (slideParticles != null) // if you add slide particles
         {
-            if (currentHealth <= 5) // when player's current health is equals or less than 5
+            if (currentHealth <= 5 && currentHealth > 0) // when player's current health is equals or less than 5 but greater than 0
             {
                 if (!slideParticles.isPlaying)
                 {
@@ -202,13 +210,12 @@ public class Megaman : MonoBehaviour
     #endregion
 
     #region Animation Updates
-    void UpdateAnimations()
+    private void UpdateAnimations()
     {
         animator.SetBool("isTakingDamage", isTakingDamage);
         if (isTakingDamage)
         {
             animator.SetTrigger("hit");
-            Debug.Log("hit");
             return;
         }
 
@@ -263,12 +270,33 @@ public class Megaman : MonoBehaviour
     }
     #endregion
 
-    #region Health & Damage state
+    #region Stop Input & Freeze Player
     public void FreezeInput(bool freeze)
     {
-        isInputFrozen = freeze;
+        freezeInput = freeze;
     }
 
+    public void FreezePlayer(bool shouldFreeze)
+    {
+        freezePlayer = shouldFreeze;
+
+        if (shouldFreeze)
+        {
+            rb.bodyType = RigidbodyType2D.Kinematic; // freeze player so gravity isn't applied
+            rb2dConstraints = rb.constraints; // save current constraints
+            animator.speed = 0; // pause player's animation
+            rb.constraints = RigidbodyConstraints2D.FreezeAll; // freeze all rigidbody movement
+        }
+        else
+        {
+            rb.bodyType = RigidbodyType2D.Dynamic; // gravity is now applied to the player
+            animator.speed = 1; // resume player's animation
+            rb.constraints = rb2dConstraints; // restore current constraints
+        }
+    }
+    #endregion
+
+    #region Health & Damage state
     public void HitSide(bool rightSide)
     {
         // determines the push direction of the hit animation
@@ -304,14 +332,6 @@ public class Megaman : MonoBehaviour
         }
     }
 
-    private void Defeat()
-    {
-        GameObject deathPlayer = Instantiate(deathExplosion);
-        deathPlayer.transform.position = transform.position;
-        Destroy(gameObject);
-        // Logic for defeat (e.g., player death, game over screen)
-    }
-
     private void StartDamageAnimation()
     {
         // once isTakingDamage is true in the Update function we'll play the Hit animation
@@ -319,6 +339,7 @@ public class Megaman : MonoBehaviour
         // depending which side we were hit on, and then apply that force
         if (!isTakingDamage)
         {
+            audioSource.PlayOneShot(damage);
             isTakingDamage = true;
             Invincible(true);
             FreezeInput(true);
@@ -351,6 +372,23 @@ public class Megaman : MonoBehaviour
             yield return new WaitForSeconds(flashDelay);
         }
         Invincible(false);
+    }
+    #endregion
+
+    #region Death
+    private void Defeat()
+    {
+        StartCoroutine(StartDeathAnimation());
+    }
+
+    private IEnumerator StartDeathAnimation()
+    {
+        FreezeInput(true);
+        FreezePlayer(true);
+        yield return new WaitForSeconds(delayBeforeDeath);
+        GameObject deathPlayer = Instantiate(deathExplosion);
+        deathPlayer.transform.position = transform.position;
+        Destroy(gameObject);
     }
     #endregion
 
@@ -441,6 +479,17 @@ public class Megaman : MonoBehaviour
             extraJumpCount = maxExtraJumps; // Reset extra jump count when grounded
         }
 
+        if (!IsGrounded() && rb.velocity.y < 0)
+        {
+            isFalling = true;
+        }
+
+        if (IsGrounded() && isFalling)
+        {
+            audioSource.PlayOneShot(land);
+            isFalling = false;
+        }
+
         // Check if the player is falling or has reached the peak of the jump
         if (isJumping && rb.velocity.y <= 0)
         {
@@ -466,13 +515,11 @@ public class Megaman : MonoBehaviour
             if (IsGrounded() || (Time.time - lastGroundedTime <= coyoteTime && !inAirFromJump)) // Check if the player is grounded or if within the coyote time and not in the air from a previous jump
             {
                 Jump(jumpForce);
-                //Debug.Log("Jump!");
             }
             else if (!IsGrounded() && extraJumpCount > 0 && !isJumping)  // If not grounded and there are extra jumps available and the player is not currently jumping
             {
                 Jump(extraJumpForce);
                 extraJumpCount--;  // Decrease the count of available extra jumps
-                //Debug.Log("Extra Jump!");
             }
         }
 
@@ -546,6 +593,7 @@ public class Megaman : MonoBehaviour
 
         // Add bullet to the active bullets list
         activeBullets.Add(bullet);
+        audioSource.PlayOneShot(megaBuster);
 
         // Add a listener to remove the bullet from the list when it is destroyed
         bullet.GetComponent<Bullet>().OnBulletDestroyed += () => {
@@ -685,9 +733,8 @@ public class Megaman : MonoBehaviour
 
         if (!isCloseToLadder)
         {
-            if (isClimbing)
+            if (isClimbing) // Not close to ladder, reset climbing
             {
-                Debug.Log("Not close to ladder, reset climbing");
                 EndClimbing();
             }
             return; // Exit if not close to the ladder
@@ -772,7 +819,6 @@ public class Megaman : MonoBehaviour
     {
         if (isClimbing)
         {
-            Debug.Log("No longer climbing");
             jumpButtonPressed = false; // Avoid immediate jump after climbing
             isClimbing = false;
             animator.speed = 1;

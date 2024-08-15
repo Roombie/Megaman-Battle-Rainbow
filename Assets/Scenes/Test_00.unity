@@ -586,6 +586,75 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1649075158}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &458554233
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5579322384197833823, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_Name
+      value: Enemy (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217737595375326115, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: contactDamage
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217737595375326115, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: explosionEffectPrefab
+      value: 
+      objectReference: {fileID: 5852499799356427380, guid: c9da3dc231b24dd419fd3ea0f5fedf4d, type: 3}
+    - target: {fileID: 9006924017583881152, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: m_Color.r
+      value: 0.6039216
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
 --- !u!1 &575274031
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,6 +841,14 @@ PrefabInstance:
       propertyPath: contactDamage
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 7217737595375326115, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: explosionDamage
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7217737595375326115, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: explosionEffectPrefab
+      value: 
+      objectReference: {fileID: 5852499799356427380, guid: c9da3dc231b24dd419fd3ea0f5fedf4d, type: 3}
     - target: {fileID: 9006924017583881152, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
       propertyPath: m_Color.g
       value: 0.68993795
@@ -1952,10 +2029,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Megaman
       objectReference: {fileID: 0}
-    - target: {fileID: 5113326230600032249, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
+    - target: {fileID: 5663759666540440996, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
+      propertyPath: deathExplosion
+      value: 
+      objectReference: {fileID: 4376950871254516903, guid: 6c7e31c78e9a5a949afe647765336cdb, type: 3}
     - target: {fileID: 7896349567260549571, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.638
@@ -2135,6 +2212,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 7217737595375326115, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: explosionEffectPrefab
+      value: 
+      objectReference: {fileID: 5852499799356427380, guid: c9da3dc231b24dd419fd3ea0f5fedf4d, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2579,6 +2660,10 @@ PrefabInstance:
       propertyPath: contactDamage
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7217737595375326115, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: explosionEffectPrefab
+      value: 
+      objectReference: {fileID: 5852499799356427380, guid: c9da3dc231b24dd419fd3ea0f5fedf4d, type: 3}
     - target: {fileID: 9006924017583881152, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
       propertyPath: m_Color.b
       value: 1
@@ -2736,7 +2821,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -17.52
+      value: -17.4
       objectReference: {fileID: 0}
     - target: {fileID: 1397664700641248903, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2782,6 +2867,10 @@ PrefabInstance:
       propertyPath: contactDamage
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 7217737595375326115, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
+      propertyPath: explosionEffectPrefab
+      value: 
+      objectReference: {fileID: 5852499799356427380, guid: c9da3dc231b24dd419fd3ea0f5fedf4d, type: 3}
     - target: {fileID: 9006924017583881152, guid: d40a002d1f028b449a9d9b674420cd04, type: 3}
       propertyPath: m_Color.b
       value: 0.24821647
@@ -3083,4 +3172,5 @@ SceneRoots:
   - {fileID: 1866041292}
   - {fileID: 610437543}
   - {fileID: 1956151354}
+  - {fileID: 458554233}
   - {fileID: 1649075158}

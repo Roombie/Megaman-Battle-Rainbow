@@ -453,6 +453,90 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: spr_Megamansprites_17
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 249
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 763fda45a53b9194f8d010c268ca8583
+      internalID: 1535871868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megamansprites_18
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 248
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3da5510b92296a049a1f39c1570b35db
+      internalID: -1637165930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megamansprites_19
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 246
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8838c8bc8269804db2ad1b1d4d76e3f
+      internalID: 159791457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megamansprites_20
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 252
+        width: 4
+        height: 4
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0024abb1d59c984498c3bdcc3292fa92
+      internalID: 538584787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -473,7 +557,11 @@ TextureImporter:
       spr_Megamansprites_14: -1286905908
       spr_Megamansprites_15: 1582313868
       spr_Megamansprites_16: -1971078787
+      spr_Megamansprites_17: 1535871868
+      spr_Megamansprites_18: -1637165930
+      spr_Megamansprites_19: 159791457
       spr_Megamansprites_2: -999065421
+      spr_Megamansprites_20: 538584787
       spr_Megamansprites_3: -706261057
       spr_Megamansprites_4: 38256092
       spr_Megamansprites_5: 426959527

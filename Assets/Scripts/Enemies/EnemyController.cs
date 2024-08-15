@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class EnemyController : MonoBehaviour
 {
     bool isInvincible;
@@ -9,10 +13,25 @@ public class EnemyController : MonoBehaviour
     public int currentHealth;
     public int maxHealth = 1;
     public int contactDamage = 1;
+    public int explosionDamage = 0;
+    public float explosionDelayBeforeDestroy = 2f;
+
+    GameObject explodeEffect;
+    [SerializeField] GameObject explosionEffectPrefab;
+
+    SpriteRenderer spriteRenderer;
+    BoxCollider2D boxCollider2D;
+    Rigidbody2D rb;
+    Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        boxCollider2D = GetComponent<BoxCollider2D>();
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+
         // start at full health
         currentHealth = maxHealth;
     }
@@ -37,8 +56,23 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    void StartDefeatAnimation()
+    {
+        explodeEffect = Instantiate(explosionEffectPrefab);
+        explodeEffect.name = explosionEffectPrefab.name;
+        explodeEffect.transform.position = spriteRenderer.bounds.center;
+        explodeEffect.GetComponent<Explosion>().SetDamageValue(this.explosionDamage);
+        Destroy(explodeEffect, explosionDelayBeforeDestroy);
+    }
+
+    void StopDefeatAnimation()
+    {
+        Destroy(gameObject);
+    }
+
     void Defeat()
     {
+        StartDefeatAnimation();
         // remove this enemy *poof*
         Destroy(gameObject);
     }

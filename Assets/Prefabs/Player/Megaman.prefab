@@ -110,6 +110,10 @@ MonoBehaviour:
   frontCheckSize: {x: 0.2, y: 0.75}
   isPaused: 0
   state: 0
+  land: {fileID: 8300000, guid: 8e7de8ef21b173a4fbe51bd89f06fa2c, type: 3}
+  megaBuster: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
+  damage: {fileID: 8300000, guid: 477d40d9f03613540ab8594444618b53, type: 3}
+  defeat: {fileID: 8300000, guid: 061a33de82e167f47b681e8c6a39e690, type: 3}
 --- !u!212 &5113326230600032249
 SpriteRenderer:
   m_ObjectHideFlags: 0
