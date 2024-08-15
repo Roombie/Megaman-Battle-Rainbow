@@ -13,6 +13,8 @@ public class Megaman : MonoBehaviour
     [SerializeField] private bool canShoot = true;
     [SerializeField] private bool canSlide = true;
     [SerializeField] private bool canClimb = true;
+    private bool freezeInput = false;
+    private bool freezePlayer = false;
 
     [Header("Health state")]
     public int currentHealth;
@@ -22,9 +24,6 @@ public class Megaman : MonoBehaviour
     private bool isTakingDamage;
     private bool isInvincible;
     private bool hitSideRight;
-    private bool freezeInput = false;
-    private bool freezePlayer = false;
-    private RigidbodyConstraints2D rb2dConstraints;
 
     [Header("Gravity")]
     [SerializeField] private float gravityScale = 1f;
@@ -140,6 +139,7 @@ public class Megaman : MonoBehaviour
     [SerializeField] private AudioClip damage;
 
     private Rigidbody2D rb;
+    private RigidbodyConstraints2D rb2dConstraints;
     private BoxCollider2D boxCollider;
     private SpriteRenderer spriteRenderer;
     private Animator animator;

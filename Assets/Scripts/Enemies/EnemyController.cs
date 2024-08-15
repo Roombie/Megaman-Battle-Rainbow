@@ -15,6 +15,7 @@ public class EnemyController : MonoBehaviour
     public int contactDamage = 1;
     public int explosionDamage = 0;
     public float explosionDelayBeforeDestroy = 2f;
+    public AudioClip damageClip;
 
     GameObject explodeEffect;
     [SerializeField] GameObject explosionEffectPrefab;
@@ -23,6 +24,7 @@ public class EnemyController : MonoBehaviour
     BoxCollider2D boxCollider2D;
     Rigidbody2D rb;
     Animator animator;
+    AudioSource audioSource;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +33,7 @@ public class EnemyController : MonoBehaviour
         boxCollider2D = GetComponent<BoxCollider2D>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
 
         // start at full health
         currentHealth = maxHealth;
@@ -46,6 +49,7 @@ public class EnemyController : MonoBehaviour
         // take damage if not invincible
         if (!isInvincible)
         {
+            audioSource.PlayOneShot(damageClip);
             // take damage amount from health and call defeat if no health
             currentHealth -= damage;
             Mathf.Clamp(currentHealth, 0, maxHealth);

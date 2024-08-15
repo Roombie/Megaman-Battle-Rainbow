@@ -2030,6 +2030,10 @@ PrefabInstance:
       value: Megaman
       objectReference: {fileID: 0}
     - target: {fileID: 5663759666540440996, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
+      propertyPath: maxExtraJumps
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5663759666540440996, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
       propertyPath: deathExplosion
       value: 
       objectReference: {fileID: 4376950871254516903, guid: 6c7e31c78e9a5a949afe647765336cdb, type: 3}
