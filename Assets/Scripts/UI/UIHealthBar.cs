@@ -8,11 +8,11 @@ public class UIHealthBar : MonoBehaviour
     public Image mask;
     float originalSize;
 
-    public static UIHealthBar instance { get; private set; }
+    public static UIHealthBar Instance { get; private set; }
 
     private void Awake()
     {
-        instance = this;
+        Instance = this;
     }
 
     // Start is called before the first frame update
@@ -24,6 +24,7 @@ public class UIHealthBar : MonoBehaviour
 
     public void SetValue(float value)
     {
+        Debug.Log("Setting health bar value to: " + value);
         // adjust the height of the mask to "hide" lost health bars
         mask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, originalSize * value);
     }

@@ -61,7 +61,7 @@ MonoBehaviour:
   currentHealth: 0
   maxHealth: 28
   deathExplosion: {fileID: 4376950871254516903, guid: 6c7e31c78e9a5a949afe647765336cdb, type: 3}
-  delayBeforeDeath: 0.5
+  delayBeforeDeath: 0
   gravityScale: 1
   waterGravityScale: 0.5
   speed: 5
@@ -109,7 +109,6 @@ MonoBehaviour:
   topCheckSize: {x: 0.79, y: 0.2}
   frontCheckOffset: {x: 0.54, y: 0.57}
   frontCheckSize: {x: 0.2, y: 0.75}
-  isPaused: 0
   state: 0
   megaBuster: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
   land: {fileID: 8300000, guid: 8e7de8ef21b173a4fbe51bd89f06fa2c, type: 3}
@@ -388,6 +387,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 5990b3f8-22ae-4946-be86-e2eb91241279
     m_ActionName: Player/Slide[/Keyboard/c]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5663759666540440996}
+        m_TargetAssemblyTypeName: Megaman, Assembly-CSharp
+        m_MethodName: OnPause
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: ee25fec1-1a82-416e-9557-4e0be70a0134
+    m_ActionName: Player/Pause[/Keyboard/escape,/Keyboard/p]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -402,7 +417,7 @@ AudioSource:
   m_GameObject: {fileID: 1427787303008531883}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -3588671416588361874, guid: f4cbfbb614eed924b88581a4b8d82279, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.6

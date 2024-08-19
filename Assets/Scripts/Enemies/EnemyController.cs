@@ -9,7 +9,11 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     bool isInvincible;
+    float animatorSpeed;
+    Vector2 freezeVelocity;
+    RigidbodyConstraints2D rb2dConstraints;
 
+    public bool freezeEnemy;
     public int currentHealth;
     public int maxHealth = 1;
     public int contactDamage = 1;
@@ -42,6 +46,26 @@ public class EnemyController : MonoBehaviour
     public void Invincible(bool invincibility)
     {
         isInvincible = invincibility;
+    }
+
+    public void FreezeEnemy(bool freeze)
+    {
+        if (freeze)
+        {
+            freezeEnemy = true;
+            animatorSpeed = animator.speed;
+            rb2dConstraints = rb.constraints;
+            freezeVelocity = rb.velocity;
+            animator.speed = 0;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+        else
+        {
+            freezeEnemy = false;
+            animator.speed = animatorSpeed;
+            rb.constraints = rb2dConstraints;
+            rb.velocity = freezeVelocity;
+        }
     }
 
     public void TakeDamage(int damage)

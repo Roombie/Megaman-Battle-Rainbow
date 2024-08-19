@@ -462,7 +462,7 @@ TextureImporter:
         width: 10
         height: 10
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -483,7 +483,7 @@ TextureImporter:
         width: 12
         height: 12
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -504,7 +504,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -525,7 +525,7 @@ TextureImporter:
         width: 4
         height: 4
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -533,6 +533,69 @@ TextureImporter:
       bones: []
       spriteID: 0024abb1d59c984498c3bdcc3292fa92
       internalID: 538584787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megamansprites_21
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 230
+        width: 22
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 986709f931218034cbe4746bdfbf250d
+      internalID: -1217836649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megamansprites_22
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 230
+        width: 22
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09b99a9a37356f0439f4c531b2d3fae9
+      internalID: 2067842543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megamansprites_23
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 230
+        width: 7
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f5e49f681122b414a948ab0af89e57fd
+      internalID: 470708047
       vertices: []
       indices: 
       edges: []
@@ -562,6 +625,9 @@ TextureImporter:
       spr_Megamansprites_19: 159791457
       spr_Megamansprites_2: -999065421
       spr_Megamansprites_20: 538584787
+      spr_Megamansprites_21: -1217836649
+      spr_Megamansprites_22: 2067842543
+      spr_Megamansprites_23: 470708047
       spr_Megamansprites_3: -706261057
       spr_Megamansprites_4: 38256092
       spr_Megamansprites_5: 426959527

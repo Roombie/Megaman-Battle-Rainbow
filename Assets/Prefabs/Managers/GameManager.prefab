@@ -44,3 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c78f5029efa644990e93458667e0f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerLives: 3
+  score: 0
+  isPaused: 0
+  delayRestartDelay: 5
+  gamePlayerReadyDelay: 3
+  checkpoints: []

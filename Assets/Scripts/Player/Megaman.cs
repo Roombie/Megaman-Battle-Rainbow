@@ -15,6 +15,7 @@ public class Megaman : MonoBehaviour
     [SerializeField] private bool canClimb = true;
     private bool freezeInput = false;
     private bool freezePlayer = false;
+    private bool freezeEverything = false;
 
     [Header("Health state")]
     public int currentHealth;
@@ -73,7 +74,6 @@ public class Megaman : MonoBehaviour
 
     [Header("Sliding")]
     [Tooltip("Do you want to be able to slide with jump + down?")]
-    public bool canSlideWithDownJump = true;
     [SerializeField] private float slideSpeed = 6f;
     [SerializeField] private float slideDuration = 0.35f;
     [SerializeField] private Transform slideDustPos;
@@ -128,8 +128,6 @@ public class Megaman : MonoBehaviour
     [SerializeField] private Vector2 frontCheckOffset = new(0.5f, 0f);
     [SerializeField] private Vector2 frontCheckSize = new(0.2f, 1f);
 
-    [Header("Pause Menu")]
-    public bool isPaused = false;
     public enum PlayerStates { Normal, Still, Frozen, Climb, Hurt, Fallen, Paused, Riding }
     public PlayerStates state = PlayerStates.Normal;
 
@@ -167,7 +165,6 @@ public class Megaman : MonoBehaviour
 
     void Update()
     {
-        if (isPaused) return;
         if (!freezeInput)
         {
             if (canMove) Move();
@@ -317,7 +314,7 @@ public class Megaman : MonoBehaviour
             {
                 // take damage amount from health and update the health bar
                 currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
-                UIHealthBar.instance.SetValue(currentHealth / (float)maxHealth);
+                UIHealthBar.Instance.SetValue(currentHealth / (float)maxHealth);
 
                 // no more health means defeat, otherwise take damage
                 if (currentHealth <= 0)
@@ -389,6 +386,7 @@ public class Megaman : MonoBehaviour
         GameObject deathPlayer = Instantiate(deathExplosion);
         deathPlayer.transform.position = transform.position;
         Destroy(gameObject);
+        GameManager.Instance.LoseLife();
     }
     #endregion
 
@@ -606,7 +604,7 @@ public class Megaman : MonoBehaviour
     #region Sliding
     private bool CanSlideWithDownJump()
     {
-        if (canSlideWithDownJump)
+        if (GlobalVariables.canSlideWithDownJump)
         {
             // Ensure the player is pressing the down and jump buttons
             return moveInput.y < 0 && jumpButtonPressed;
@@ -983,6 +981,15 @@ public class Megaman : MonoBehaviour
         {
             slideButtonPressed = false;
         }
+    }
+
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        if (context.started) 
+        {
+            freezeEverything = !freezeEverything;
+            GameManager.Instance.FreezeEverything(freezeEverything);
+        }       
     }
     #endregion
 

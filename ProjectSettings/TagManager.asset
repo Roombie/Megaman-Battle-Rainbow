@@ -7,6 +7,8 @@ TagManager:
   - Ladder
   - Bullet
   - Enemy
+  - PauseMenu
+  - Explosion
   layers:
   - Default
   - TransparentFX
