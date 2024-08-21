@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float bulletSpeed;
     [SerializeField] private Vector2 bulletDirection;
     [SerializeField] private float destroyDelay;
+    [SerializeField] private int shootLevel = 0;
 
     private float destroyTime;
 
@@ -15,21 +16,30 @@ public class Bullet : MonoBehaviour
     public event BulletDestroyed OnBulletDestroyed;
     private Rigidbody2D rb;
     private SpriteRenderer sprite;
+    private Animator animator;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
     {
+        animator.SetInteger("shootLevel", shootLevel);
+
         // remove this bullet once its time is up
         destroyTime -= Time.deltaTime;
         if (destroyTime < 0)
         {
             Destroy(gameObject);
         }
+    }
+
+    public void SetShootLevel(int shootLevel)
+    {
+        this.shootLevel = shootLevel;
     }
 
     // Update is called once per frame
@@ -57,6 +67,7 @@ public class Bullet : MonoBehaviour
     {
         // Flip the sprite based on the bullet's direction.
         // If the bullet is moving left (negative x direction), flip the sprite.
+        Debug.Log("Shoot Level: " + shootLevel);
         sprite.flipX = (bulletDirection.x < 0);      // This ensures the bullet appears to face the correct direction based on its movement
         rb.velocity = bulletDirection * bulletSpeed; // The velocity is determined by multiplying the direction of the bullet by its speed.
         destroyTime = destroyDelay;
@@ -73,8 +84,11 @@ public class Bullet : MonoBehaviour
             {
                 enemy.TakeDamage(this.damage);
             }
-            // remove the bullet - just not immediately
-            Destroy(gameObject, 0.01f);
+            if (shootLevel != 2)
+            {
+                // remove the bullet - just not immediately
+                Destroy(gameObject, 0.01f);
+            }          
         }
     }
 

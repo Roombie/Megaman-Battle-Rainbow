@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
     {
         playerLives = 3;
         currentCheckpoint = checkpoints[0];
+        player.currentHealth = player.maxHealth;
     }
 
     public void AddExtraLife(int extralife = 1)
@@ -94,6 +95,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delayRestartDelay);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        player.currentHealth = player.maxHealth;
     }
 
     public void GameOver()
@@ -114,13 +116,14 @@ public class GameManager : MonoBehaviour
 
     public void RestoreHealth(int amount)
     {
+        if (player.currentHealth != player.maxHealth)
         StartCoroutine(IncrementHealth(amount));
     }
 
     private IEnumerator IncrementHealth(int amount)
     {
         int healthToRestore = Mathf.Clamp(amount, 0, player.maxHealth - player.currentHealth);
-
+        FreezeEverything(true);
         while (healthToRestore > 0)
         {
             player.currentHealth++;  // This increments player's health
@@ -128,8 +131,9 @@ public class GameManager : MonoBehaviour
             Debug.Log("Current health: " + player.currentHealth);
             healthToRestore--;
 
-            yield return new WaitForSeconds(0.2f); 
+            yield return new WaitForSeconds(0.1f); 
         }
+        FreezeEverything(false);
     }
 
     public void SetCheckpoint(Transform checkpoint)
@@ -137,6 +141,7 @@ public class GameManager : MonoBehaviour
         currentCheckpoint = checkpoint;
     }
 
+    #region Game Paused
     public bool IsGamePaused()
     {
         // return the game pause state
@@ -166,7 +171,9 @@ public class GameManager : MonoBehaviour
             Time.timeScale = timeScale;
         }
     }
+    #endregion
 
+    #region Freeze entities
     public void FreezePlayer(bool freeze)
     {
         if (player != null)
@@ -204,4 +211,5 @@ public class GameManager : MonoBehaviour
         FreezeExplosions(freeze);
         FreezePlayer(freeze);
     }
+    #endregion
 }

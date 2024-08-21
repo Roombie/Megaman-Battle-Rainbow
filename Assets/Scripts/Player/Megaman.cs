@@ -56,12 +56,15 @@ public class Megaman : MonoBehaviour
     private int extraJumpCount;
 
     [Header("Shooting")]
-    [SerializeField] int bulletDamage = 1;
-    [SerializeField] float bulletSpeed = 20f;
-    [SerializeField] float shootDelay = 0.2f;
-    [SerializeField] Vector2 bulletShootOffset = new(0.5f, 1f);
-    [SerializeField] float shootRayLength = 5f;
-    [SerializeField] GameObject bulletPrefab;
+    [SerializeField] private int normalBulletDamage = 1;
+    [SerializeField] private bool chargerEnabled = true;
+    [SerializeField] private int chargedLevel1Damage = 2;
+    [SerializeField] private  int chargedLevel2Damage = 3;
+    [SerializeField] private float bulletSpeed = 20f;
+    [SerializeField] private float shootDelay = 0.2f;
+    [SerializeField] private Vector2 bulletShootOffset = new(0.5f, 1f);
+    [SerializeField] private float shootRayLength = 5f;
+    [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private bool limitBulletsOnScreen = true; // Control whether to limit bullets or not
     [SerializeField] private int maxBulletsOnScreen = 3;
     private readonly List<GameObject> activeBullets = new();  // Track active bullets
@@ -71,6 +74,9 @@ public class Megaman : MonoBehaviour
     private bool shootButtonPressed = false;
     private bool shootButtonRelease;
     private float shootButtonReleaseTimeLength;
+    private float chargeTime = 0f;
+    private int shootLevel = 0;
+    private bool hasPlayedChargeSound = false;
 
     [Header("Sliding")]
     [Tooltip("Do you want to be able to slide with jump + down?")]
@@ -133,6 +139,9 @@ public class Megaman : MonoBehaviour
 
     [Header("Audio Clips")]
     [SerializeField] private AudioClip megaBuster;
+    [SerializeField] private AudioClip chargingMegaBuster;
+    [SerializeField] private AudioClip halfChargedShoot;
+    [SerializeField] private AudioClip fullyChargedShoot;
     [SerializeField] private AudioClip land;
     [SerializeField] private AudioClip damage;
 
@@ -340,6 +349,7 @@ public class Megaman : MonoBehaviour
             isTakingDamage = true;
             Invincible(true);
             FreezeInput(true);
+            InterruptCharge();
             EndClimbing();
             float hitForceX = 0.50f;
             float hitForceY = 1.5f;
@@ -543,7 +553,29 @@ public class Megaman : MonoBehaviour
         shootTimeLength = 0;
         shootButtonReleaseTimeLength = 0;
 
-        // shoot key is being pressed and key release flag true
+        // Charge shoot level
+        if (shootButtonPressed && !shootButtonRelease && chargerEnabled)
+        {
+            chargeTime += Time.deltaTime;
+
+            if (chargeTime >= 1f && !hasPlayedChargeSound)
+            {
+                audioSource.PlayOneShot(chargingMegaBuster);
+                hasPlayedChargeSound = true;
+            }
+
+            // Set shoot level based on charge time
+            if (chargeTime >= 1f && chargeTime < 2f)
+            {
+                shootLevel = 1;
+            }
+            else if (chargeTime >= 2f)
+            {
+                shootLevel = 2;
+            }
+        }
+
+        // shoot button is being pressed and button release flag true
         if (shootButtonPressed && shootButtonRelease && !isSliding)
         {
             if (!limitBulletsOnScreen || activeBullets.Count < maxBulletsOnScreen)
@@ -552,8 +584,25 @@ public class Megaman : MonoBehaviour
                 shootButtonRelease = false;
                 shootTime = Time.time;
                 Invoke(nameof(ShootBullet), shootDelay);
-                //Debug.Log("Shoot Bullet"); // Shoot Bullet
             }      
+        }
+
+        // Handle shooting logic when the shoot button is released for the charged shot
+        if (!shootButtonPressed && shootButtonRelease)
+        {
+            shootButtonReleaseTimeLength = Time.time - shootTime;
+
+            // Decide if it's a charged shot or a normal shot
+            if (shootLevel > 0 && !isSliding)
+            {
+                isShooting = true;
+                ShootBullet(); // Shoot charged attack
+                audioSource.Stop();
+            }
+            // Reset charge time and button states
+            chargeTime = 0f;
+            shootButtonRelease = false;
+            hasPlayedChargeSound = false;
         }
 
         // shoot key isn't being pressed and key release flag is false
@@ -584,20 +633,58 @@ public class Megaman : MonoBehaviour
 
         GameObject bullet = Instantiate(bulletPrefab, shootPosition, Quaternion.identity);
         bullet.name = bulletPrefab.name;
-        bullet.GetComponent<Bullet>().SetDamageValue(bulletDamage);
+
+        bullet.GetComponent<Animator>().SetInteger("shootLevel", shootLevel);
+        bullet.GetComponent<Bullet>().SetShootLevel(shootLevel);
+
+        // Assign damage based on charged level
+        int damage = normalBulletDamage;
+        AudioClip shootSound = megaBuster;
+        if (chargerEnabled)
+        {
+            switch (shootLevel)
+            {
+                case 1:
+                    damage = chargedLevel1Damage;
+                    shootSound = halfChargedShoot;
+                    break;
+                case 2:
+                    damage = chargedLevel2Damage;
+                    shootSound = fullyChargedShoot;
+                    break;
+            }
+        }
+
+        bullet.GetComponent<Bullet>().SetDamageValue(damage);
         bullet.GetComponent<Bullet>().SetBulletSpeed(bulletSpeed);
         bullet.GetComponent<Bullet>().SetBulletDirection(facingRight ? Vector2.right : Vector2.left);
         bullet.GetComponent<Bullet>().Shoot();
 
         // Add bullet to the active bullets list
         activeBullets.Add(bullet);
-        audioSource.PlayOneShot(megaBuster);
+        audioSource.PlayOneShot(shootSound);
+
+        // Reset charge level and time
+        shootLevel = 0;
+        chargeTime = 0f;
 
         // Add a listener to remove the bullet from the list when it is destroyed
         bullet.GetComponent<Bullet>().OnBulletDestroyed += () => {
             activeBullets.Remove(bullet);
             Destroy(bullet); // Ensure the bullet is destroyed
         };
+    }
+
+    private void InterruptCharge()
+    {
+        if (chargeTime > 0)
+        {
+            chargeTime = 0f; 
+            shootLevel = 0;  
+            hasPlayedChargeSound = false; 
+            audioSource.Stop(); 
+            Debug.Log("Charge interrupted due to damage.");
+        }
     }
     #endregion
 

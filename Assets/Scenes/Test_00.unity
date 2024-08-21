@@ -3053,7 +3053,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2770898989704777974, guid: ca0803113cdf93944949974d2b15d639, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.2454612
+      value: 2.08
       objectReference: {fileID: 0}
     - target: {fileID: 2770898989704777974, guid: ca0803113cdf93944949974d2b15d639, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3213,6 +3213,10 @@ PrefabInstance:
       propertyPath: pauseMenu
       value: 
       objectReference: {fileID: 1789163995}
+    - target: {fileID: 4752916196163784943, guid: ffbc401d613c20d4b8d525e1e688932e, type: 3}
+      propertyPath: playerLives
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
