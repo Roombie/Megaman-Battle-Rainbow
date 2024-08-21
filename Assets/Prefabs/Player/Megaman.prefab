@@ -74,10 +74,17 @@ MonoBehaviour:
   extraJumpForce: 12
   jumpBufferTime: 0.125
   coyoteTime: 0.125
-  normalBulletDamage: 1
+  shootLevel:
+  - timeRequired: 0
+    damage: 1
+    shootSound: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
+  - timeRequired: 1
+    damage: 2
+    shootSound: {fileID: 8300000, guid: 8b99f688fa9a3764c8ce660ff0f706d0, type: 3}
+  - timeRequired: 2
+    damage: 3
+    shootSound: {fileID: 8300000, guid: 908398d31921bf044b4ce7444a507b7f, type: 3}
   chargerEnabled: 1
-  chargedLevel1Damage: 2
-  chargedLevel2Damage: 3
   bulletSpeed: 20
   shootDelay: 0.15
   bulletShootOffset: {x: 0, y: 0.8}
@@ -112,10 +119,7 @@ MonoBehaviour:
   frontCheckOffset: {x: 0.54, y: 0.57}
   frontCheckSize: {x: 0.2, y: 0.75}
   state: 0
-  megaBuster: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
   chargingMegaBuster: {fileID: 8300000, guid: b05a54cb2846e7745ae5cd024388ace3, type: 3}
-  halfChargedShoot: {fileID: 0}
-  fullyChargedShoot: {fileID: 0}
   land: {fileID: 8300000, guid: 8e7de8ef21b173a4fbe51bd89f06fa2c, type: 3}
   damage: {fileID: 8300000, guid: 477d40d9f03613540ab8594444618b53, type: 3}
 --- !u!212 &5113326230600032249

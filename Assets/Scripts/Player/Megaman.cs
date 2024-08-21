@@ -4,6 +4,14 @@ using UnityEditor;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
+[System.Serializable]
+public struct ShootLevel
+{
+    public float timeRequired;      // Time required to reach this charge level
+    public int damage;              // Damage associated with this charge level
+    public AudioClip shootSound;    // Sound to play when shooting at this level
+}
+
 public class Megaman : MonoBehaviour
 {
     // MEGAMAN
@@ -56,10 +64,13 @@ public class Megaman : MonoBehaviour
     private int extraJumpCount;
 
     [Header("Shooting")]
-    [SerializeField] private int normalBulletDamage = 1;
+    public List<ShootLevel> shootLevel = new List<ShootLevel>();
     [SerializeField] private bool chargerEnabled = true;
-    [SerializeField] private int chargedLevel1Damage = 2;
-    [SerializeField] private  int chargedLevel2Damage = 3;
+    private int currentShootLevel = 0;  // Current shoot level (index in the shootLevel list)
+    private float chargeTime = 0f;      // Takes the current charge time
+    private bool hasPlayedChargeSound = false;
+
+    [Header("Bullet Settings")]
     [SerializeField] private float bulletSpeed = 20f;
     [SerializeField] private float shootDelay = 0.2f;
     [SerializeField] private Vector2 bulletShootOffset = new(0.5f, 1f);
@@ -74,9 +85,6 @@ public class Megaman : MonoBehaviour
     private bool shootButtonPressed = false;
     private bool shootButtonRelease;
     private float shootButtonReleaseTimeLength;
-    private float chargeTime = 0f;
-    private int shootLevel = 0;
-    private bool hasPlayedChargeSound = false;
 
     [Header("Sliding")]
     [Tooltip("Do you want to be able to slide with jump + down?")]
@@ -138,10 +146,7 @@ public class Megaman : MonoBehaviour
     public PlayerStates state = PlayerStates.Normal;
 
     [Header("Audio Clips")]
-    [SerializeField] private AudioClip megaBuster;
     [SerializeField] private AudioClip chargingMegaBuster;
-    [SerializeField] private AudioClip halfChargedShoot;
-    [SerializeField] private AudioClip fullyChargedShoot;
     [SerializeField] private AudioClip land;
     [SerializeField] private AudioClip damage;
 
@@ -558,20 +563,19 @@ public class Megaman : MonoBehaviour
         {
             chargeTime += Time.deltaTime;
 
-            if (chargeTime >= 1f && !hasPlayedChargeSound)
+            // Determine the current shoot level
+            for (int i = shootLevel.Count - 1; i >= 0; i--)
             {
-                audioSource.PlayOneShot(chargingMegaBuster);
-                hasPlayedChargeSound = true;
-            }
-
-            // Set shoot level based on charge time
-            if (chargeTime >= 1f && chargeTime < 2f)
-            {
-                shootLevel = 1;
-            }
-            else if (chargeTime >= 2f)
-            {
-                shootLevel = 2;
+                if (chargeTime >= shootLevel[i].timeRequired)
+                {
+                    currentShootLevel = i;
+                    if (!hasPlayedChargeSound && i > 0)
+                    {
+                        audioSource.PlayOneShot(chargingMegaBuster);
+                        hasPlayedChargeSound = true;
+                    }
+                    break;
+                }
             }
         }
 
@@ -592,15 +596,16 @@ public class Megaman : MonoBehaviour
         {
             shootButtonReleaseTimeLength = Time.time - shootTime;
 
-            // Decide if it's a charged shot or a normal shot
-            if (shootLevel > 0 && !isSliding)
+            // Shoot if the player was charging
+            if (currentShootLevel > 0 && !isSliding)
             {
                 isShooting = true;
-                ShootBullet(); // Shoot charged attack
-                audioSource.Stop();
+                ShootBullet();
             }
+
             // Reset charge time and button states
             chargeTime = 0f;
+            currentShootLevel = 0;
             shootButtonRelease = false;
             hasPlayedChargeSound = false;
         }
@@ -634,26 +639,12 @@ public class Megaman : MonoBehaviour
         GameObject bullet = Instantiate(bulletPrefab, shootPosition, Quaternion.identity);
         bullet.name = bulletPrefab.name;
 
-        bullet.GetComponent<Animator>().SetInteger("shootLevel", shootLevel);
-        bullet.GetComponent<Bullet>().SetShootLevel(shootLevel);
+        bullet.GetComponent<Animator>().SetInteger("shootLevel", currentShootLevel);
+        bullet.GetComponent<Bullet>().SetShootLevel(currentShootLevel);
 
-        // Assign damage based on charged level
-        int damage = normalBulletDamage;
-        AudioClip shootSound = megaBuster;
-        if (chargerEnabled)
-        {
-            switch (shootLevel)
-            {
-                case 1:
-                    damage = chargedLevel1Damage;
-                    shootSound = halfChargedShoot;
-                    break;
-                case 2:
-                    damage = chargedLevel2Damage;
-                    shootSound = fullyChargedShoot;
-                    break;
-            }
-        }
+        // Assign damage and play the appropriate sound based on the current shoot level
+        int damage = shootLevel[currentShootLevel].damage;
+        audioSource.PlayOneShot(shootLevel[currentShootLevel].shootSound);
 
         bullet.GetComponent<Bullet>().SetDamageValue(damage);
         bullet.GetComponent<Bullet>().SetBulletSpeed(bulletSpeed);
@@ -662,10 +653,9 @@ public class Megaman : MonoBehaviour
 
         // Add bullet to the active bullets list
         activeBullets.Add(bullet);
-        audioSource.PlayOneShot(shootSound);
 
         // Reset charge level and time
-        shootLevel = 0;
+        currentShootLevel = 0;
         chargeTime = 0f;
 
         // Add a listener to remove the bullet from the list when it is destroyed
@@ -680,9 +670,8 @@ public class Megaman : MonoBehaviour
         if (chargeTime > 0)
         {
             chargeTime = 0f; 
-            shootLevel = 0;  
+            currentShootLevel = 0;  
             hasPlayedChargeSound = false; 
-            audioSource.Stop(); 
             Debug.Log("Charge interrupted due to damage.");
         }
     }
