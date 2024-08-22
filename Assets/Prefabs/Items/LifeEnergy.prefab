@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1948263604092273479}
   - component: {fileID: 8517934120496615335}
   - component: {fileID: 3982411566017595308}
-  - component: {fileID: 7903980883479556826}
+  - component: {fileID: -1043219532051767555}
   - component: {fileID: 7442627361683625614}
   m_Layer: 0
   m_Name: LifeEnergy
@@ -132,27 +132,33 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!95 &7903980883479556826
-Animator:
-  serializedVersion: 5
+--- !u!50 &-1043219532051767555
+Rigidbody2D:
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1414945803086128198}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: dd76da2375cdead43813b2325193cd34, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!114 &7442627361683625614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,4 +172,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemType: 0
+  addToInventory: 0
   value: 10
+  animationSprites:
+  - {fileID: 1731357124, guid: 2eca16cf6e77efd41840da494d82692c, type: 3}
+  - {fileID: -622047509, guid: 2eca16cf6e77efd41840da494d82692c, type: 3}
+  animationSpeed: 0.25
+  itemSound: {fileID: 0}

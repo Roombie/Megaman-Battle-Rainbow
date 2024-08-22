@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4078956327796995948}
   - component: {fileID: 4335034095247547732}
   - component: {fileID: 5404248596386951635}
+  - component: {fileID: 2782831513295296060}
   - component: {fileID: 8799278928189373530}
   m_Layer: 0
   m_Name: LTank
@@ -131,6 +132,33 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &2782831513295296060
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1928464383185363569}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!114 &8799278928189373530
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,4 +172,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemType: 0
+  addToInventory: 1
   value: 10
+  animationSprites:
+  - {fileID: -1923916706, guid: 2fd163e3ab88a2b419cba9aafd17059c, type: 3}
+  - {fileID: -421102636, guid: 2eca16cf6e77efd41840da494d82692c, type: 3}
+  animationSpeed: 0.25
+  itemSound: {fileID: 0}

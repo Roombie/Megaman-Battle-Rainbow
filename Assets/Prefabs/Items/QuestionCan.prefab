@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 724392668383775857}
   - component: {fileID: 2666317583415312334}
   - component: {fileID: 5172766154467565029}
+  - component: {fileID: -6091883760425918128}
   - component: {fileID: -7186101194572282615}
   m_Layer: 0
   m_Name: QuestionCan
@@ -131,6 +132,33 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.125, y: 1.125}
   m_EdgeRadius: 0
+--- !u!50 &-6091883760425918128
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4405816250646541911}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!114 &-7186101194572282615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -144,4 +172,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemType: 3
+  addToInventory: 0
   value: 10
+  animationSprites: []
+  animationSpeed: 0.25
+  itemSound: {fileID: 0}

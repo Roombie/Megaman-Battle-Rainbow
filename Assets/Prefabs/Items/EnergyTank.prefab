@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5514925067460953544}
   - component: {fileID: 5098518335024283184}
   - component: {fileID: 1507235918288131652}
+  - component: {fileID: -2693778222322603082}
   - component: {fileID: 5011023605033597407}
   m_Layer: 0
   m_Name: EnergyTank
@@ -131,6 +132,33 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &-2693778222322603082
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6406040792145997260}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!114 &5011023605033597407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,5 +171,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3830b6a2a256b14ea06904fe936dddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemType: 0
+  itemType: 3
+  addToInventory: 1
   value: 10
+  animationSprites:
+  - {fileID: -710452163, guid: 2eca16cf6e77efd41840da494d82692c, type: 3}
+  - {fileID: -421102636, guid: 2eca16cf6e77efd41840da494d82692c, type: 3}
+  animationSpeed: 0.25
+  itemSound: {fileID: 0}

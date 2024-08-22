@@ -114,6 +114,14 @@ public class GameManager : MonoBehaviour
         score += points;
     }
 
+    public void RestoreFullHealth()
+    {
+        if (player.currentHealth < player.maxHealth)
+        {
+            StartCoroutine(IncrementHealth(player.maxHealth - player.currentHealth));
+        }
+    }
+
     public void RestoreHealth(int amount)
     {
         if (player.currentHealth != player.maxHealth)
