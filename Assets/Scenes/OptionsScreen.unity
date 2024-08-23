@@ -2203,8 +2203,8 @@ MonoBehaviour:
   fullscreenToggle: {fileID: 733985730}
   vSyncToggle: {fileID: 2078435990}
   vSyncImage: {fileID: 506722531}
-  vSyncOnSprite: {fileID: 1723488327, guid: 226306fed7d78434b8384f6e5dd405e7, type: 3}
-  vSyncOffSprite: {fileID: 1141901971, guid: 226306fed7d78434b8384f6e5dd405e7, type: 3}
+  OnSprite: {fileID: 1723488327, guid: 226306fed7d78434b8384f6e5dd405e7, type: 3}
+  OffSprite: {fileID: 1141901971, guid: 226306fed7d78434b8384f6e5dd405e7, type: 3}
   graphicsText: {fileID: 747203350}
   resolutionText: {fileID: 917216760}
   audioMixer: {fileID: 24100000, guid: f4cbfbb614eed924b88581a4b8d82279, type: 2}

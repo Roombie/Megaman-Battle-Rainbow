@@ -38,6 +38,11 @@ public class OptionsMenu : MonoBehaviour
     {
         resolutions = Screen.resolutions; // Initialize resolutions
 
+        Initialize();
+    }
+
+    private void Initialize()
+    {
         // Load saved settings
         LoadSettings();
 
@@ -48,54 +53,51 @@ public class OptionsMenu : MonoBehaviour
         InitializeGraphicsAndResolution();
     }
 
-    // Volume Control
-    public void SetMasterVolume(float volume)
+    private void InitializeUIElements()
     {
-        audioMixer.SetFloat(SettingsKeys.MasterVolumeKey, Mathf.Log10(volume) * 20);
-        masterVolumeText.text = (volume * 100).ToString("0");
-        UpdateTextColor(masterVolumeText, volume);
-        PlayerPrefs.SetFloat(SettingsKeys.MasterVolumeKey, volume);
+        // Initialize volume sliders
+        masterVolumeSlider.onValueChanged.AddListener(SetMasterVolume);
+        sfxVolumeSlider.onValueChanged.AddListener(SetSFXVolume);
+        musicVolumeSlider.onValueChanged.AddListener(SetMusicVolume);
+        voiceVolumeSlider.onValueChanged.AddListener(SetVoiceVolume);
+
+        // Update volume text initially
+        SetMasterVolume(masterVolumeSlider.value);
+        SetSFXVolume(sfxVolumeSlider.value);
+        SetMusicVolume(musicVolumeSlider.value);
+        SetVoiceVolume(voiceVolumeSlider.value);
+
+        // Initialize fullscreen and V-Sync toggles
+        fullscreenToggle.onValueChanged.AddListener(SetFullscreen);
+        vSyncToggle.onValueChanged.AddListener(SetVSync);
     }
 
-    public void SetSFXVolume(float volume)
+    private void SetVolume(string key, Slider slider, TextMeshProUGUI text, string audioMixerGroupName)
     {
-        audioMixer.SetFloat(SettingsKeys.SFXVolumeKey, Mathf.Log10(volume) * 20);
-        sfxVolumeText.text = (volume * 100).ToString("0");
-        UpdateTextColor(sfxVolumeText, volume);
-        PlayerPrefs.SetFloat(SettingsKeys.SFXVolumeKey, volume);
+        float volume = slider.value;
+        audioMixer.SetFloat(key, Mathf.Log10(volume) * 20);
+        text.text = (volume * 100).ToString("0");
+        UpdateTextColor(text, volume);
+        PlayerPrefs.SetFloat(key, volume);
     }
 
-    public void SetMusicVolume(float volume)
-    {
-        audioMixer.SetFloat(SettingsKeys.MusicVolumeKey, Mathf.Log10(volume) * 20);
-        musicVolumeText.text = (volume * 100).ToString("0");
-        UpdateTextColor(musicVolumeText, volume);
-        PlayerPrefs.SetFloat(SettingsKeys.MusicVolumeKey, volume);
-    }
+    public void SetMasterVolume(float volume) => SetVolume(SettingsKeys.MasterVolumeKey, masterVolumeSlider, masterVolumeText, "Master");
+    public void SetSFXVolume(float volume) => SetVolume(SettingsKeys.SFXVolumeKey, sfxVolumeSlider, sfxVolumeText, "SFX");
+    public void SetMusicVolume(float volume) => SetVolume(SettingsKeys.MusicVolumeKey, musicVolumeSlider, musicVolumeText, "Music");
+    public void SetVoiceVolume(float volume) => SetVolume(SettingsKeys.VoiceVolumeKey, voiceVolumeSlider, voiceVolumeText, "Voice");
 
-    public void SetVoiceVolume(float volume)
-    {
-        audioMixer.SetFloat(SettingsKeys.VoiceVolumeKey, Mathf.Log10(volume) * 20);
-        voiceVolumeText.text = (volume * 100).ToString("0");
-        UpdateTextColor(voiceVolumeText, volume);
-        PlayerPrefs.SetFloat(SettingsKeys.VoiceVolumeKey, volume);
-    }
-
-    // Update Text Color
     private void UpdateTextColor(TextMeshProUGUI text, float volume)
     {
         int volumePercentage = Mathf.RoundToInt(volume * 100f);
         text.color = volumePercentage == 100 ? maxVolumeColor : (volumePercentage == 0 ? minVolumeColor : Color.white);
     }
 
-    // Fullscreen Toggle
     public void SetFullscreen(bool isFullscreen)
     {
         Screen.fullScreen = isFullscreen;
         PlayerPrefs.SetInt(SettingsKeys.FullscreenKey, isFullscreen ? 1 : 0);
     }
 
-    // V-Sync Toggle
     public void SetVSync(bool isVSync)
     {
         QualitySettings.vSyncCount = isVSync ? 1 : 0;
@@ -104,13 +106,11 @@ public class OptionsMenu : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    // Update V-Sync Image
     private void UpdateVSyncImage(bool isVSync)
     {
         vSyncImage.sprite = isVSync ? OnSprite : OffSprite;
     }
 
-    // Graphics and Resolution
     private void InitializeGraphicsAndResolution()
     {
         UpdateGraphicsText();
@@ -189,7 +189,6 @@ public class OptionsMenu : MonoBehaviour
         return 0; // Default to first resolution if 1920x1080 is not found
     }
 
-    // Load saved settings
     private void LoadSettings()
     {
         // Load volume settings
@@ -249,25 +248,5 @@ public class OptionsMenu : MonoBehaviour
 
         // Save all settings
         PlayerPrefs.Save();
-    }
-
-
-    private void InitializeUIElements()
-    {
-        // Initialize volume sliders
-        masterVolumeSlider.onValueChanged.AddListener(SetMasterVolume);
-        sfxVolumeSlider.onValueChanged.AddListener(SetSFXVolume);
-        musicVolumeSlider.onValueChanged.AddListener(SetMusicVolume);
-        voiceVolumeSlider.onValueChanged.AddListener(SetVoiceVolume);
-
-        // Update volume text initially
-        SetMasterVolume(masterVolumeSlider.value);
-        SetSFXVolume(sfxVolumeSlider.value);
-        SetMusicVolume(musicVolumeSlider.value);
-        SetVoiceVolume(voiceVolumeSlider.value);
-
-        // Initialize fullscreen and V-Sync toggles
-        fullscreenToggle.onValueChanged.AddListener(SetFullscreen);
-        vSyncToggle.onValueChanged.AddListener(SetVSync);
     }
 }
