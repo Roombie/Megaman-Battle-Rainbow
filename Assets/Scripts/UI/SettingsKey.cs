@@ -1,7 +1,7 @@
 class SettingsKeys
 {
     public const string MasterVolumeKey = "MasterVolume";
-    public const string BGMVolumeKey = "BGMVolume";
+    public const string MusicVolumeKey = "MusicVolume";
     public const string SFXVolumeKey = "SFXVolume";
     public const string VoiceVolumeKey = "VoiceVolume";
     public const string FullscreenKey = "Fullscreen";

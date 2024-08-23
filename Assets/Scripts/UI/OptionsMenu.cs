@@ -17,8 +17,8 @@ public class OptionsMenu : MonoBehaviour
     public Toggle fullscreenToggle;
     public Toggle vSyncToggle;
     public Image vSyncImage;
-    public Sprite vSyncOnSprite; // Sprite for V-Sync On
-    public Sprite vSyncOffSprite; // Sprite for V-Sync Off
+    public Sprite OnSprite;
+    public Sprite OffSprite;
 
     public TextMeshProUGUI graphicsText; // GUIText for Graphics Quality
     public TextMeshProUGUI resolutionText; // GUIText for Resolution
@@ -67,10 +67,10 @@ public class OptionsMenu : MonoBehaviour
 
     public void SetMusicVolume(float volume)
     {
-        audioMixer.SetFloat(SettingsKeys.BGMVolumeKey, Mathf.Log10(volume) * 20);
+        audioMixer.SetFloat(SettingsKeys.MusicVolumeKey, Mathf.Log10(volume) * 20);
         musicVolumeText.text = (volume * 100).ToString("0");
         UpdateTextColor(musicVolumeText, volume);
-        PlayerPrefs.SetFloat(SettingsKeys.BGMVolumeKey, volume);
+        PlayerPrefs.SetFloat(SettingsKeys.MusicVolumeKey, volume);
     }
 
     public void SetVoiceVolume(float volume)
@@ -107,7 +107,7 @@ public class OptionsMenu : MonoBehaviour
     // Update V-Sync Image
     private void UpdateVSyncImage(bool isVSync)
     {
-        vSyncImage.sprite = isVSync ? vSyncOnSprite : vSyncOffSprite;
+        vSyncImage.sprite = isVSync ? OnSprite : OffSprite;
     }
 
     // Graphics and Resolution
@@ -195,7 +195,7 @@ public class OptionsMenu : MonoBehaviour
         // Load volume settings
         masterVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.MasterVolumeKey, 0.75f);
         sfxVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.SFXVolumeKey, 1f);
-        musicVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.BGMVolumeKey, 1f);
+        musicVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.MusicVolumeKey, 1f);
         voiceVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.VoiceVolumeKey, 1f);
 
         // Load fullscreen setting
