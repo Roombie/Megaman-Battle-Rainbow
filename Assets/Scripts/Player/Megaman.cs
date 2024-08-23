@@ -64,7 +64,7 @@ public class Megaman : MonoBehaviour
     private int extraJumpCount;
 
     [Header("Shooting")]
-    public List<ShootLevel> shootLevel = new List<ShootLevel>();
+    public List<ShootLevel> shootLevel = new();
     [SerializeField] private bool chargerEnabled = true;
     private int currentShootLevel = 0;  // Current shoot level (index in the shootLevel list)
     private float chargeTime = 0f;      // Takes the current charge time
