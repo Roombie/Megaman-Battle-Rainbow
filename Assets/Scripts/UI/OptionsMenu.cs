@@ -171,19 +171,21 @@ public class OptionsMenu : MonoBehaviour
 
     public void IncreaseLanguage()
     {
-        currentLanguageIndex = Mathf.Clamp(currentLanguageIndex + 1, 0, LocalizationSettings.AvailableLocales.Locales.Count - 1);
+        int languageCount = LocalizationSettings.AvailableLocales.Locales.Count;
+        currentLanguageIndex = (currentLanguageIndex + 1) % languageCount;
+
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
         UpdateLanguageText();
-        UpdateGraphicsText();
         PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
 
     public void DecreaseLanguage()
     {
-        currentLanguageIndex = Mathf.Clamp(currentLanguageIndex - 1, 0, LocalizationSettings.AvailableLocales.Locales.Count - 1);
+        int languageCount = LocalizationSettings.AvailableLocales.Locales.Count;
+        currentLanguageIndex = (currentLanguageIndex - 1 + languageCount) % languageCount;
+
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
         UpdateLanguageText();
-        UpdateGraphicsText();
         PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
 
@@ -250,20 +252,29 @@ public class OptionsMenu : MonoBehaviour
 
         voiceVolumeSlider.value = 1f;
         SetVoiceVolume(1f);
+        vSyncToggle.isOn = true;
+        SetVSync(true);
+
+        // Reset graphics quality and resolution to default
+        currentGraphicsIndex = 2; // Medium graphics
+        IncreaseGraphicsQuality();
+        UpdateGraphicsText();
+
+        currentResolutionIndex = FindDefaultResolutionIndex(); // 1920x1080 or fallback
+        SetResolution(currentResolutionIndex);
+        UpdateResolutionText();
+
+        // Reset language to default (first available language)
+        currentLanguageIndex = 3;
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
+        UpdateLanguageText();
 
         // Reset fullscreen and V-Sync settings to default
         fullscreenToggle.isOn = true;
         SetFullscreen(true);
 
-        vSyncToggle.isOn = true;
-        SetVSync(true);
 
-        // Reset graphics quality and resolution to default
-        currentGraphicsIndex = 3; // "High" is the default setting
-        QualitySettings.SetQualityLevel(currentGraphicsIndex);
-        UpdateGraphicsText();
-
-        currentResolutionIndex = FindDefaultResolutionIndex(); // Keep in mind that 1920x1080 is the default resolution
-        SetResolution(currentResolutionIndex);
+        // Save all settings to PlayerPrefs
+        PlayerPrefs.Save();
     }
 }
