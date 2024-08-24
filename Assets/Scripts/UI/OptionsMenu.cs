@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using TMPro;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
 
 public class OptionsMenu : MonoBehaviour
 {
@@ -20,8 +22,9 @@ public class OptionsMenu : MonoBehaviour
     public Sprite OnSprite;
     public Sprite OffSprite;
 
-    public TextMeshProUGUI graphicsText; // GUIText for Graphics Quality
-    public TextMeshProUGUI resolutionText; // GUIText for Resolution
+    public TextMeshProUGUI graphicsText;
+    public TextMeshProUGUI resolutionText;
+    public TextMeshProUGUI languageText;
 
     [Header("Audio")]
     public AudioMixer audioMixer;
@@ -33,10 +36,11 @@ public class OptionsMenu : MonoBehaviour
     private Resolution[] resolutions;
     private int currentGraphicsIndex;
     private int currentResolutionIndex;
+    private int currentLanguageIndex;
 
     void Start()
     {
-        resolutions = Screen.resolutions; // Initialize resolutions
+        resolutions = Screen.resolutions;
 
         Initialize();
     }

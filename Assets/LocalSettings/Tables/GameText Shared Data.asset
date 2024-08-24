@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: GameText Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: GameText
+  m_TableCollectionNameGuidString: b381e59cbd3f94e42956a656c5e2d826
+  m_Entries:
+  - m_Id: 122435725680640
+    m_Key: OptionsMenu_OptionsTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 155521536483328
+    m_Key: OptionsMenu_MasterTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 161066360233984
+    m_Key: OptionsMenu_SFXTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 161109972606976
+    m_Key: OptionsMenu_MusicTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 161417624805376
+    m_Key: OptionsMenu_VoiceTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 161921557848064
+    m_Key: OptionsMenu_GraphicsTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 162352266731520
+    m_Key: OptionsMenu_ResolutionTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 162597637709824
+    m_Key: OptionsMenu_VSyncTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 162880795172864
+    m_Key: OptionsMenu_ChangeLanguageTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 163235947864064
+    m_Key: OptionsMenu_Fullscreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 164029279494144
+    m_Key: OptionsMenu_ControlConfigurationTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 164701127303168
+    m_Key: OptionsMenu_ResetDefaultTitle_Options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 165463278477312
+    m_Key: OptionsMenu_ExitTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 167231651569664
+    m_Key: TitleScreen_StartGameTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 167279248531456
+    m_Key: TitleScreen_LoadGameTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 167310458347520
+    m_Key: TitleScreen_OptionsTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 167342079205376
+    m_Key: TitleScreen_ExitTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 170063788236800
+    m_Key: OptionsMenu_ResetDefaultTitle_Controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 171018202112000
+    m_Key: OptionsMenu_ControllerVibrationTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 171442070085632
+    m_Key: OptionsMenu_DownJumpToSlideTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 172720514916352
+    m_Key: OptionsMenu_SaveAndExitTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 175429347434496
+    m_Key: OptionsMenu_ControlsTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 176373204246528
+    m_Key: OptionsMenu_UpTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 176413276626944
+    m_Key: OptionsMenu_DownTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 176503374471168
+    m_Key: OptionsMenu_LeftTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 176750448336896
+    m_Key: OptionsMenu_RightTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 177069467099136
+    m_Key: OptionsMenu_JumpTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 177092426719232
+    m_Key: OptionsMenu_ShootTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 177108688035840
+    m_Key: OptionsMenu_SlideTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 178138540662784
+    m_Key: OptionsMenu_WPNBackTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 178248842469376
+    m_Key: OptionsMenu_WPNForwardTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 178319856230400
+    m_Key: OptionsMenu_WPNMenuTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 178400932126720
+    m_Key: OptionsMenu_OPTMenuTitle
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 2775745128669380633
+  references:
+    version: 2
+    RefIds:
+    - rid: 2775745128669380633
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1724436361919

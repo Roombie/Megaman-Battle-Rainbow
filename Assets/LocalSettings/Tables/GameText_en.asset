@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: GameText_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: b381e59cbd3f94e42956a656c5e2d826, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 122435725680640
+    m_Localized: OPTIONS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 155521536483328
+    m_Localized: MASTER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 161066360233984
+    m_Localized: SFX
+    m_Metadata:
+      m_Items: []
+  - m_Id: 161109972606976
+    m_Localized: MUSIC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 161417624805376
+    m_Localized: VOICE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 161921557848064
+    m_Localized: GRAPHICS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 162352266731520
+    m_Localized: RESOLUTION
+    m_Metadata:
+      m_Items: []
+  - m_Id: 162597637709824
+    m_Localized: V-SYNC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 162880795172864
+    m_Localized: CHANGE LANGUAGE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 163235947864064
+    m_Localized: TOGGLE FULLSCREEN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 164029279494144
+    m_Localized: CONTROL CONFIGURATION
+    m_Metadata:
+      m_Items: []
+  - m_Id: 164701127303168
+    m_Localized: RESET TO DEFAULT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 165463278477312
+    m_Localized: EXIT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 167231651569664
+    m_Localized: START GAME
+    m_Metadata:
+      m_Items: []
+  - m_Id: 167279248531456
+    m_Localized: LOAD GAME
+    m_Metadata:
+      m_Items: []
+  - m_Id: 167310458347520
+    m_Localized: OPTIONS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 167342079205376
+    m_Localized: EXIT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 170063788236800
+    m_Localized: RESET TO DEFAULT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 171018202112000
+    m_Localized: CONTROLLER VIBRATION
+    m_Metadata:
+      m_Items: []
+  - m_Id: 171442070085632
+    m_Localized: DOWN + JUMP = SLIDE?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 172720514916352
+    m_Localized: SAVE AND EXIT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 175429347434496
+    m_Localized: CONTROLS
+    m_Metadata:
+      m_Items: []
+  - m_Id: 176373204246528
+    m_Localized: UP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 176413276626944
+    m_Localized: DOWN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 176503374471168
+    m_Localized: LEFT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 176750448336896
+    m_Localized: RIGHT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 177069467099136
+    m_Localized: JUMP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 177092426719232
+    m_Localized: SHOOT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 177108688035840
+    m_Localized: SLIDE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 178138540662784
+    m_Localized: WPN-BACK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 178248842469376
+    m_Localized: WPN-FORWARD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 178319856230400
+    m_Localized: WPNMenu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 178400932126720
+    m_Localized: OPTMENU
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []
