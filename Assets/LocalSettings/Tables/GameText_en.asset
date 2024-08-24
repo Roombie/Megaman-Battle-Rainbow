@@ -150,6 +150,26 @@ MonoBehaviour:
     m_Localized: OPTMENU
     m_Metadata:
       m_Items: []
+  - m_Id: 324826618126336
+    m_Localized: VERY HIGH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 324847518343168
+    m_Localized: HIGH
+    m_Metadata:
+      m_Items: []
+  - m_Id: 324880871448576
+    m_Localized: MEDIUM
+    m_Metadata:
+      m_Items: []
+  - m_Id: 324894851063808
+    m_Localized: LOW
+    m_Metadata:
+      m_Items: []
+  - m_Id: 324920255963136
+    m_Localized: VERY LOW
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

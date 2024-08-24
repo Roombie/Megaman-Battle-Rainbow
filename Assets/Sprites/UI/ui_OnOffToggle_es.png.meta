@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 226306fed7d78434b8384f6e5dd405e7
+guid: 7019571f280967643a84d1ea7758b096
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,43 +97,43 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ui_OnToggle
+      name: ui_OnToggle_es
       rect:
         serializedVersion: 2
         x: 0
         y: 7
-        width: 23
+        width: 81
         height: 7
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7a76045cb589b2e4c92f643fbca0737b
-      internalID: 1723488327
+      spriteID: 2a5248a4a3e89b54eac65e3db9c47153
+      internalID: -896379059
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ui_OffToggle
+      name: ui_OffToggle_es
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 23
+        width: 81
         height: 7
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a66afbd27cd58a5488b9958664d606ea
-      internalID: 1141901971
+      spriteID: 5f0625490dc9d0d469291a259f417464
+      internalID: -1721968378
       vertices: []
       indices: 
       edges: []
@@ -149,8 +149,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ui_OffToggle: 1141901971
-      ui_OnToggle: 1723488327
+      ui_OffToggle_es: -1721968378
+      ui_OnToggle_es: -896379059
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

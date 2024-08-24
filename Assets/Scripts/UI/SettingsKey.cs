@@ -8,4 +8,5 @@ class SettingsKeys
     public const string ResolutionKey = "Resolution";
     public const string VSyncKey = "VSync";
     public const string GraphicsQualityKey = "GraphicsQuality";
+    public const string LanguageKey = "Language";
 }

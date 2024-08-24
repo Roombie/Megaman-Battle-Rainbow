@@ -10,16 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Localization-String-Tables-French (fr)
+  m_Name: "Localization-String-Tables-Espa\xF1ol (es)"
   m_EditorClassIdentifier: 
-  m_GroupName: Localization-String-Tables-French (fr)
+  m_GroupName: "Localization-String-Tables-Espa\xF1ol (es)"
   m_Data:
     m_SerializedData: []
-  m_GUID: d050636c44d607143abed3443c554e7d
-  m_SerializeEntries: []
+  m_GUID: 4835b8ab7f0a8864f90cc58a6ef32117
+  m_SerializeEntries:
+  - m_GUID: b2e39af8cfcf1d041a67cb786b43b2d2
+    m_Address: GameText_es
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-es
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: 8a5fb01e5938b944b875f45de110535e, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: af8e83e88c2497c4d84671fe835e57a0, type: 2}
-    - {fileID: 11400000, guid: 41e8eb2d9cde8fa4a94580c90b0db4dd, type: 2}
+    - {fileID: 11400000, guid: 1af80d964dc5e5e478955ca530af4ca4, type: 2}
+    - {fileID: 11400000, guid: 9399c6f085693504293edfa99f0181a2, type: 2}

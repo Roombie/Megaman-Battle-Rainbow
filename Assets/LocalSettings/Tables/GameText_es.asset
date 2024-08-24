@@ -150,6 +150,26 @@ MonoBehaviour:
     m_Localized: "MEN\xDA-OPCIONES"
     m_Metadata:
       m_Items: []
+  - m_Id: 324826618126336
+    m_Localized: MUY ALTO
+    m_Metadata:
+      m_Items: []
+  - m_Id: 324847518343168
+    m_Localized: ALTO
+    m_Metadata:
+      m_Items: []
+  - m_Id: 324880871448576
+    m_Localized: MEDIO
+    m_Metadata:
+      m_Items: []
+  - m_Id: 324894851063808
+    m_Localized: BAJO
+    m_Metadata:
+      m_Items: []
+  - m_Id: 324920255963136
+    m_Localized: MUY BAJO
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

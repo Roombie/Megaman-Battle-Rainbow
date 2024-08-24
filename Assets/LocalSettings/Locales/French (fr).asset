@@ -16,7 +16,7 @@ MonoBehaviour:
     m_Code: fr
   m_Metadata:
     m_Items: []
-  m_LocaleName: French (fr)
+  m_LocaleName: "Fran\xE7ais (fr)"
   m_CustomFormatCultureCode: 
   m_UseCustomFormatter: 0
   m_SortOrder: 10000

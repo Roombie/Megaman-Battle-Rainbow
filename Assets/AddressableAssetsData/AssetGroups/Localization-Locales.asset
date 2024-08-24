@@ -24,13 +24,13 @@ MonoBehaviour:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d1f9b9476636746499c51e6f8a1a3935
-    m_Address: French (fr)
+    m_Address: "Fran\xE7ais (fr)"
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4e615485322f85d409aa3a844f1c0674
-    m_Address: Spanish (es)
+    m_Address: "Espa\xF1ol (es)"
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale

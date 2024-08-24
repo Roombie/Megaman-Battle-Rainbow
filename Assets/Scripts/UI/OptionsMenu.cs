@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Audio;
 using TMPro;
 using UnityEngine.Localization;
-using UnityEngine.Localization.Components;
+using UnityEngine.Localization.Settings;
 
 public class OptionsMenu : MonoBehaviour
 {
@@ -51,29 +51,19 @@ public class OptionsMenu : MonoBehaviour
         LoadSettings();
 
         // Initialize UI elements
-        InitializeUIElements();
+        InitializeAudioElements();
 
-        // Set initial graphics and resolution
-        InitializeGraphicsAndResolution();
+        // Set initial graphics, resolution, and language
+        InitializeGraphicsResolutionAndLanguage();
     }
 
-    private void InitializeUIElements()
+    private void InitializeAudioElements()
     {
-        // Initialize volume sliders
-        masterVolumeSlider.onValueChanged.AddListener(SetMasterVolume);
-        sfxVolumeSlider.onValueChanged.AddListener(SetSFXVolume);
-        musicVolumeSlider.onValueChanged.AddListener(SetMusicVolume);
-        voiceVolumeSlider.onValueChanged.AddListener(SetVoiceVolume);
-
         // Update volume text initially
         SetMasterVolume(masterVolumeSlider.value);
         SetSFXVolume(sfxVolumeSlider.value);
         SetMusicVolume(musicVolumeSlider.value);
         SetVoiceVolume(voiceVolumeSlider.value);
-
-        // Initialize fullscreen and V-Sync toggles
-        fullscreenToggle.onValueChanged.AddListener(SetFullscreen);
-        vSyncToggle.onValueChanged.AddListener(SetVSync);
     }
 
     private void SetVolume(string key, Slider slider, TextMeshProUGUI text, string audioMixerGroupName)
@@ -115,21 +105,32 @@ public class OptionsMenu : MonoBehaviour
         vSyncImage.sprite = isVSync ? OnSprite : OffSprite;
     }
 
-    private void InitializeGraphicsAndResolution()
+    private void InitializeGraphicsResolutionAndLanguage()
     {
         UpdateGraphicsText();
         UpdateResolutionText();
+        UpdateLanguageText();
     }
 
     private void UpdateGraphicsText()
     {
-        graphicsText.text = QualitySettings.names[currentGraphicsIndex];
+        string localizedQualityText = LocalizationSettings.StringDatabase.GetLocalizedString("GameText", QualitySettings.names[currentGraphicsIndex]);
+        graphicsText.text = localizedQualityText;
+        Debug.Log($"Graphics text updated: {localizedQualityText}");
     }
 
     private void UpdateResolutionText()
     {
         var resolution = resolutions[currentResolutionIndex];
         resolutionText.text = $"{resolution.width} x {resolution.height}";
+    }
+
+    private void UpdateLanguageText()
+    {
+        var selectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
+        var cultureInfo = selectedLocale.Identifier.CultureInfo;
+        languageText.text = cultureInfo?.NativeName.Split('(')[0].Trim();
+        Debug.Log($"Language updated to: {languageText.text}");
     }
 
     public void IncreaseGraphicsQuality()
@@ -166,6 +167,24 @@ public class OptionsMenu : MonoBehaviour
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreenMode);
         UpdateResolutionText();
         PlayerPrefs.SetInt(SettingsKeys.ResolutionKey, resolutionIndex);
+    }
+
+    public void IncreaseLanguage()
+    {
+        currentLanguageIndex = Mathf.Clamp(currentLanguageIndex + 1, 0, LocalizationSettings.AvailableLocales.Locales.Count - 1);
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
+        UpdateLanguageText();
+        UpdateGraphicsText();
+        PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
+    }
+
+    public void DecreaseLanguage()
+    {
+        currentLanguageIndex = Mathf.Clamp(currentLanguageIndex - 1, 0, LocalizationSettings.AvailableLocales.Locales.Count - 1);
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
+        UpdateLanguageText();
+        UpdateGraphicsText();
+        PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
 
     private int GetCurrentResolutionIndex()
@@ -207,11 +226,14 @@ public class OptionsMenu : MonoBehaviour
         // Load V-Sync setting
         vSyncToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.VSyncKey, QualitySettings.vSyncCount > 0 ? 1 : 0) == 1;
 
-        // Load graphics and resolution settings
+        // Load graphics, resolution, and language settings
         currentGraphicsIndex = PlayerPrefs.GetInt(SettingsKeys.GraphicsQualityKey, QualitySettings.GetQualityLevel());
         UpdateGraphicsText();
         currentResolutionIndex = PlayerPrefs.GetInt(SettingsKeys.ResolutionKey, GetCurrentResolutionIndex());
-        InitializeGraphicsAndResolution();
+        InitializeGraphicsResolutionAndLanguage();
+        currentLanguageIndex = PlayerPrefs.GetInt(SettingsKeys.LanguageKey, 0);
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
+        UpdateLanguageText();
     }
 
     public void ResetToDefault()
@@ -229,28 +251,19 @@ public class OptionsMenu : MonoBehaviour
         voiceVolumeSlider.value = 1f;
         SetVoiceVolume(1f);
 
-        // Reset fullscreen setting to default (true)
+        // Reset fullscreen and V-Sync settings to default
         fullscreenToggle.isOn = true;
         SetFullscreen(true);
 
-        // Reset V-Sync setting to default (true)
         vSyncToggle.isOn = true;
         SetVSync(true);
 
-        // Reset graphics quality to default
-        currentGraphicsIndex = 3; // High quality
+        // Reset graphics quality and resolution to default
+        currentGraphicsIndex = 3; // "High" is the default setting
         QualitySettings.SetQualityLevel(currentGraphicsIndex);
         UpdateGraphicsText();
-        PlayerPrefs.SetInt(SettingsKeys.GraphicsQualityKey, currentGraphicsIndex);
 
-        // Reset resolution to default
-        currentResolutionIndex = FindDefaultResolutionIndex();
-        Resolution defaultResolution = resolutions[currentResolutionIndex];
-        Screen.SetResolution(defaultResolution.width, defaultResolution.height, Screen.fullScreenMode);
-        UpdateResolutionText();
-        PlayerPrefs.SetInt(SettingsKeys.ResolutionKey, currentResolutionIndex);
-
-        // Save all settings
-        PlayerPrefs.Save();
+        currentResolutionIndex = FindDefaultResolutionIndex(); // Keep in mind that 1920x1080 is the default resolution
+        SetResolution(currentResolutionIndex);
     }
 }
