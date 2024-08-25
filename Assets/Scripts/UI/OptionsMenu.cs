@@ -19,12 +19,13 @@ public class OptionsMenu : MonoBehaviour
     public Toggle fullscreenToggle;
     public Toggle vSyncToggle;
     public Image vSyncImage;
-    public Sprite OnSprite;
-    public Sprite OffSprite;
 
     public TextMeshProUGUI graphicsText;
     public TextMeshProUGUI resolutionText;
     public TextMeshProUGUI languageText;
+
+    [Header("Language Sprites")]
+    public LanguageSprites languageSprites;
 
     [Header("Audio")]
     public AudioMixer audioMixer;
@@ -41,7 +42,6 @@ public class OptionsMenu : MonoBehaviour
     void Start()
     {
         resolutions = Screen.resolutions;
-
         Initialize();
     }
 
@@ -102,7 +102,15 @@ public class OptionsMenu : MonoBehaviour
 
     private void UpdateVSyncImage(bool isVSync)
     {
-        vSyncImage.sprite = isVSync ? OnSprite : OffSprite;
+        Locale currentLocale = LocalizationSettings.SelectedLocale;
+        if (isVSync)
+        {
+            vSyncImage.sprite = languageSprites.GetOnSprite(currentLocale);
+        }
+        else
+        {
+            vSyncImage.sprite = languageSprites.GetOffSprite(currentLocale);
+        }
     }
 
     private void InitializeGraphicsResolutionAndLanguage()
@@ -110,13 +118,23 @@ public class OptionsMenu : MonoBehaviour
         UpdateGraphicsText();
         UpdateResolutionText();
         UpdateLanguageText();
+        UpdateVSyncImage(vSyncToggle.isOn);
     }
 
     private void UpdateGraphicsText()
     {
-        string localizedQualityText = LocalizationSettings.StringDatabase.GetLocalizedString("GameText", QualitySettings.names[currentGraphicsIndex]);
-        graphicsText.text = localizedQualityText;
-        Debug.Log($"Graphics text updated: {localizedQualityText}");
+        Locale currentLocale = LocalizationSettings.SelectedLocale;
+        string qualityName = QualitySettings.names[currentGraphicsIndex];
+        string localizedQualityText = LocalizationSettings.StringDatabase.GetLocalizedString("GameText", qualityName, currentLocale);
+
+        if (!string.IsNullOrEmpty(localizedQualityText))
+        {
+            graphicsText.text = localizedQualityText;
+        }
+        else
+        {
+            graphicsText.text = qualityName; // Fallback to default if localization fails
+        }
     }
 
     private void UpdateResolutionText()
@@ -175,7 +193,6 @@ public class OptionsMenu : MonoBehaviour
         currentLanguageIndex = (currentLanguageIndex + 1) % languageCount;
 
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
-        UpdateGraphicsText();
         UpdateLanguageText();
         PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
@@ -186,7 +203,6 @@ public class OptionsMenu : MonoBehaviour
         currentLanguageIndex = (currentLanguageIndex - 1 + languageCount) % languageCount;
 
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
-        UpdateGraphicsText();
         UpdateLanguageText();
         PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
@@ -218,26 +234,16 @@ public class OptionsMenu : MonoBehaviour
 
     private void LoadSettings()
     {
-        // Load volume settings
         masterVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.MasterVolumeKey, 0.75f);
         sfxVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.SFXVolumeKey, 1f);
         musicVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.MusicVolumeKey, 1f);
         voiceVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.VoiceVolumeKey, 1f);
-
-        // Load fullscreen setting
         fullscreenToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.FullscreenKey, 1) == 1;
-
-        // Load V-Sync setting
         vSyncToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.VSyncKey, QualitySettings.vSyncCount > 0 ? 1 : 0) == 1;
-
-        // Load graphics, resolution, and language settings
         currentGraphicsIndex = PlayerPrefs.GetInt(SettingsKeys.GraphicsQualityKey, QualitySettings.GetQualityLevel());
         UpdateGraphicsText();
         currentResolutionIndex = PlayerPrefs.GetInt(SettingsKeys.ResolutionKey, GetCurrentResolutionIndex());
         InitializeGraphicsResolutionAndLanguage();
-        currentLanguageIndex = PlayerPrefs.GetInt(SettingsKeys.LanguageKey, 0);
-        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
-        UpdateLanguageText();
     }
 
     public void ResetToDefault()
