@@ -175,6 +175,7 @@ public class OptionsMenu : MonoBehaviour
         currentLanguageIndex = (currentLanguageIndex + 1) % languageCount;
 
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
+        UpdateGraphicsText();
         UpdateLanguageText();
         PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
@@ -185,6 +186,7 @@ public class OptionsMenu : MonoBehaviour
         currentLanguageIndex = (currentLanguageIndex - 1 + languageCount) % languageCount;
 
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
+        UpdateGraphicsText();
         UpdateLanguageText();
         PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
@@ -264,15 +266,9 @@ public class OptionsMenu : MonoBehaviour
         SetResolution(currentResolutionIndex);
         UpdateResolutionText();
 
-        // Reset language to default (first available language)
-        currentLanguageIndex = 3;
-        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
-        UpdateLanguageText();
-
         // Reset fullscreen and V-Sync settings to default
         fullscreenToggle.isOn = true;
         SetFullscreen(true);
-
 
         // Save all settings to PlayerPrefs
         PlayerPrefs.Save();
