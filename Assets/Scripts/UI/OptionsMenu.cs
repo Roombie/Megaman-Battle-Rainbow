@@ -4,6 +4,7 @@ using UnityEngine.Audio;
 using TMPro;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
+using System.Collections;
 
 public class OptionsMenu : MonoBehaviour
 {
@@ -23,6 +24,12 @@ public class OptionsMenu : MonoBehaviour
     public TextMeshProUGUI graphicsText;
     public TextMeshProUGUI resolutionText;
     public TextMeshProUGUI languageText;
+
+    [Header("Additional Settings")]
+    public Toggle slideWithDownJumpToggle;
+    public Image slideWithDownJumpImage;
+    public Toggle controllerVibrationToggle;
+    public Image controllerVibrationImage;
 
     [Header("Language Sprites")]
     public LanguageSprites languageSprites;
@@ -47,17 +54,22 @@ public class OptionsMenu : MonoBehaviour
 
     private void Initialize()
     {
-        // Load saved settings
         LoadSettings();
+        SetVolumes();
+        UpdateGraphicsText();
+        UpdateResolutionText();
+        UpdateVSyncImage();
+        UpdateSlideWithDownJumpImage();
+        UpdateControllerVibrationImage();
+        UpdateLanguageText();
+    }
 
+    private void SetVolumes()
+    {
         SetMasterVolume(masterVolumeSlider.value);
         SetSFXVolume(sfxVolumeSlider.value);
         SetMusicVolume(musicVolumeSlider.value);
         SetVoiceVolume(voiceVolumeSlider.value);
-        UpdateGraphicsText();
-        UpdateResolutionText();
-        UpdateLanguageText();
-        UpdateVSyncImage(vSyncToggle.isOn);
     }
 
     private void SetVolume(string key, Slider slider, TextMeshProUGUI text, string audioMixerGroupName)
@@ -77,40 +89,58 @@ public class OptionsMenu : MonoBehaviour
     private void UpdateTextColor(TextMeshProUGUI text, float volume)
     {
         int volumePercentage = Mathf.RoundToInt(volume * 100f);
-        text.color = volumePercentage == 100 ? maxVolumeColor : (volumePercentage == 0 ? minVolumeColor : Color.white);
+        text.color = volumePercentage switch
+        {
+            100 => maxVolumeColor,
+            0 => minVolumeColor,
+            _ => Color.white
+        };
     }
 
-    public void SetFullscreen(bool isFullscreen)
+    public void ToggleFullscreen(bool isFullscreen)
     {
         Screen.fullScreen = isFullscreen;
         PlayerPrefs.SetInt(SettingsKeys.FullscreenKey, isFullscreen ? 1 : 0);
     }
 
-    public void SetVSync(bool isVSync)
+    public void ToggleVSync(bool isVSync)
     {
         QualitySettings.vSyncCount = isVSync ? 1 : 0;
-        UpdateVSyncImage(isVSync);
+        UpdateVSyncImage();
         PlayerPrefs.SetInt(SettingsKeys.VSyncKey, isVSync ? 1 : 0);
-        PlayerPrefs.Save();
     }
 
-    private void UpdateVSyncImage(bool isVSync)
+    public void ToggleSlideWithDownJump(bool isEnabled)
     {
-        Locale currentLocale = LocalizationSettings.SelectedLocale;
-        if (isVSync)
-        {
-            vSyncImage.sprite = languageSprites.GetOnSprite(currentLocale);
-        }
-        else
-        {
-            vSyncImage.sprite = languageSprites.GetOffSprite(currentLocale);
-        }
+        GlobalVariables.canSlideWithDownJump = isEnabled;
+        UpdateSlideWithDownJumpImage();
+        PlayerPrefs.SetInt(SettingsKeys.SlideWithDownJumpKey, isEnabled ? 1 : 0);
+    }
+
+    public void ToggleControllerVibration(bool isEnabled)
+    {
+        UpdateControllerVibrationImage();
+        PlayerPrefs.SetInt(SettingsKeys.ControllerVibrationKey, isEnabled ? 1 : 0);
+    }
+
+    private void UpdateVSyncImage()
+    {
+        vSyncImage.sprite = languageSprites.GetSprite(LocalizationSettings.SelectedLocale, vSyncToggle.isOn);
+    }
+
+    private void UpdateSlideWithDownJumpImage()
+    {
+        slideWithDownJumpImage.sprite = languageSprites.GetSprite(LocalizationSettings.SelectedLocale, slideWithDownJumpToggle.isOn);
+    }
+
+    private void UpdateControllerVibrationImage()
+    {
+        controllerVibrationImage.sprite = languageSprites.GetSprite(LocalizationSettings.SelectedLocale, controllerVibrationToggle.isOn);
     }
 
     private void UpdateGraphicsText()
     {
-        string localizedQualityText = LocalizationSettings.StringDatabase.GetLocalizedString("GameText", QualitySettings.names[currentGraphicsIndex]);
-        graphicsText.text = localizedQualityText;
+        graphicsText.text = LocalizationSettings.StringDatabase.GetLocalizedString("GameText", QualitySettings.names[currentGraphicsIndex]);
     }
 
     private void UpdateResolutionText()
@@ -128,15 +158,17 @@ public class OptionsMenu : MonoBehaviour
 
     public void IncreaseGraphicsQuality()
     {
-        currentGraphicsIndex = Mathf.Clamp(currentGraphicsIndex + 1, 0, QualitySettings.names.Length - 1);
-        QualitySettings.SetQualityLevel(currentGraphicsIndex);
-        UpdateGraphicsText();
-        PlayerPrefs.SetInt(SettingsKeys.GraphicsQualityKey, currentGraphicsIndex);
+        ChangeGraphicsIndex(1);
     }
 
     public void DecreaseGraphicsQuality()
     {
-        currentGraphicsIndex = Mathf.Clamp(currentGraphicsIndex - 1, 0, QualitySettings.names.Length - 1);
+        ChangeGraphicsIndex(-1);
+    }
+
+    private void ChangeGraphicsIndex(int change)
+    {
+        currentGraphicsIndex = Mathf.Clamp(currentGraphicsIndex + change, 0, QualitySettings.names.Length - 1);
         QualitySettings.SetQualityLevel(currentGraphicsIndex);
         UpdateGraphicsText();
         PlayerPrefs.SetInt(SettingsKeys.GraphicsQualityKey, currentGraphicsIndex);
@@ -144,13 +176,17 @@ public class OptionsMenu : MonoBehaviour
 
     public void IncreaseResolution()
     {
-        currentResolutionIndex = Mathf.Clamp(currentResolutionIndex + 1, 0, resolutions.Length - 1);
-        SetResolution(currentResolutionIndex);
+        ChangeResolutionIndex(1);
     }
 
     public void DecreaseResolution()
     {
-        currentResolutionIndex = Mathf.Clamp(currentResolutionIndex - 1, 0, resolutions.Length - 1);
+        ChangeResolutionIndex(-1);
+    }
+
+    private void ChangeResolutionIndex(int change)
+    {
+        currentResolutionIndex = Mathf.Clamp(currentResolutionIndex + change, 0, resolutions.Length - 1);
         SetResolution(currentResolutionIndex);
     }
 
@@ -164,26 +200,34 @@ public class OptionsMenu : MonoBehaviour
 
     public void IncreaseLanguage()
     {
-        int languageCount = LocalizationSettings.AvailableLocales.Locales.Count;
-        currentLanguageIndex = (currentLanguageIndex + 1) % languageCount;
-
-        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
-        UpdateLanguageText();
-        UpdateGraphicsText();
-        UpdateVSyncImage(vSyncToggle.isOn);
-        PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
+        ChangeLanguageIndex(1);
     }
 
     public void DecreaseLanguage()
     {
+        ChangeLanguageIndex(-1);
+    }
+
+    private IEnumerator UpdateUIAfterLocaleChange()
+    {
+        yield return LocalizationSettings.InitializationOperation; // Wait for the initialization or change to complete
+
+        UpdateGraphicsText();
+        UpdateVSyncImage();
+        UpdateSlideWithDownJumpImage();
+        UpdateControllerVibrationImage();
+        UpdateLanguageText();
+        PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
+    }
+
+    private void ChangeLanguageIndex(int change)
+    {
         int languageCount = LocalizationSettings.AvailableLocales.Locales.Count;
-        currentLanguageIndex = (currentLanguageIndex - 1 + languageCount) % languageCount;
+        currentLanguageIndex = (currentLanguageIndex + change + languageCount) % languageCount;
 
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
-        UpdateLanguageText();
-        UpdateGraphicsText();
-        UpdateVSyncImage(vSyncToggle.isOn);
-        PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
+
+        StartCoroutine(UpdateUIAfterLocaleChange());
     }
 
     private int GetCurrentResolutionIndex()
@@ -217,50 +261,84 @@ public class OptionsMenu : MonoBehaviour
         sfxVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.SFXVolumeKey, 1f);
         musicVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.MusicVolumeKey, 1f);
         voiceVolumeSlider.value = PlayerPrefs.GetFloat(SettingsKeys.VoiceVolumeKey, 1f);
+
         fullscreenToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.FullscreenKey, 1) == 1;
-        vSyncToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.VSyncKey, QualitySettings.vSyncCount > 0 ? 1 : 0) == 1;
-        currentGraphicsIndex = PlayerPrefs.GetInt(SettingsKeys.GraphicsQualityKey, QualitySettings.GetQualityLevel());
+        ToggleFullscreen(fullscreenToggle.isOn);
+
+        vSyncToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.VSyncKey, 1) == 1;
+        ToggleVSync(vSyncToggle.isOn);
+
+        slideWithDownJumpToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.SlideWithDownJumpKey, 1) == 1;
+        ToggleSlideWithDownJump(slideWithDownJumpToggle.isOn);
+
+        controllerVibrationToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.ControllerVibrationKey, 1) == 1;
+        ToggleControllerVibration(controllerVibrationToggle.isOn);
+
+        currentGraphicsIndex = PlayerPrefs.GetInt(SettingsKeys.GraphicsQualityKey, QualitySettings.names.Length - 1);
+        QualitySettings.SetQualityLevel(currentGraphicsIndex);
+
         currentResolutionIndex = PlayerPrefs.GetInt(SettingsKeys.ResolutionKey, GetCurrentResolutionIndex());
+        SetResolution(currentResolutionIndex);
+
         currentLanguageIndex = PlayerPrefs.GetInt(SettingsKeys.LanguageKey, 0);
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
 
         UpdateGraphicsText();
         UpdateResolutionText();
+        UpdateVSyncImage();
+        UpdateSlideWithDownJumpImage();
+        UpdateControllerVibrationImage();
         UpdateLanguageText();
-        UpdateVSyncImage(vSyncToggle.isOn);
     }
 
     public void ResetToDefault()
     {
-        // Reset volume settings to default
+        // Reset volume sliders to default values
         masterVolumeSlider.value = 0.75f;
-        SetMasterVolume(0.75f);
-
         sfxVolumeSlider.value = 1f;
-        SetSFXVolume(1f);
-
         musicVolumeSlider.value = 1f;
-        SetMusicVolume(1f);
-
         voiceVolumeSlider.value = 1f;
-        SetVoiceVolume(1f);
-        vSyncToggle.isOn = true;
-        SetVSync(true);
 
-        // Reset graphics quality and resolution to default
-        currentGraphicsIndex = 2; // Medium graphics
-        IncreaseGraphicsQuality();
-        UpdateGraphicsText();
-
-        currentResolutionIndex = FindDefaultResolutionIndex(); // 1920x1080 or fallback
-        SetResolution(currentResolutionIndex);
-        UpdateResolutionText();
-
-        // Reset fullscreen and V-Sync settings to default
+        // Reset fullscreen and VSync toggles to default values
         fullscreenToggle.isOn = true;
-        SetFullscreen(true);
+        vSyncToggle.isOn = true;
 
-        // Save all settings to PlayerPrefs
-        PlayerPrefs.Save();
+        // Reset graphics quality to default (highest quality)
+        currentGraphicsIndex = QualitySettings.names.Length - 1;
+        QualitySettings.SetQualityLevel(currentGraphicsIndex);
+
+        // Reset resolution to default (1920x1080)
+        currentResolutionIndex = FindDefaultResolutionIndex();
+        SetResolution(currentResolutionIndex);
+
+        // Apply changes
+        SetMasterVolume(masterVolumeSlider.value);
+        SetSFXVolume(sfxVolumeSlider.value);
+        SetMusicVolume(musicVolumeSlider.value);
+        SetVoiceVolume(voiceVolumeSlider.value);
+        UpdateGraphicsText();
+        UpdateResolutionText();
+        UpdateVSyncImage();
+
+        // Save defaults to PlayerPrefs
+        PlayerPrefs.SetFloat(SettingsKeys.MasterVolumeKey, 0.75f);
+        PlayerPrefs.SetFloat(SettingsKeys.SFXVolumeKey, 1f);
+        PlayerPrefs.SetFloat(SettingsKeys.MusicVolumeKey, 1f);
+        PlayerPrefs.SetFloat(SettingsKeys.VoiceVolumeKey, 1f);
+        PlayerPrefs.SetInt(SettingsKeys.FullscreenKey, 1);
+        PlayerPrefs.SetInt(SettingsKeys.VSyncKey, 1);      
+        PlayerPrefs.SetInt(SettingsKeys.GraphicsQualityKey, currentGraphicsIndex);
+        PlayerPrefs.SetInt(SettingsKeys.ResolutionKey, currentResolutionIndex);
+    }
+
+    public void ResetControlsToDefault()
+    {
+        // Reset other toggles to default values
+        slideWithDownJumpToggle.isOn = true;
+        controllerVibrationToggle.isOn = true;
+        UpdateSlideWithDownJumpImage();
+        UpdateControllerVibrationImage();
+        PlayerPrefs.SetInt(SettingsKeys.SlideWithDownJumpKey, 1);
+        PlayerPrefs.SetInt(SettingsKeys.ControllerVibrationKey, 1);
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Localization;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "LanguageSprites", menuName = "Localization/LanguageSprites")]
 public class LanguageSprites : ScriptableObject
@@ -14,27 +15,32 @@ public class LanguageSprites : ScriptableObject
 
     public LanguageSpriteSet[] languageSpriteSets;
 
-    public Sprite GetOnSprite(Locale locale)
+    private Dictionary<Locale, LanguageSpriteSet> spriteSetDict;
+
+    private void OnEnable()
     {
-        foreach (var set in languageSpriteSets)
-        {
-            if (set.locale == locale)
-            {
-                return set.onSprite;
-            }
-        }
-        return null;
+        InitializeDictionary();
     }
 
-    public Sprite GetOffSprite(Locale locale)
+    private void InitializeDictionary()
     {
+        spriteSetDict = new Dictionary<Locale, LanguageSpriteSet>();
         foreach (var set in languageSpriteSets)
         {
-            if (set.locale == locale)
+            if (!spriteSetDict.ContainsKey(set.locale))
             {
-                return set.offSprite;
+                spriteSetDict.Add(set.locale, set);
             }
         }
+    }
+
+    public Sprite GetSprite(Locale locale, bool isOn)
+    {
+        if (spriteSetDict.TryGetValue(locale, out var spriteSet))
+        {
+            return isOn ? spriteSet.onSprite : spriteSet.offSprite;
+        }
+        Debug.LogWarning($"Sprite for locale {locale} not found.");
         return null;
     }
 }
