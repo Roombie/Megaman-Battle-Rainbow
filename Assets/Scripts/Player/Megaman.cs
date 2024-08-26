@@ -629,7 +629,6 @@ public class Megaman : MonoBehaviour
             if (shootTimeLength >= 0.25f || shootButtonReleaseTimeLength > 0.15f)
             {
                 isShooting = false;
-                Debug.Log("You already shoot");
             }
         } 
     }

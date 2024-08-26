@@ -50,20 +50,14 @@ public class OptionsMenu : MonoBehaviour
         // Load saved settings
         LoadSettings();
 
-        // Initialize UI elements
-        InitializeAudioElements();
-
-        // Set initial graphics, resolution, and language
-        InitializeGraphicsResolutionAndLanguage();
-    }
-
-    private void InitializeAudioElements()
-    {
-        // Update volume text initially
         SetMasterVolume(masterVolumeSlider.value);
         SetSFXVolume(sfxVolumeSlider.value);
         SetMusicVolume(musicVolumeSlider.value);
         SetVoiceVolume(voiceVolumeSlider.value);
+        UpdateGraphicsText();
+        UpdateResolutionText();
+        UpdateLanguageText();
+        UpdateVSyncImage(vSyncToggle.isOn);
     }
 
     private void SetVolume(string key, Slider slider, TextMeshProUGUI text, string audioMixerGroupName)
@@ -111,14 +105,6 @@ public class OptionsMenu : MonoBehaviour
         {
             vSyncImage.sprite = languageSprites.GetOffSprite(currentLocale);
         }
-    }
-
-    private void InitializeGraphicsResolutionAndLanguage()
-    {
-        UpdateGraphicsText();
-        UpdateResolutionText();
-        UpdateLanguageText();
-        UpdateVSyncImage(vSyncToggle.isOn);
     }
 
     private void UpdateGraphicsText()
@@ -183,6 +169,8 @@ public class OptionsMenu : MonoBehaviour
 
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
         UpdateLanguageText();
+        UpdateGraphicsText();
+        UpdateVSyncImage(vSyncToggle.isOn);
         PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
 
@@ -193,6 +181,8 @@ public class OptionsMenu : MonoBehaviour
 
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
         UpdateLanguageText();
+        UpdateGraphicsText();
+        UpdateVSyncImage(vSyncToggle.isOn);
         PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
 
@@ -230,9 +220,14 @@ public class OptionsMenu : MonoBehaviour
         fullscreenToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.FullscreenKey, 1) == 1;
         vSyncToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.VSyncKey, QualitySettings.vSyncCount > 0 ? 1 : 0) == 1;
         currentGraphicsIndex = PlayerPrefs.GetInt(SettingsKeys.GraphicsQualityKey, QualitySettings.GetQualityLevel());
-        UpdateGraphicsText();
         currentResolutionIndex = PlayerPrefs.GetInt(SettingsKeys.ResolutionKey, GetCurrentResolutionIndex());
-        InitializeGraphicsResolutionAndLanguage();
+        currentLanguageIndex = PlayerPrefs.GetInt(SettingsKeys.LanguageKey, 0);
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
+
+        UpdateGraphicsText();
+        UpdateResolutionText();
+        UpdateLanguageText();
+        UpdateVSyncImage(vSyncToggle.isOn);
     }
 
     public void ResetToDefault()
