@@ -170,6 +170,26 @@ MonoBehaviour:
     m_Localized: MUY BAJO
     m_Metadata:
       m_Items: []
+  - m_Id: 1008030886752256
+    m_Localized: CONTINUAR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008137325604864
+    m_Localized: GUARDAR
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008169193926656
+    m_Localized: TITULO
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008335569383424
+    m_Localized: SELECCIONAR NIVEL
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1018948970602496
+    m_Localized: FIN DEL JUEGO
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -167,6 +167,26 @@ MonoBehaviour:
     m_Key: Very Low
     m_Metadata:
       m_Items: []
+  - m_Id: 1008030886752256
+    m_Key: GameOver_ContinueTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008137325604864
+    m_Key: GameOver_SaveTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008169193926656
+    m_Key: GameOver_TitleTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008335569383424
+    m_Key: GameOver_StageSelectTitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1018948970602496
+    m_Key: GameOver_GameOverTitle
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -170,6 +170,26 @@ MonoBehaviour:
     m_Localized: VERY LOW
     m_Metadata:
       m_Items: []
+  - m_Id: 1008030886752256
+    m_Localized: CONTINUE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008137325604864
+    m_Localized: SAVE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008169193926656
+    m_Localized: TITLE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008335569383424
+    m_Localized: STAGE SELECT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1018948970602496
+    m_Localized: GAME OVER
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

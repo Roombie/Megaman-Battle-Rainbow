@@ -172,6 +172,26 @@ MonoBehaviour:
     m_Localized: "TR\xC8S \xC9LEV\xC9"
     m_Metadata:
       m_Items: []
+  - m_Id: 1008030886752256
+    m_Localized: CONTINUER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008335569383424
+    m_Localized: "S\xC9LECTIONNER NIVEAU"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008137325604864
+    m_Localized: SAUVEGARDER
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008169193926656
+    m_Localized: TITRE
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1018948970602496
+    m_Localized: "JEU TERMIN\xC9"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

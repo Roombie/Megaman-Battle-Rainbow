@@ -563,18 +563,19 @@ public class Megaman : MonoBehaviour
         {
             chargeTime += Time.deltaTime;
 
+            if (!hasPlayedChargeSound && chargeTime > 0.25f) // play the charging audio
+            {
+                audioSource.clip = chargingMegaBuster;
+                audioSource.Play();
+                hasPlayedChargeSound = true; // to avoid spam the audio
+            }
+
             // Determine the current shoot level
             for (int i = shootLevel.Count - 1; i >= 0; i--)
             {
                 if (chargeTime >= shootLevel[i].timeRequired)
                 {
-                    currentShootLevel = i;
-                    if (!hasPlayedChargeSound && i > 0)
-                    {
-                        audioSource.clip = chargingMegaBuster;
-                        audioSource.Play();
-                        hasPlayedChargeSound = true; // to avoid spam the audio
-                    }
+                    currentShootLevel = i;                  
                     break;
                 }
             }
