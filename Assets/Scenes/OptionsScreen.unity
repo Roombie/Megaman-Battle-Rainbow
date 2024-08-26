@@ -4823,6 +4823,9 @@ MonoBehaviour:
         - localeIdentifier:
             m_Code: es
           value: 202.68517
+        - localeIdentifier:
+            m_Code: fr
+          value: 216.25
     - rid: 2775745137490788418
       type: {class: FloatTrackedProperty, ns: UnityEngine.Localization.PropertyVariants.TrackedProperties, asm: Unity.Localization}
       data:
@@ -4834,6 +4837,9 @@ MonoBehaviour:
         - localeIdentifier:
             m_Code: es
           value: 405.3803
+        - localeIdentifier:
+            m_Code: fr
+          value: 432.51
 --- !u!1 &602842733
 GameObject:
   m_ObjectHideFlags: 0
@@ -15931,7 +15937,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 287269049}
         m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
-        m_MethodName: SetVSync
+        m_MethodName: ToggleVSync
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -608,6 +608,7 @@ public class Megaman : MonoBehaviour
                 else
                 {
                     isShooting = true;
+                    shootTime = Time.time;
                     audioSource.Stop();
                     audioSource.clip = null;
                     ShootBullet();

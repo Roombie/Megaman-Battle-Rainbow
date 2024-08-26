@@ -156,15 +156,8 @@ public class OptionsMenu : MonoBehaviour
         languageText.text = cultureInfo?.NativeName.Split('(')[0].Trim();
     }
 
-    public void IncreaseGraphicsQuality()
-    {
-        ChangeGraphicsIndex(1);
-    }
-
-    public void DecreaseGraphicsQuality()
-    {
-        ChangeGraphicsIndex(-1);
-    }
+    public void IncreaseGraphicsQuality() => ChangeGraphicsIndex(1);
+    public void DecreaseGraphicsQuality() => ChangeGraphicsIndex(-1);
 
     private void ChangeGraphicsIndex(int change)
     {
@@ -174,15 +167,8 @@ public class OptionsMenu : MonoBehaviour
         PlayerPrefs.SetInt(SettingsKeys.GraphicsQualityKey, currentGraphicsIndex);
     }
 
-    public void IncreaseResolution()
-    {
-        ChangeResolutionIndex(1);
-    }
-
-    public void DecreaseResolution()
-    {
-        ChangeResolutionIndex(-1);
-    }
+    public void IncreaseResolution() => ChangeResolutionIndex(1);
+    public void DecreaseResolution() => ChangeResolutionIndex(-1);
 
     private void ChangeResolutionIndex(int change)
     {
@@ -198,15 +184,8 @@ public class OptionsMenu : MonoBehaviour
         PlayerPrefs.SetInt(SettingsKeys.ResolutionKey, resolutionIndex);
     }
 
-    public void IncreaseLanguage()
-    {
-        ChangeLanguageIndex(1);
-    }
-
-    public void DecreaseLanguage()
-    {
-        ChangeLanguageIndex(-1);
-    }
+    public void IncreaseLanguage() => ChangeLanguageIndex(1);
+    public void DecreaseLanguage() => ChangeLanguageIndex(-1);
 
     private IEnumerator UpdateUIAfterLocaleChange()
     {
