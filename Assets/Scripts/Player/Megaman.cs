@@ -563,19 +563,18 @@ public class Megaman : MonoBehaviour
         {
             chargeTime += Time.deltaTime;
 
-            if (!hasPlayedChargeSound && chargeTime > 0.25f) // play the charging audio
-            {
-                audioSource.clip = chargingMegaBuster;
-                audioSource.Play();
-                hasPlayedChargeSound = true; // to avoid spam the audio
-            }
-
             // Determine the current shoot level
             for (int i = shootLevel.Count - 1; i >= 0; i--)
             {
                 if (chargeTime >= shootLevel[i].timeRequired)
                 {
-                    currentShootLevel = i;                  
+                    currentShootLevel = i;
+                    if (!hasPlayedChargeSound && i > 0) // play the charging audio
+                    {
+                        audioSource.clip = chargingMegaBuster;
+                        audioSource.Play();
+                        hasPlayedChargeSound = true; // to avoid spam the audio
+                    }
                     break;
                 }
             }
@@ -598,14 +597,21 @@ public class Megaman : MonoBehaviour
         {
             shootButtonReleaseTimeLength = Time.time - shootTime;
 
-            // Shoot if the player was charging
-            if (currentShootLevel > 0 && !isSliding)
+            // Check if we need to wait for the player to stop sliding
+            if (currentShootLevel > 0)
             {
-                isShooting = true;
-                shootTime = Time.time;
-                audioSource.Stop();
-                audioSource.clip = null;
-                ShootBullet();
+                if (isSliding)
+                {
+                    // If sliding, delay the shooting logic until the player stops sliding
+                    return;
+                }
+                else
+                {
+                    isShooting = true;
+                    audioSource.Stop();
+                    audioSource.clip = null;
+                    ShootBullet();
+                }
             }
 
             // Reset charge time and button states
@@ -614,7 +620,6 @@ public class Megaman : MonoBehaviour
             shootButtonRelease = false;
             hasPlayedChargeSound = false;
         }
-
         // shoot key isn't being pressed and key release flag is false
         if (!shootButtonPressed && !shootButtonRelease)
         {

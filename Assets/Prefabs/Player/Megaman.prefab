@@ -78,10 +78,10 @@ MonoBehaviour:
   - timeRequired: 0
     damage: 1
     shootSound: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
-  - timeRequired: 1
+  - timeRequired: 0.25
     damage: 2
     shootSound: {fileID: 8300000, guid: 8b99f688fa9a3764c8ce660ff0f706d0, type: 3}
-  - timeRequired: 2
+  - timeRequired: 1.25
     damage: 3
     shootSound: {fileID: 8300000, guid: 908398d31921bf044b4ce7444a507b7f, type: 3}
   chargerEnabled: 1
