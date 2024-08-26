@@ -123,18 +123,8 @@ public class OptionsMenu : MonoBehaviour
 
     private void UpdateGraphicsText()
     {
-        Locale currentLocale = LocalizationSettings.SelectedLocale;
-        string qualityName = QualitySettings.names[currentGraphicsIndex];
-        string localizedQualityText = LocalizationSettings.StringDatabase.GetLocalizedString("GameText", qualityName, currentLocale);
-
-        if (!string.IsNullOrEmpty(localizedQualityText))
-        {
-            graphicsText.text = localizedQualityText;
-        }
-        else
-        {
-            graphicsText.text = qualityName; // Fallback to default if localization fails
-        }
+        string localizedQualityText = LocalizationSettings.StringDatabase.GetLocalizedString("GameText", QualitySettings.names[currentGraphicsIndex]);
+        graphicsText.text = localizedQualityText;
     }
 
     private void UpdateResolutionText()
@@ -148,7 +138,6 @@ public class OptionsMenu : MonoBehaviour
         var selectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
         var cultureInfo = selectedLocale.Identifier.CultureInfo;
         languageText.text = cultureInfo?.NativeName.Split('(')[0].Trim();
-        Debug.Log($"Language updated to: {languageText.text}");
     }
 
     public void IncreaseGraphicsQuality()

@@ -350,11 +350,11 @@ public class Megaman : MonoBehaviour
         // depending which side we were hit on, and then apply that force
         if (!isTakingDamage)
         {
+            InterruptCharge();
             audioSource.PlayOneShot(damage);
             isTakingDamage = true;
             Invincible(true);
             FreezeInput(true);
-            InterruptCharge();
             EndClimbing();
             float hitForceX = 0.50f;
             float hitForceY = 1.5f;
@@ -571,8 +571,9 @@ public class Megaman : MonoBehaviour
                     currentShootLevel = i;
                     if (!hasPlayedChargeSound && i > 0)
                     {
-                        audioSource.PlayOneShot(chargingMegaBuster);
-                        hasPlayedChargeSound = true;
+                        audioSource.clip = chargingMegaBuster;
+                        audioSource.Play();
+                        hasPlayedChargeSound = true; // to avoid spam the audio
                     }
                     break;
                 }
@@ -600,6 +601,9 @@ public class Megaman : MonoBehaviour
             if (currentShootLevel > 0 && !isSliding)
             {
                 isShooting = true;
+                shootTime = Time.time;
+                audioSource.Stop();
+                audioSource.clip = null;
                 ShootBullet();
             }
 
@@ -624,9 +628,11 @@ public class Megaman : MonoBehaviour
             if (shootTimeLength >= 0.25f || shootButtonReleaseTimeLength > 0.15f)
             {
                 isShooting = false;
+                Debug.Log("You already shoot");
             }
-        }
+        } 
     }
+
     private void ShootBullet()
     {
         // Calculate the direction based on facingRight
@@ -670,8 +676,10 @@ public class Megaman : MonoBehaviour
         if (chargeTime > 0)
         {
             chargeTime = 0f; 
-            currentShootLevel = 0;  
-            hasPlayedChargeSound = false; 
+            currentShootLevel = 0;
+            isShooting = false;
+            hasPlayedChargeSound = false;
+            audioSource.Stop();
             Debug.Log("Charge interrupted due to damage.");
         }
     }
