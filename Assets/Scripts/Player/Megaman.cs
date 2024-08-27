@@ -155,7 +155,6 @@ public class Megaman : MonoBehaviour
     private BoxCollider2D boxCollider;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
-    private AudioSource audioSource;
 
     void Awake()
     {
@@ -163,7 +162,6 @@ public class Megaman : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
     }
 
     void Start()
@@ -351,7 +349,7 @@ public class Megaman : MonoBehaviour
         if (!isTakingDamage)
         {
             InterruptCharge();
-            audioSource.PlayOneShot(damage);
+            AudioManager.Instance.Play(damage);
             isTakingDamage = true;
             Invincible(true);
             FreezeInput(true);
@@ -499,7 +497,7 @@ public class Megaman : MonoBehaviour
 
         if (IsGrounded() && isFalling)
         {
-            audioSource.PlayOneShot(land);
+            AudioManager.Instance.Play(land);
             isFalling = false;
         }
 
@@ -571,8 +569,7 @@ public class Megaman : MonoBehaviour
                     currentShootLevel = i;
                     if (!hasPlayedChargeSound && i > 0) // play the charging audio
                     {
-                        audioSource.clip = chargingMegaBuster;
-                        audioSource.Play();
+                        AudioManager.Instance.Play(chargingMegaBuster);
                         hasPlayedChargeSound = true; // to avoid spam the audio
                     }
                     break;
@@ -609,8 +606,7 @@ public class Megaman : MonoBehaviour
                 {
                     isShooting = true;
                     shootTime = Time.time;
-                    audioSource.Stop();
-                    audioSource.clip = null;
+                    AudioManager.Instance.Stop(chargingMegaBuster);
                     ShootBullet();
                 }
             }
@@ -656,7 +652,7 @@ public class Megaman : MonoBehaviour
 
         // Assign damage and play the appropriate sound based on the current shoot level
         int damage = shootLevel[currentShootLevel].damage;
-        audioSource.PlayOneShot(shootLevel[currentShootLevel].shootSound);
+        AudioManager.Instance.Play(shootLevel[currentShootLevel].shootSound);
 
         bullet.GetComponent<Bullet>().SetDamageValue(damage);
         bullet.GetComponent<Bullet>().SetBulletSpeed(bulletSpeed);
@@ -685,7 +681,7 @@ public class Megaman : MonoBehaviour
             currentShootLevel = 0;
             isShooting = false;
             hasPlayedChargeSound = false;
-            audioSource.Stop();
+            AudioManager.Instance.Stop(chargingMegaBuster);
             Debug.Log("Charge interrupted due to damage.");
         }
     }

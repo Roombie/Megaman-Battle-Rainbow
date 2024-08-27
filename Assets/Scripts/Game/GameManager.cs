@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
         if (playerLives >= 0)
         {
             RespawnPlayer();
-        } 
+        }
         else
         {
             GameOver();
@@ -122,18 +122,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RestoreHealth(int amount)
+    public void RestoreHealth(int amount, AudioClip itemSound)
     {
         if (player.currentHealth != player.maxHealth)
-        StartCoroutine(IncrementHealth(amount));
+        StartCoroutine(IncrementHealth(amount, itemSound));
     }
 
-    private IEnumerator IncrementHealth(int amount)
+    private IEnumerator IncrementHealth(int amount, AudioClip itemSound = null)
     {
         int healthToRestore = Mathf.Clamp(amount, 0, player.maxHealth - player.currentHealth);
         FreezeEverything(true);
         while (healthToRestore > 0)
         {
+            AudioManager.Instance.Play(itemSound);
             player.currentHealth++;  // This increments player's health
             UIHealthBar.Instance.SetValue(player.currentHealth / (float)player.maxHealth);  // And then, update health bar UI
             Debug.Log("Current health: " + player.currentHealth);

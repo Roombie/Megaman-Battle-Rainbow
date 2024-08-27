@@ -187,26 +187,18 @@ public class OptionsMenu : MonoBehaviour
     public void IncreaseLanguage() => ChangeLanguageIndex(1);
     public void DecreaseLanguage() => ChangeLanguageIndex(-1);
 
-    private IEnumerator UpdateUIAfterLocaleChange()
-    {
-        yield return LocalizationSettings.InitializationOperation; // Wait for the initialization or change to complete
-
-        UpdateGraphicsText();
-        UpdateVSyncImage();
-        UpdateSlideWithDownJumpImage();
-        UpdateControllerVibrationImage();
-        UpdateLanguageText();
-        PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
-    }
-
     private void ChangeLanguageIndex(int change)
     {
         int languageCount = LocalizationSettings.AvailableLocales.Locales.Count;
         currentLanguageIndex = (currentLanguageIndex + change + languageCount) % languageCount;
 
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
-
-        StartCoroutine(UpdateUIAfterLocaleChange());
+        UpdateGraphicsText();
+        UpdateVSyncImage();
+        UpdateSlideWithDownJumpImage();
+        UpdateControllerVibrationImage();
+        UpdateLanguageText();
+        PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
 
     private int GetCurrentResolutionIndex()
@@ -262,11 +254,6 @@ public class OptionsMenu : MonoBehaviour
         currentLanguageIndex = PlayerPrefs.GetInt(SettingsKeys.LanguageKey, 0);
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
 
-        UpdateGraphicsText();
-        UpdateResolutionText();
-        UpdateVSyncImage();
-        UpdateSlideWithDownJumpImage();
-        UpdateControllerVibrationImage();
         UpdateLanguageText();
     }
 
@@ -305,7 +292,7 @@ public class OptionsMenu : MonoBehaviour
         PlayerPrefs.SetFloat(SettingsKeys.MusicVolumeKey, 1f);
         PlayerPrefs.SetFloat(SettingsKeys.VoiceVolumeKey, 1f);
         PlayerPrefs.SetInt(SettingsKeys.FullscreenKey, 1);
-        PlayerPrefs.SetInt(SettingsKeys.VSyncKey, 1);      
+        PlayerPrefs.SetInt(SettingsKeys.VSyncKey, 1);
         PlayerPrefs.SetInt(SettingsKeys.GraphicsQualityKey, currentGraphicsIndex);
         PlayerPrefs.SetInt(SettingsKeys.ResolutionKey, currentResolutionIndex);
     }

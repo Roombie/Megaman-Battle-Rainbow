@@ -61,14 +61,16 @@ public class MegamanItem : MonoBehaviour
         switch (itemType)
         {
             case ItemType.Health:
-                GameManager.Instance.RestoreHealth(value);             
+                GameManager.Instance.RestoreHealth(value, itemSound);
                 break;
             case ItemType.WeaponEnergy:
                 break;
             case ItemType.ExtraLife:
                 GameManager.Instance.AddExtraLife(value);
+                AudioManager.Instance.Play(itemSound, SoundCategory.SFX);
                 break;
             case ItemType.ETank:
+                AudioManager.Instance.Play(itemSound);
                 GameManager.Instance.RestoreFullHealth();
                 break;
         }

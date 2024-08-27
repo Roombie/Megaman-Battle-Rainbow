@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerDefeatEffect : MonoBehaviour
 {
+    public AudioClip playerDeathSound;
     public float explosionSpeed = 0.75f;
     GameObject[] explosions = new GameObject[12];
     Vector3[] explosionVectors =
@@ -25,6 +26,7 @@ public class PlayerDefeatEffect : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        AudioManager.Instance.Play(playerDeathSound);
         for (int i = 0; i < explosions.Length; i++)
         {
             string explosionName = "Explosion" + (i + 1).ToString();
