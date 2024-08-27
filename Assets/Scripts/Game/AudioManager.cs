@@ -26,7 +26,7 @@ public class AudioManager : MonoBehaviour
     public int poolSize = 10; // Number of AudioSources to pool
     private Queue<AudioSource> sfxPool;
     private AudioSource musicSource;
-    private List<AudioSource> pausedSources = new List<AudioSource>();
+    private List<AudioSource> pausedSources = new();
 
     private void Awake()
     {

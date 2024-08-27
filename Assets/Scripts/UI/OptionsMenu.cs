@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using System.Collections;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class OptionsMenu : MonoBehaviour
 {
@@ -140,7 +141,23 @@ public class OptionsMenu : MonoBehaviour
 
     private void UpdateGraphicsText()
     {
-        graphicsText.text = LocalizationSettings.StringDatabase.GetLocalizedString("GameText", QualitySettings.names[currentGraphicsIndex]);
+        var key = QualitySettings.names[currentGraphicsIndex];
+        var operation = LocalizationSettings.StringDatabase.GetLocalizedStringAsync("GameText", key);
+
+        operation.Completed += handleLocalizationOperation;
+    }
+
+    private void handleLocalizationOperation(AsyncOperationHandle<string> operation)
+    {
+        if (operation.Status == AsyncOperationStatus.Succeeded)
+        {
+            graphicsText.text = operation.Result;
+            Debug.Log($"Graphics text updated to: {operation.Result}");
+        }
+        else
+        {
+            Debug.LogError($"Failed to get localized string: {operation.OperationException}");
+        }
     }
 
     private void UpdateResolutionText()
@@ -193,11 +210,11 @@ public class OptionsMenu : MonoBehaviour
         currentLanguageIndex = (currentLanguageIndex + change + languageCount) % languageCount;
 
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
+        UpdateLanguageText();
         UpdateGraphicsText();
         UpdateVSyncImage();
         UpdateSlideWithDownJumpImage();
         UpdateControllerVibrationImage();
-        UpdateLanguageText();
         PlayerPrefs.SetInt(SettingsKeys.LanguageKey, currentLanguageIndex);
     }
 
@@ -253,7 +270,6 @@ public class OptionsMenu : MonoBehaviour
 
         currentLanguageIndex = PlayerPrefs.GetInt(SettingsKeys.LanguageKey, 0);
         LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[currentLanguageIndex];
-
         UpdateLanguageText();
     }
 
