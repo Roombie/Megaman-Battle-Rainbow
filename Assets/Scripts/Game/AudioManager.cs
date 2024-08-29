@@ -18,6 +18,21 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        // Ensure only one instance exists
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+            InitializePools();
+        }
+    }
+
     // Assign these in the Unity Inspector
     public AudioMixerGroup sfxMixerGroup;
     public AudioMixerGroup musicMixerGroup;
@@ -27,19 +42,6 @@ public class AudioManager : MonoBehaviour
     private Queue<AudioSource> sfxPool;
     private AudioSource musicSource;
     private List<AudioSource> pausedSources = new();
-
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(this.gameObject);
-        }
-        else
-        {
-            _instance = this;
-            InitializePools();
-        }
-    }
 
     private void InitializePools()
     {
@@ -105,7 +107,7 @@ public class AudioManager : MonoBehaviour
         if (category == SoundCategory.SFX)
         {
             // Return the AudioSource to the pool after it's done playing
-            StartCoroutine(ReturnToPoolAfterPlayback(source, clip.length));
+            StartCoroutine(ReturnToPoolAfterPlayback(source, clip.length / Mathf.Abs(pitch)));
         }
     }
 

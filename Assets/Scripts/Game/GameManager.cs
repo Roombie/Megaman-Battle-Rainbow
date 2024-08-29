@@ -51,6 +51,9 @@ public class GameManager : MonoBehaviour
     bool canPauseGame;
     float timeScale;
 
+    [Header("Game Over")]
+    public AudioClip gameOverSoundClip;
+
     private void Start()
     {
         player = FindObjectOfType<Megaman>();
@@ -107,6 +110,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delayRestartDelay);
         SceneManager.LoadScene("GameOverScreen");
+        AudioManager.Instance.Play(gameOverSoundClip);
     }
 
     public void AddScorePoints(int points)
@@ -114,11 +118,11 @@ public class GameManager : MonoBehaviour
         score += points;
     }
 
-    public void RestoreFullHealth()
+    public void RestoreFullHealth(AudioClip itemSound)
     {
         if (player.currentHealth < player.maxHealth)
         {
-            StartCoroutine(IncrementHealth(player.maxHealth - player.currentHealth));
+            StartCoroutine(IncrementHealth(player.maxHealth - player.currentHealth, itemSound));
         }
     }
 
@@ -128,7 +132,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(IncrementHealth(amount, itemSound));
     }
 
-    private IEnumerator IncrementHealth(int amount, AudioClip itemSound = null)
+    private IEnumerator IncrementHealth(int amount, AudioClip itemSound)
     {
         int healthToRestore = Mathf.Clamp(amount, 0, player.maxHealth - player.currentHealth);
         FreezeEverything(true);

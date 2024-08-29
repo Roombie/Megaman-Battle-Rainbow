@@ -116,7 +116,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -140,7 +140,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6406040792145997260}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -178,4 +178,4 @@ MonoBehaviour:
   - {fileID: -710452163, guid: 2eca16cf6e77efd41840da494d82692c, type: 3}
   - {fileID: -421102636, guid: 2eca16cf6e77efd41840da494d82692c, type: 3}
   animationSpeed: 0.25
-  itemSound: {fileID: 0}
+  itemSound: {fileID: 8300000, guid: fead1bb648575a14286e75058dabde4e, type: 3}

@@ -47,9 +47,9 @@ public class MegamanItem : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             ApplyItemEffect();
             Destroy(gameObject); // Destroy the item after collection
@@ -71,7 +71,7 @@ public class MegamanItem : MonoBehaviour
                 break;
             case ItemType.ETank:
                 AudioManager.Instance.Play(itemSound);
-                GameManager.Instance.RestoreFullHealth();
+                GameManager.Instance.RestoreFullHealth(itemSound);
                 break;
         }
     }

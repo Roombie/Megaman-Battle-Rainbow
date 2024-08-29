@@ -67,4 +67,25 @@ public class ArrowSelector : MonoBehaviour
         yield return null;
         MoveIndicator(b);
     }
+    void OnDrawGizmos()
+    {
+        if (arrowIndicator != null && buttons != null && buttons.Length > 0)
+        {
+            // Visualize the position based on the last selected button
+            if (lastSelected >= 0 && lastSelected < buttons.Length)
+            {
+                // Calculate the position using the same formula
+                Vector3 calculatedPosition = buttons[lastSelected].position + ((Vector3)arrowOffset * (Screen.height / 1080f));
+
+                // Draw a sphere at the calculated position
+                Gizmos.color = Color.red; // Set the color of the Gizmo
+                Gizmos.DrawSphere(calculatedPosition, 10f); // Draw a sphere at the calculated position, with a radius of 10 units
+
+                // Optionally, draw a line from the button to the calculated position
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(buttons[lastSelected].position, calculatedPosition);
+            }
+        }
+    }
+
 }

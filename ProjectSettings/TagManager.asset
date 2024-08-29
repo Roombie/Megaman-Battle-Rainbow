@@ -9,6 +9,7 @@ TagManager:
   - Enemy
   - PauseMenu
   - Explosion
+  - Pause
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - UI
   - Player
   - Enemy
-  - 
+  - Item
   - 
   - 
   - 
