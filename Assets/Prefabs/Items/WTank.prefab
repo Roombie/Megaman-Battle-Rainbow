@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7314517897062074624}
   - component: {fileID: 5310052213028045907}
   - component: {fileID: 7943932303702366169}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}

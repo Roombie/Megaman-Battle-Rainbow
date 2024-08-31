@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3146964502029957218}
   - component: {fileID: -6937343639585822459}
   - component: {fileID: -6286124037512204404}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MysteryTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}

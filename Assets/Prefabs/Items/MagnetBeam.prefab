@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1390686224959853689}
   - component: {fileID: 3563164372561764969}
   - component: {fileID: 4092501881851221691}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MagnetBeam
   m_TagString: Untagged
   m_Icon: {fileID: 0}

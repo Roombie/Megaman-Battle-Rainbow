@@ -22,19 +22,22 @@ public class RushCoil : MonoBehaviour
     void Update()
     {
         animator.SetBool("isPlayerOnRush", isPlayerOnRush);
-        boxCollider.isTrigger = hasJumped;
-        rb.isKinematic = hasJumped;
+        if (hasJumped)
+        {
+            // Change the layer of the Rush Coil to a layer that doesn't interact with the player
+            gameObject.layer = LayerMask.NameToLayer("IgnorePlayer");
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
-            if (rb != null && !hasJumped)
+            Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
+            if (playerRb != null && !hasJumped)
             {
                 isPlayerOnRush = true;
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
                 hasJumped = true; 
             }
         }

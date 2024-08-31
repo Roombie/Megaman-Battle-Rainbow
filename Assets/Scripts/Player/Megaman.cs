@@ -535,7 +535,7 @@ public class Megaman : MonoBehaviour
         }
 
         // Reduce upward velocity for variable jump height
-        if (!jumpButtonPressed && rb.velocity.y > 0)
+        if (!jumpButtonPressed && rb.velocity.y > 0 && inAirFromJump && isJumping)
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }

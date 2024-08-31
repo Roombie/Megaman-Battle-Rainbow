@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -5226823693395892061}
   - component: {fileID: -8398687426611483920}
   - component: {fileID: 1838226297949396054}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: WeaponEnergy
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2654874362025177113}
   - component: {fileID: -1180736882944756045}
   - component: {fileID: 6688095015575939665}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SmallLifeEnergy
   m_TagString: Untagged
   m_Icon: {fileID: 0}

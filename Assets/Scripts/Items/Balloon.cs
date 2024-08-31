@@ -10,7 +10,6 @@ public class Balloon : MonoBehaviour
     public GameObject explosionPrefab;
     public float flashDelay = 0.0833f;
     public float explosionLifetime = 1.0f;
-    public float sinkDuration = 0.2f; // Duration for sinking movement
 
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
@@ -46,10 +45,7 @@ public class Balloon : MonoBehaviour
             Explode();
         }
 
-        if (!isSteppedOn)
-        {
-            rb.velocity = new Vector2(0, riseSpeed); // Balloon rises only if the player is not on it
-        }
+        rb.velocity = new Vector2(0, riseSpeed);
     }
 
     private IEnumerator FlashBeforeDestroy()
@@ -73,8 +69,12 @@ public class Balloon : MonoBehaviour
             {
                 Debug.Log("Player landed on the balloon!");
                 isSteppedOn = true;
-                StartCoroutine(SinkThenRise());
             }
+        }
+
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        {
+            Explode();
         }
     }
 
@@ -84,24 +84,6 @@ public class Balloon : MonoBehaviour
         {
             isSteppedOn = false;
         }
-    }
-
-    private IEnumerator SinkThenRise()
-    {
-        Vector3 originalPosition = transform.position;
-        Vector3 sinkPosition = new Vector3(transform.position.x, transform.position.y - sinkAmount, transform.position.z);
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < sinkDuration)
-        {
-            transform.position = Vector3.Lerp(originalPosition, sinkPosition, elapsedTime / sinkDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        // Reset back to original rise speed after sinking
-        rb.velocity = new Vector2(0, riseSpeed);
     }
 
     void Explode()
