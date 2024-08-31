@@ -126,16 +126,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RestoreHealth(int amount, AudioClip itemSound)
+    public void RestoreHealth(int amount, AudioClip itemSound, bool freezeEverything = true)
     {
         if (player.currentHealth != player.maxHealth)
-        StartCoroutine(IncrementHealth(amount, itemSound));
+        StartCoroutine(IncrementHealth(amount, itemSound, freezeEverything));
     }
 
-    private IEnumerator IncrementHealth(int amount, AudioClip itemSound)
+    private IEnumerator IncrementHealth(int amount, AudioClip itemSound, bool freezeEverything = true)
     {
         int healthToRestore = Mathf.Clamp(amount, 0, player.maxHealth - player.currentHealth);
-        FreezeEverything(true);
+        if (freezeEverything) FreezeEverything(true);
         while (healthToRestore > 0)
         {
             AudioManager.Instance.Play(itemSound);

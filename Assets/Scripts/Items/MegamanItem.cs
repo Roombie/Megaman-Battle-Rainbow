@@ -14,6 +14,7 @@ public class MegamanItem : MonoBehaviour
     public Sprite[] animationSprites; // Array of sprites for the animation
     public float animationSpeed = 0.25f;
     public AudioClip itemSound;
+    public bool freezeEverything = true;
 
     private SpriteRenderer spriteRenderer;
     private int currentFrame;
@@ -61,7 +62,7 @@ public class MegamanItem : MonoBehaviour
         switch (itemType)
         {
             case ItemType.Health:
-                GameManager.Instance.RestoreHealth(value, itemSound);
+                GameManager.Instance.RestoreHealth(value, itemSound, freezeEverything);
                 break;
             case ItemType.WeaponEnergy:
                 break;

@@ -105,7 +105,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -126,7 +126,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -134,6 +134,195 @@ TextureImporter:
       bones: []
       spriteID: 4dce4f51e0862594c86ea0a882a6e0df
       internalID: -1923916706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megaman5_items_2
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 36
+        width: 16
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7152d66b3b7cc644bb7c6e9b67e1776b
+      internalID: -490437551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megaman5_items_3
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 36
+        width: 17
+        height: 24
+      alignment: 5
+      pivot: {x: 1, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af3b5e36703cd0f498eb9c3768cc275a
+      internalID: -1644736162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megaman5_items_4
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 36
+        width: 16
+        height: 24
+      alignment: 5
+      pivot: {x: 1, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76c4cafa9c50d5e41bfe8b120b70d892
+      internalID: -1269242865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megaman5_items_5
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 36
+        width: 17
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a88fd12e49bf9954084c60939ff7b5c6
+      internalID: -1803700097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megaman5_items_6
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 37
+        width: 16
+        height: 23
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 776eeb97e82f6c54ea9973e7ce4156f1
+      internalID: -450592049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megaman5_items_7
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 36
+        width: 17
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc5b45e0faf2d30449226203f72da850
+      internalID: 1716291483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megaman5_items_8
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 35
+        width: 8
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e099ae2f15a62a4795e2f7abec68948
+      internalID: 1546397651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megaman5_items_9
+      rect:
+        serializedVersion: 2
+        x: 185
+        y: 35
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f59afb60990f0548abe24836d5aea03
+      internalID: 1597770378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spr_Megaman5_items_10
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 35
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: feb798b41f089db4988d6c0b18b80f3f
+      internalID: 59792198
       vertices: []
       indices: 
       edges: []
@@ -151,6 +340,15 @@ TextureImporter:
     nameFileIdTable:
       spr_Megaman5_items_0: 1375051001
       spr_Megaman5_items_1: -1923916706
+      spr_Megaman5_items_10: 59792198
+      spr_Megaman5_items_2: -490437551
+      spr_Megaman5_items_3: -1644736162
+      spr_Megaman5_items_4: -1269242865
+      spr_Megaman5_items_5: -1803700097
+      spr_Megaman5_items_6: -450592049
+      spr_Megaman5_items_7: 1716291483
+      spr_Megaman5_items_8: 1546397651
+      spr_Megaman5_items_9: 1597770378
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
