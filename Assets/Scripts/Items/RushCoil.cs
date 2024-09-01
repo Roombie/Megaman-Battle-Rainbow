@@ -5,23 +5,37 @@ using UnityEngine;
 public class RushCoil : MonoBehaviour
 {
     public float jumpForce = 20f;
+    public float activeDuration = 5f; // The duration for which Rush Coil remains active
+    private float timer;
     public bool isPlayerOnRush;
     public bool hasJumped;
     private Animator animator;
-    private BoxCollider2D boxCollider;
-    private Rigidbody2D rb;
+    private bool isActive;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
-        boxCollider = GetComponent<BoxCollider2D>();
-        rb = GetComponent<Rigidbody2D>();
+        isActive = true;
+        timer = activeDuration;
     }
 
     // Update is called once per frame
     void Update()
     {
         animator.SetBool("isPlayerOnRush", isPlayerOnRush);
+
+        // Decrease the timer if Rush Coil is active
+        if (isActive)
+        {
+            timer -= Time.deltaTime;
+
+            // If the timer reaches zero, make the Rush Coil uninteractable
+            if (timer <= 0f)
+            {
+                MakeUninteractable();
+            }
+        }
+
         if (hasJumped)
         {
             // Change the layer of the Rush Coil to a layer that doesn't interact with the player
@@ -34,12 +48,19 @@ public class RushCoil : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
-            if (playerRb != null && !hasJumped)
+            if (playerRb != null && !hasJumped && isActive)
             {
                 isPlayerOnRush = true;
                 playerRb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                hasJumped = true; 
+                hasJumped = true;
+                isActive = false; // Deactivate the timer once the player interacts with Rush Coil
             }
         }
+    }
+
+    private void MakeUninteractable()
+    {
+        isActive = false;
+        gameObject.layer = LayerMask.NameToLayer("IgnorePlayer");
     }
 }
