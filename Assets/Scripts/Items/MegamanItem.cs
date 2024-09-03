@@ -1,11 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MegamanItem : MonoBehaviour
 {
     public enum ItemType { Health, WeaponEnergy, ExtraLife, ETank, LTank, MTank, WTank, STank, RandomItem }
+    public enum ObjectType { Permanent, Temporal, PowerUp }
+
     public ItemType itemType;
+    public ObjectType objectType;
 
     public bool addToInventory = false;
     [Tooltip("The amount of health, energy, or lives the item grants")]
@@ -16,16 +18,30 @@ public class MegamanItem : MonoBehaviour
     public AudioClip itemSound;
     public bool freezeEverything = true;
 
+    public float temporalItemLifetime = 10f; // Time before a temporal item disappears
+
     private SpriteRenderer spriteRenderer;
     private int currentFrame;
     private float animationTimer;
+    private bool isCollected = false;
 
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            Debug.LogError("No SpriteRenderer found on this GameObject.");
+            return;
+        }
+
         if (animationSprites.Length > 0)
         {
             spriteRenderer.sprite = animationSprites[0]; // Start with the first frame
+        }
+
+        if (objectType == ObjectType.Temporal)
+        {
+            StartCoroutine(TemporalItemCountdown());
         }
     }
 
@@ -50,10 +66,10 @@ public class MegamanItem : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (!isCollected && collision.gameObject.CompareTag("Player"))
         {
             ApplyItemEffect(collision.gameObject);
-            Destroy(gameObject); // Destroy the item after collection
+            HandleItemCollection();
         }
     }
 
@@ -61,12 +77,20 @@ public class MegamanItem : MonoBehaviour
     {
         Megaman playerObject = player.GetComponent<Megaman>();
 
+        if (playerObject == null)
+        {
+            Debug.LogError("No Megaman script found on the player.");
+            return;
+        }
+
         switch (itemType)
         {
             case ItemType.Health:
                 playerObject.RestoreHealth(value, itemSound, freezeEverything);
                 break;
             case ItemType.WeaponEnergy:
+                // playerObject.RestoreWeaponEnergy(value);
+                AudioManager.Instance.Play(itemSound, SoundCategory.SFX);
                 break;
             case ItemType.ExtraLife:
                 GameManager.Instance.AddExtraLife(value);
@@ -76,6 +100,44 @@ public class MegamanItem : MonoBehaviour
                 AudioManager.Instance.Play(itemSound);
                 playerObject.RestoreFullHealth(itemSound);
                 break;
+
+                // Add cases for other item types (LTank, MTank, etc.)
+        }
+
+        if (addToInventory)
+        {
+            //InventoryManager.Instance.AddItem(this);
+        }
+    }
+
+    private void HandleItemCollection()
+    {
+        isCollected = true;
+
+        switch (objectType)
+        {
+            case ObjectType.Permanent:
+                // May involve marking it as collected in save data
+                Destroy(gameObject);
+                break;
+            case ObjectType.Temporal:
+                // Destroy immediately after collection
+                Destroy(gameObject);
+                break;
+            case ObjectType.PowerUp:
+                // Store it permanently in inventory
+                //InventoryManager.Instance.AddItem(this);
+                Destroy(gameObject);
+                break;
+        }
+    }
+
+    private IEnumerator TemporalItemCountdown()
+    {
+        yield return new WaitForSeconds(temporalItemLifetime);
+        if (!isCollected)
+        {
+            Destroy(gameObject); // Destroy the item if not collected within the lifetime
         }
     }
 }
