@@ -110,43 +110,12 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delayRestartDelay);
         SceneManager.LoadScene("GameOverScreen");
-        AudioManager.Instance.Play(gameOverSoundClip);
+        AudioManager.Instance.Play(gameOverSoundClip, SoundCategory.Music);
     }
 
     public void AddScorePoints(int points)
     {
         score += points;
-    }
-
-    public void RestoreFullHealth(AudioClip itemSound)
-    {
-        if (player.currentHealth < player.maxHealth)
-        {
-            StartCoroutine(IncrementHealth(player.maxHealth - player.currentHealth, itemSound));
-        }
-    }
-
-    public void RestoreHealth(int amount, AudioClip itemSound, bool freezeEverything = true)
-    {
-        if (player.currentHealth != player.maxHealth)
-        StartCoroutine(IncrementHealth(amount, itemSound, freezeEverything));
-    }
-
-    private IEnumerator IncrementHealth(int amount, AudioClip itemSound, bool freezeEverything = true)
-    {
-        int healthToRestore = Mathf.Clamp(amount, 0, player.maxHealth - player.currentHealth);
-        if (freezeEverything) FreezeEverything(true);
-        while (healthToRestore > 0)
-        {
-            AudioManager.Instance.Play(itemSound);
-            player.currentHealth++;  // This increments player's health
-            UIHealthBar.Instance.SetValue(player.currentHealth / (float)player.maxHealth);  // And then, update health bar UI
-            Debug.Log("Current health: " + player.currentHealth);
-            healthToRestore--;
-
-            yield return new WaitForSeconds(0.1f); 
-        }
-        FreezeEverything(false);
     }
 
     public void SetCheckpoint(Transform checkpoint)

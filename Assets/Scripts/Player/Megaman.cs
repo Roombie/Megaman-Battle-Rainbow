@@ -86,8 +86,34 @@ public class Megaman : MonoBehaviour
     private bool shootButtonRelease;
     private float shootButtonReleaseTimeLength;
 
+    public enum WeaponTypes
+    {
+        HyperBomb,
+        ThunderBeam,
+        SuperArm,
+        IceSlasher,
+        RollingCutter,
+        FireStorm,
+        MagnetBeam,
+        MegaBuster
+    };
+    public WeaponTypes playerWeapon = WeaponTypes.MegaBuster;
+
+    [System.Serializable]
+    public struct WeaponsStruct
+    {
+        public WeaponTypes weaponType;
+        public bool enabled;
+        public int currentEnergy;
+        public int maxEnergy;
+        public int energyCost;
+        public int weaponDamage;
+        public AudioClip weaponClip;
+        public GameObject weaponPrefab;
+    }
+    public WeaponsStruct[] weaponsData;
+
     [Header("Sliding")]
-    [Tooltip("Do you want to be able to slide with jump + down?")]
     [SerializeField] private float slideSpeed = 6f;
     [SerializeField] private float slideDuration = 0.35f;
     [SerializeField] private Transform slideDustPos;
@@ -305,7 +331,41 @@ public class Megaman : MonoBehaviour
     }
     #endregion
 
-    #region Health & Damage state
+    #region Health state
+    public void RestoreFullHealth(AudioClip itemSound)
+    {
+        if (currentHealth < maxHealth)
+        {
+            StartCoroutine(IncrementHealth(maxHealth - currentHealth, itemSound));
+        }
+    }
+
+    public void RestoreHealth(int amount, AudioClip itemSound, bool freezeEverything = true)
+    {
+        if (currentHealth != maxHealth)
+            StartCoroutine(IncrementHealth(amount, itemSound, freezeEverything));
+    }
+
+    private IEnumerator IncrementHealth(int amount, AudioClip itemSound, bool freezeEverything = true)
+    {
+        int healthToRestore = Mathf.Clamp(amount, 0, maxHealth - currentHealth);
+        if (freezeEverything) GameManager.Instance.FreezeEverything(true);
+        while (healthToRestore > 0)
+        {
+            AudioManager.Instance.Play(itemSound, SoundCategory.SFX, 1, 1, true);
+            currentHealth++;  // This increments player's health
+            UIHealthBar.Instance.SetValue(currentHealth / (float)maxHealth);  // And then, update health bar UI
+            Debug.Log("Current health: " + currentHealth);
+            healthToRestore--;
+
+            yield return new WaitForSeconds(0.05f);
+        }
+        AudioManager.Instance.Stop(itemSound);
+        GameManager.Instance.FreezeEverything(false);
+    }
+    #endregion
+
+    #region Damage state
     public void HitSide(bool rightSide)
     {
         // determines the push direction of the hit animation
@@ -1022,6 +1082,26 @@ public class Megaman : MonoBehaviour
         // Check if the point is within the water layer
         // Make sure waterLayer is a LayerMask and adjust as needed
         return Physics2D.OverlapPoint(point, waterLayer) != null;
+    }
+    #endregion
+
+    #region Weapons
+    public void SetWeapon(WeaponTypes weapon)
+    {
+        // set new selected weapon (determines color scheme)
+        playerWeapon = weapon;
+
+        // calculate weapon energy value to adjust the bars
+        int currentEnergy = weaponsData[(int)playerWeapon].currentEnergy;
+        int maxEnergy = weaponsData[(int)playerWeapon].maxEnergy;
+        float weaponEnergyValue = (float)currentEnergy / (float)maxEnergy;
+    }
+
+    public void SwitchWeapon(WeaponTypes weaponType)
+    {
+        // we can call this function to switch the player to the chosen weapon
+        EndClimbing();
+        SetWeapon(weaponType);
     }
     #endregion
 

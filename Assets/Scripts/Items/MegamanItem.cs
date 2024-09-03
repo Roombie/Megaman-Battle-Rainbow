@@ -52,17 +52,19 @@ public class MegamanItem : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            ApplyItemEffect();
+            ApplyItemEffect(collision.gameObject);
             Destroy(gameObject); // Destroy the item after collection
         }
     }
 
-    private void ApplyItemEffect()
+    private void ApplyItemEffect(GameObject player)
     {
+        Megaman playerObject = player.GetComponent<Megaman>();
+
         switch (itemType)
         {
             case ItemType.Health:
-                GameManager.Instance.RestoreHealth(value, itemSound, freezeEverything);
+                playerObject.RestoreHealth(value, itemSound, freezeEverything);
                 break;
             case ItemType.WeaponEnergy:
                 break;
@@ -72,7 +74,7 @@ public class MegamanItem : MonoBehaviour
                 break;
             case ItemType.ETank:
                 AudioManager.Instance.Play(itemSound);
-                GameManager.Instance.RestoreFullHealth(itemSound);
+                playerObject.RestoreFullHealth(itemSound);
                 break;
         }
     }
