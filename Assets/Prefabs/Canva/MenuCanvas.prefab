@@ -4973,6 +4973,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6315747067965847102}
+  - component: {fileID: 6692827889959746637}
   m_Layer: 5
   m_Name: WeaponsMenu
   m_TagString: Untagged
@@ -5003,9 +5004,23 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 7.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6692827889959746637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6633575686234597457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd696e857acf4b40bf6f0376559458d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerLivesText: {fileID: 4993724901058831967}
+  menuSelectClip: {fileID: 0}
 --- !u!1 &6636726245669916737
 GameObject:
   m_ObjectHideFlags: 0
@@ -5106,7 +5121,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -6234,7 +6249,7 @@ GameObject:
   - component: {fileID: 6844888631836677410}
   - component: {fileID: 4669891334612754274}
   m_Layer: 5
-  m_Name: Megaman Image
+  m_Name: CurrentCharacter Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

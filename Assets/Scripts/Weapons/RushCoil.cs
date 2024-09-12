@@ -29,7 +29,7 @@ public class RushCoil : MonoBehaviour
         animator.SetBool("isPlayerOnRush", isPlayerOnRush);
 
         // Decrease the timer if Rush Coil is active
-        if (isActive)
+        if (isActive && !hasJumped)
         {
             timer -= Time.deltaTime;
 

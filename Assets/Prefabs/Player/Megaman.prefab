@@ -84,6 +84,7 @@ MonoBehaviour:
     damage: 3
     shootSound: {fileID: 8300000, guid: 908398d31921bf044b4ce7444a507b7f, type: 3}
   chargerEnabled: 1
+  interruptChargeOnDamage: 1
   bulletSpeed: 20
   shootDelay: 0.15
   bulletShootOffset: {x: 0, y: 0.8}
@@ -91,6 +92,16 @@ MonoBehaviour:
   bulletPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
   limitBulletsOnScreen: 1
   maxBulletsOnScreen: 3
+  playerWeapon: 0
+  weaponsData:
+  - weaponType: 0
+    enabled: 0
+    currentEnergy: 0
+    maxEnergy: 28
+    energyCost: 0
+    weaponDamage: 1
+    weaponClip: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
+    weaponPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
   slideSpeed: 7.5
   slideDuration: 0.35
   slideDustPos: {fileID: 486739420861981772}
@@ -109,7 +120,7 @@ MonoBehaviour:
   spawnInterval: 1.25
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 1032
   groundCheckDistance: 0.1
   groundCheckOffset: {x: 0, y: 0.05}
   groundCheckWidth: 0.89
@@ -411,6 +422,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: ee25fec1-1a82-416e-9557-4e0be70a0134
     m_ActionName: Player/Pause[/Keyboard/escape,/Keyboard/p]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5663759666540440996}
+        m_TargetAssemblyTypeName: Megaman, Assembly-CSharp
+        m_MethodName: OnNextWeaponSwitch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 55f09632-8f4d-44ce-8ccd-46fe6718ab8d
+    m_ActionName: Player/NextWeapon[/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5663759666540440996}
+        m_TargetAssemblyTypeName: Megaman, Assembly-CSharp
+        m_MethodName: OnPreviousWeaponSwitch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 11f585f4-a8a4-4f08-ba2a-27605ec3d099
+    m_ActionName: Player/PreviousWeapon[/Keyboard/q]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

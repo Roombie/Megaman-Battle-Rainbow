@@ -13,30 +13,29 @@ public class GameManager : MonoBehaviour
         {
             if (instance == null)
             {
-                Debug.Log("GameManager is NULL");
+                Debug.LogError("GameManager is NULL");
             }
-
             return instance;
         }
     }
 
     private void Awake()
     {
-        if (instance)
+        if (instance && instance != this)
         {
             Destroy(gameObject);
         }
         else
         {
             instance = this;
+            DontDestroyOnLoad(this);
         }
-
-        DontDestroyOnLoad(this);
     }
     #endregion
 
     [Header("Lives")]
     public int playerLives = 3;
+    public int gamePlayerStartLives = 3;
     public int score = 0;
     public float delayRestartDelay = 5f;
     public float gamePlayerReadyDelay = 3f;
@@ -44,33 +43,32 @@ public class GameManager : MonoBehaviour
     private Transform currentCheckpoint;
     private Megaman player;
 
-    [Header("Pause Menu")]
-    public GameObject pauseMenu;
+    [Header("Pause")]
     bool isGamePaused;
-    bool pauseMusic;
     bool canPauseGame;
-    float timeScale;
+
+    [Header("Weapons Menu")]
+    private GameObject weaponsMenu;
 
     [Header("Game Over")]
     public AudioClip gameOverSoundClip;
 
+    Megaman.WeaponTypes playerWeaponType;
+    Megaman.WeaponsStruct[] playerWeapons;
+
     private void Start()
     {
         player = FindObjectOfType<Megaman>();
-        pauseMenu.SetActive(false);
+        // Find the WeaponsMenu GameObject in the scene
+        weaponsMenu = GameObject.Find("WeaponsMenu");
+        HideWeaponsMenu(); // Ensure the menu is hidden at the start
     }
 
-    public void ResetGame()
-    {
-        playerLives = 3;
-        currentCheckpoint = checkpoints[0];
-        player.currentHealth = player.maxHealth;
-    }
-
+    #region Lives
     public void AddExtraLife(int extralife = 1)
     {
         playerLives += extralife;
-        Debug.Log("Current lives: " + playerLives);
+        Debug.Log($"Current lives: {playerLives}");
     }
 
     public void LoseLife()
@@ -86,11 +84,11 @@ public class GameManager : MonoBehaviour
             GameOver();
         }
     }
+    #endregion
 
-    // Respawn the player at the last checkpoint
+    #region Respawn & Game Over
     public void RespawnPlayer()
     {
-        // After a short delay, re-enable the player's controls
         StartCoroutine(PlayerRespawnRoutine());
     }
 
@@ -112,6 +110,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("GameOverScreen");
         AudioManager.Instance.Play(gameOverSoundClip, SoundCategory.Music);
     }
+    #endregion
 
     public void AddScorePoints(int points)
     {
@@ -123,34 +122,50 @@ public class GameManager : MonoBehaviour
         currentCheckpoint = checkpoint;
     }
 
+    #region Weapon Menu
+    public void ShowWeaponsMenu()
+    {
+        if (weaponsMenu == null)
+        {
+            Debug.LogError("WeaponsMenu GameObject not found in the scene.");
+            return;
+        }
+
+        weaponsMenu.GetComponent<WeaponsMenu>().SetMenuData(playerLives);
+        weaponsMenu.GetComponent<WeaponsMenu>().ShowMenu();
+    }
+
+    public void HideWeaponsMenu()
+    {
+        if (weaponsMenu != null)
+        {
+            weaponsMenu.GetComponent<WeaponsMenu>().ExitMenu();
+        }
+    }
+    #endregion
+
     #region Game Paused
     public bool IsGamePaused()
     {
-        // return the game pause state
         return isGamePaused;
     }
 
     public void AllowGamePause(bool pause)
     {
-        // flag to allow if the game can be paused
         canPauseGame = pause;
     }
 
-    // Pause and resume game
-    public void TogglePause(bool pauseMusic = true)
+    public void ToggleWeaponsMenu(bool pauseMusic = true)
     {
-        // if we can pause the game and it isn't already paused
-        if (canPauseGame && !isGamePaused)
+        isGamePaused = !isGamePaused;
+        Debug.Log("Toggle pause");
+        if (isGamePaused)
         {
-            isGamePaused = true;
-            timeScale = Time.timeScale;
-            Time.timeScale = 0;
+            ShowWeaponsMenu();
         }
-        else if (isGamePaused)
+        else
         {
-            // if the game is paused then unpause it, but not when in weapons menu
-            isGamePaused = false;
-            Time.timeScale = timeScale;
+            HideWeaponsMenu();
         }
     }
     #endregion
@@ -167,7 +182,6 @@ public class GameManager : MonoBehaviour
 
     public void FreezeEnemies(bool freeze)
     {
-        // freeze all enemies
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         foreach (GameObject enemy in enemies)
         {
@@ -177,7 +191,6 @@ public class GameManager : MonoBehaviour
 
     public void FreezeExplosions(bool freeze)
     {
-        // freeze all explosions
         GameObject[] explosions = GameObject.FindGameObjectsWithTag("Explosion");
         foreach (GameObject explosion in explosions)
         {
@@ -188,7 +201,6 @@ public class GameManager : MonoBehaviour
     public void FreezeEverything(bool freeze)
     {
         Debug.Log("Freezing everything");
-        // one method to freeze everything except the player if needed
         FreezeEnemies(freeze);
         FreezeExplosions(freeze);
         FreezePlayer(freeze);

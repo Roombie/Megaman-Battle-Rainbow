@@ -220,4 +220,3 @@ MonoBehaviour:
   explosionPrefab: {fileID: 4568756790520953413, guid: c6fffa4ca2bee154e9be304d891a9847, type: 3}
   flashDelay: 0.0833
   explosionLifetime: 1
-  sinkDuration: 0.1

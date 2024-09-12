@@ -66,6 +66,7 @@ public class Megaman : MonoBehaviour
     [Header("Shooting")]
     public List<ShootLevel> shootLevel = new();
     [SerializeField] private bool chargerEnabled = true;
+    [SerializeField] private bool interruptChargeOnDamage = true;
     private int currentShootLevel = 0;  // Current shoot level (index in the shootLevel list)
     private float chargeTime = 0f;      // Takes the current charge time
     private bool hasPlayedChargeSound = false;
@@ -88,14 +89,14 @@ public class Megaman : MonoBehaviour
 
     public enum WeaponTypes
     {
+        MegaBuster,
+        MagnetBeam,
         HyperBomb,
         ThunderBeam,
         SuperArm,
         IceSlasher,
         RollingCutter,
-        FireStorm,
-        MagnetBeam,
-        MegaBuster
+        FireStorm
     };
     public WeaponTypes playerWeapon = WeaponTypes.MegaBuster;
 
@@ -408,7 +409,7 @@ public class Megaman : MonoBehaviour
         // depending which side we were hit on, and then apply that force
         if (!isTakingDamage)
         {
-            InterruptCharge();
+            if (interruptChargeOnDamage) InterruptChargeShoot();
             AudioManager.Instance.Play(damage);
             isTakingDamage = true;
             Invincible(true);
@@ -479,7 +480,7 @@ public class Megaman : MonoBehaviour
     {
         if (isSliding || isClimbing) return; // Player will use the slide or climbing if is true
 
-        // Check if there is an horizontal input
+        // Check if there is horizontal input
         if (moveInput.x != 0)
         {
             if (!isMoving) // If you're not moving
@@ -491,22 +492,27 @@ public class Megaman : MonoBehaviour
             }
             else
             {
-                if (useStepDelay && !hasStepped && IsGrounded())
+                // Check if direction has changed while falling
+                bool directionChangedWhileFalling = (Mathf.Sign(moveInput.x) != Mathf.Sign(rb.velocity.x)) && !IsGrounded();
+
+                if (useStepDelay && !hasStepped && IsGrounded() && !directionChangedWhileFalling)
                 {
-                    //Apply step
+                    // Apply step
                     rb.velocity = new Vector2(moveInput.x * stepDistance, rb.velocity.y);
                     stepTimer -= Time.deltaTime; // Decrease the step timer
 
                     if (stepTimer <= 0)
                     {
-                       // Start with step distance
+                        // Start with step distance
                         hasStepped = true; // the step has been completed
                         stepTimer = stepDelay; // Reset timer for next step
                     }
                 }
                 else
                 {
-                    rb.velocity = new Vector2(moveInput.x * speed, rb.velocity.y); // Normal speed after stepping
+                    // Apply normal speed if direction has changed while falling or step is not applicable
+                    rb.velocity = new Vector2(moveInput.x * speed, rb.velocity.y);
+                    hasStepped = true; // Ensure stepping is not applied in these cases
                 }
             }
         }
@@ -536,6 +542,7 @@ public class Megaman : MonoBehaviour
         transform.localScale = scale;
     }
     #endregion
+
 
     #region Jumping
     private void CheckJump()
@@ -733,7 +740,7 @@ public class Megaman : MonoBehaviour
         };
     }
 
-    private void InterruptCharge()
+    private void InterruptChargeShoot()
     {
         if (chargeTime > 0)
         {
@@ -1100,8 +1107,27 @@ public class Megaman : MonoBehaviour
     public void SwitchWeapon(WeaponTypes weaponType)
     {
         // we can call this function to switch the player to the chosen weapon
+        // this is used when player is on the weapons menu
         EndClimbing();
         SetWeapon(weaponType);
+    }
+
+    private void SwitchToNextWeapon()
+    {
+        // increment weapon index and wrap around if necessary
+        int nextWeapon = (int)playerWeapon + 1;
+        if (nextWeapon >= weaponsData.Length) nextWeapon = 0;
+        SetWeapon((WeaponTypes)nextWeapon);
+        Debug.Log($"You switched to: {nextWeapon}");
+    }
+
+    private void SwitchToPreviousWeapon()
+    {
+        // decrement weapon index and wrap around if necessary
+        int previousWeapon = (int)playerWeapon - 1;
+        if (previousWeapon < 0) previousWeapon = weaponsData.Length - 1;
+        SetWeapon((WeaponTypes)previousWeapon);
+        Debug.Log($"You switched to: {previousWeapon}");
     }
     #endregion
 
@@ -1109,7 +1135,6 @@ public class Megaman : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
-        //Debug.Log("Move values: " + moveInput);
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -1155,7 +1180,24 @@ public class Megaman : MonoBehaviour
         {
             freezeEverything = !freezeEverything;
             GameManager.Instance.FreezeEverything(freezeEverything);
+            GameManager.Instance.ToggleWeaponsMenu();
         }       
+    }
+
+    public void OnNextWeaponSwitch(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            SwitchToNextWeapon();
+        }
+    }
+
+    public void OnPreviousWeaponSwitch(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            SwitchToPreviousWeapon();
+        }
     }
     #endregion
 

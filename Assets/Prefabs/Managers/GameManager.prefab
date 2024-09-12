@@ -44,10 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55c78f5029efa644990e93458667e0f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerLives: 0
+  playerLives: 3
+  gamePlayerStartLives: 3
   score: 0
   delayRestartDelay: 5
   gamePlayerReadyDelay: 3
   checkpoints: []
-  pauseMenu: {fileID: 0}
+  weaponsMenuPrefab: {fileID: 1514755936705207792, guid: 51effd1023986b344acfdabd2782974c, type: 3}
   gameOverSoundClip: {fileID: 8300000, guid: 5d10ee18dfe6be44d92677a4c97d45b4, type: 3}

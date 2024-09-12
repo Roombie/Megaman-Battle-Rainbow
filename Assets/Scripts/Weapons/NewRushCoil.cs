@@ -30,6 +30,11 @@ public class NewRushCoil : MonoBehaviour
     {
         isActive = true;
         timer = activeDuration;
+
+        int itemLayer = LayerMask.NameToLayer("Item");
+        int ignoreItemLayer = LayerMask.NameToLayer("IgnoreItem");
+
+        Physics2D.IgnoreLayerCollision(itemLayer, ignoreItemLayer, true);
     }
 
     // Update is called once per frame
@@ -37,8 +42,8 @@ public class NewRushCoil : MonoBehaviour
     {
         animator.SetBool("isPlayerOnRush", isPlayerOnRush);
 
-        // Decrease the timer if Rush Coil is active
-        if (isActive)
+        // Decrease the timer if Rush Coil is active and the player hasn't jumped
+        if (isActive && !hasJumped)
         {
             timer -= Time.deltaTime;
 
@@ -50,7 +55,7 @@ public class NewRushCoil : MonoBehaviour
         }
 
         // Make the Rush Coil uninteractable once the player lands after jumping
-        if (hasJumped && !isInAir && isGrounded)
+        if (hasJumped && isGrounded && !isInAir)
         {
             MakeUninteractable();
         }

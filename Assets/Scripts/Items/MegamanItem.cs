@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MegamanItem : MonoBehaviour
 {
-    public enum ItemType { Health, WeaponEnergy, ExtraLife, ETank, LTank, MTank, WTank, STank, RandomItem }
+    public enum ItemType { Empty, Health, WeaponEnergy, ExtraLife, ETank, LTank, MTank, WTank, STank, RandomItem }
     public enum ObjectType { Permanent, Temporal, PowerUp }
 
     public ItemType itemType;
@@ -64,14 +64,14 @@ public class MegamanItem : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!isCollected && collision.gameObject.CompareTag("Player"))
         {
             ApplyItemEffect(collision.gameObject);
             HandleItemCollection();
         }
-    }
+    }  
 
     private void ApplyItemEffect(GameObject player)
     {
@@ -85,23 +85,23 @@ public class MegamanItem : MonoBehaviour
 
         switch (itemType)
         {
+            case ItemType.Empty:
+                break;
             case ItemType.Health:
                 playerObject.RestoreHealth(value, itemSound, freezeEverything);
                 break;
             case ItemType.WeaponEnergy:
                 // playerObject.RestoreWeaponEnergy(value);
-                AudioManager.Instance.Play(itemSound, SoundCategory.SFX);
+                AudioManager.Instance.Play(itemSound);
                 break;
             case ItemType.ExtraLife:
                 GameManager.Instance.AddExtraLife(value);
-                AudioManager.Instance.Play(itemSound, SoundCategory.SFX);
+                AudioManager.Instance.Play(itemSound);
                 break;
             case ItemType.ETank:
                 AudioManager.Instance.Play(itemSound);
                 playerObject.RestoreFullHealth(itemSound);
                 break;
-
-                // Add cases for other item types (LTank, MTank, etc.)
         }
 
         if (addToInventory)
