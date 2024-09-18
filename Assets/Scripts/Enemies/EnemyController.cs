@@ -73,7 +73,7 @@ public class EnemyController : MonoBehaviour
         // take damage if not invincible
         if (!isInvincible)
         {
-            audioSource.PlayOneShot(damageClip);
+            AudioManager.Instance.Play(damageClip);
             // take damage amount from health and call defeat if no health
             currentHealth -= damage;
             Mathf.Clamp(currentHealth, 0, maxHealth);

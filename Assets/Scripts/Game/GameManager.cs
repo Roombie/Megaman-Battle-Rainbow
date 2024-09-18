@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,6 +32,24 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // Define the missing OnSceneLoaded method
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Handle actions after a scene is loaded
+        weaponsMenu = GameObject.Find("WeaponsMenu");
+        HideWeaponsMenu(); // Ensure the menu is hidden when the scene loads
+    }
+
     [Header("Lives")]
     public int playerLives = 3;
     public int gamePlayerStartLives = 3;
@@ -46,12 +63,17 @@ public class GameManager : MonoBehaviour
     [Header("Pause")]
     bool isGamePaused;
     bool canPauseGame;
+    [SerializeField] private AudioClip openPauseMenuSoundClip;
+    [SerializeField] private AudioClip closePauseMenuSoundClip;
+
+    [Header("Screws")]
+    public int screwsCollected = 0;
 
     [Header("Weapons Menu")]
     private GameObject weaponsMenu;
 
     [Header("Game Over")]
-    public AudioClip gameOverSoundClip;
+    [SerializeField] AudioClip gameOverSoundClip;
 
     Megaman.WeaponTypes playerWeaponType;
     Megaman.WeaponsStruct[] playerWeapons;
@@ -122,17 +144,42 @@ public class GameManager : MonoBehaviour
         currentCheckpoint = checkpoint;
     }
 
+    #region Screws
+    // Add a screw
+    public void AddScrew(int amount)
+    {
+        screwsCollected += amount;
+        Debug.Log($"Screws collected: {screwsCollected}");
+    }
+
+    // Spend screws in a shop
+    public bool SpendScrews(int amount)
+    {
+        if (screwsCollected >= amount)
+        {
+            screwsCollected -= amount;
+            Debug.Log($"Spent {amount} screws. Remaining screws: {screwsCollected}");
+            return true;
+        }
+        else
+        {
+            Debug.Log("Not enough screws.");
+            return false;
+        }
+    }
+    #endregion
+
     #region Weapon Menu
     public void ShowWeaponsMenu()
     {
-        if (weaponsMenu == null)
-        {
-            Debug.LogError("WeaponsMenu GameObject not found in the scene.");
-            return;
-        }
+        if (!canPauseGame) return;
 
-        weaponsMenu.GetComponent<WeaponsMenu>().SetMenuData(playerLives);
-        weaponsMenu.GetComponent<WeaponsMenu>().ShowMenu();
+        if (weaponsMenu != null && player != null)
+        {
+            weaponsMenu.GetComponent<WeaponsMenu>().SetMenuData(playerLives, player.GetComponent<Megaman>().playerWeapon,
+                    player.GetComponent<Megaman>().weaponsData);
+            weaponsMenu.GetComponent<WeaponsMenu>().ShowMenu();
+        }
     }
 
     public void HideWeaponsMenu()
@@ -157,14 +204,18 @@ public class GameManager : MonoBehaviour
 
     public void ToggleWeaponsMenu(bool pauseMusic = true)
     {
+        weaponsMenu = GameObject.Find("WeaponsMenu");
         isGamePaused = !isGamePaused;
         Debug.Log("Toggle pause");
+
         if (isGamePaused)
         {
+            AudioManager.Instance.Play(openPauseMenuSoundClip);
             ShowWeaponsMenu();
         }
         else
         {
+            AudioManager.Instance.Play(closePauseMenuSoundClip);
             HideWeaponsMenu();
         }
     }

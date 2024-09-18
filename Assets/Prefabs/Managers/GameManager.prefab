@@ -50,5 +50,6 @@ MonoBehaviour:
   delayRestartDelay: 5
   gamePlayerReadyDelay: 3
   checkpoints: []
-  weaponsMenuPrefab: {fileID: 1514755936705207792, guid: 51effd1023986b344acfdabd2782974c, type: 3}
+  openPauseMenuSoundClip: {fileID: 8300000, guid: 2f0b8b73f90d8354ca2a2de0431d4f50, type: 3}
+  closePauseMenuSoundClip: {fileID: 8300000, guid: 5eaeec42283e46d478d4b394739e0f2d, type: 3}
   gameOverSoundClip: {fileID: 8300000, guid: 5d10ee18dfe6be44d92677a4c97d45b4, type: 3}

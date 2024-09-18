@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MegamanItem : MonoBehaviour
 {
-    public enum ItemType { Empty, Health, WeaponEnergy, ExtraLife, ETank, LTank, MTank, WTank, STank, RandomItem }
+    public enum ItemType { Empty, Health, WeaponEnergy, ExtraLife, ETank, LTank, MTank, WTank, STank, Screw, ScoreBall, RandomItem}
     public enum ObjectType { Permanent, Temporal, PowerUp }
 
     public ItemType itemType;
@@ -19,11 +19,14 @@ public class MegamanItem : MonoBehaviour
     public bool freezeEverything = true;
 
     public float temporalItemLifetime = 10f; // Time before a temporal item disappears
+    public float flashDuration = 2f; // Time before disappearance to start flashing
+    public float flashInterval = 0.2f; // Interval for flashing (visibility toggling)
 
     private SpriteRenderer spriteRenderer;
     private int currentFrame;
     private float animationTimer;
     private bool isCollected = false;
+    private Coroutine flashCoroutine;
 
     private void Start()
     {
@@ -41,6 +44,8 @@ public class MegamanItem : MonoBehaviour
 
         if (objectType == ObjectType.Temporal)
         {
+            // Start countdown and schedule the flash effect
+            Invoke(nameof(StartFlashing), temporalItemLifetime - flashDuration);
             StartCoroutine(TemporalItemCountdown());
         }
     }
@@ -71,7 +76,7 @@ public class MegamanItem : MonoBehaviour
             ApplyItemEffect(collision.gameObject);
             HandleItemCollection();
         }
-    }  
+    }
 
     private void ApplyItemEffect(GameObject player)
     {
@@ -102,6 +107,12 @@ public class MegamanItem : MonoBehaviour
                 AudioManager.Instance.Play(itemSound);
                 playerObject.RestoreFullHealth(itemSound);
                 break;
+            case ItemType.ScoreBall:
+                GameManager.Instance.AddScorePoints(value);
+                break;
+            case ItemType.Screw:
+                GameManager.Instance.AddScrew(value);
+                break;
         }
 
         if (addToInventory)
@@ -114,30 +125,51 @@ public class MegamanItem : MonoBehaviour
     {
         isCollected = true;
 
+        // Stop flashing if it was started
+        if (flashCoroutine != null)
+        {
+            StopCoroutine(flashCoroutine);
+            spriteRenderer.enabled = true; // Make sure the sprite is visible when collected
+        }
+
         switch (objectType)
         {
             case ObjectType.Permanent:
-                // May involve marking it as collected in save data
                 Destroy(gameObject);
                 break;
             case ObjectType.Temporal:
-                // Destroy immediately after collection
                 Destroy(gameObject);
                 break;
             case ObjectType.PowerUp:
-                // Store it permanently in inventory
-                //InventoryManager.Instance.AddItem(this);
                 Destroy(gameObject);
                 break;
+        }
+    }
+
+    private void StartFlashing()
+    {
+        if (!isCollected)
+        {
+            flashCoroutine = StartCoroutine(FlashEffect());
         }
     }
 
     private IEnumerator TemporalItemCountdown()
     {
         yield return new WaitForSeconds(temporalItemLifetime);
+
         if (!isCollected)
         {
             Destroy(gameObject); // Destroy the item if not collected within the lifetime
+        }
+    }
+
+    private IEnumerator FlashEffect()
+    {
+        while (!isCollected)
+        {
+            spriteRenderer.enabled = !spriteRenderer.enabled; // Toggle visibility
+            yield return new WaitForSeconds(flashInterval);
         }
     }
 }

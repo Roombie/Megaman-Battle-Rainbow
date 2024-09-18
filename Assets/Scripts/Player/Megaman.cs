@@ -114,6 +114,8 @@ public class Megaman : MonoBehaviour
     }
     public WeaponsStruct[] weaponsData;
 
+    private GameObject currentMagnetBeam = null;
+
     [Header("Sliding")]
     [SerializeField] private float slideSpeed = 6f;
     [SerializeField] private float slideDuration = 0.35f;
@@ -208,7 +210,7 @@ public class Megaman : MonoBehaviour
         {
             if (canMove) Move();
             if (canJump) CheckJump();
-            if (canShoot) PlayerShoot();
+            if (canShoot) UseWeapon();
             if (canSlide) PerformSlide();
             if (canClimb) HandleClimbing();
         }
@@ -475,6 +477,58 @@ public class Megaman : MonoBehaviour
     }
     #endregion
 
+    #region Weapons
+    public void SetWeapon(WeaponTypes weapon)
+    {
+        // set new selected weapon (determines color scheme)
+        playerWeapon = weapon;
+
+        // calculate weapon energy value to adjust the bars
+        int currentEnergy = weaponsData[(int)playerWeapon].currentEnergy;
+        int maxEnergy = weaponsData[(int)playerWeapon].maxEnergy;
+        float weaponEnergyValue = (float)currentEnergy / (float)maxEnergy;
+    }
+
+    public void SwitchWeapon(WeaponTypes weaponType)
+    {
+        // we can call this function to switch the player to the chosen weapon
+        // this is used when player is on the weapons menu
+        EndClimbing();
+        SetWeapon(weaponType);
+    }
+
+    private void SwitchToNextWeapon()
+    {
+        // increment weapon index and wrap around if necessary
+        int nextWeapon = (int)playerWeapon + 1;
+        if (nextWeapon >= weaponsData.Length) nextWeapon = 0;
+        SetWeapon((WeaponTypes)nextWeapon);
+        Debug.Log($"You switched to: {nextWeapon}");
+    }
+
+    private void SwitchToPreviousWeapon()
+    {
+        // decrement weapon index and wrap around if necessary
+        int previousWeapon = (int)playerWeapon - 1;
+        if (previousWeapon < 0) previousWeapon = weaponsData.Length - 1;
+        SetWeapon((WeaponTypes)previousWeapon);
+        Debug.Log($"You switched to: {previousWeapon}");
+    }
+
+    private void UseWeapon()
+    {
+        switch (playerWeapon)
+        {
+            case WeaponTypes.MegaBuster:
+                MegaBuster();
+                break;
+            case WeaponTypes.MagnetBeam:
+                MagnetBeam();
+                break;
+        }
+    }
+    #endregion
+
     #region Movement
     private void Move()
     {
@@ -542,7 +596,6 @@ public class Megaman : MonoBehaviour
         transform.localScale = scale;
     }
     #endregion
-
 
     #region Jumping
     private void CheckJump()
@@ -618,7 +671,7 @@ public class Megaman : MonoBehaviour
     #endregion
 
     #region Shooting
-    private void PlayerShoot()
+    private void MegaBuster()
     {
         shootTimeLength = 0;
         shootButtonReleaseTimeLength = 0;
@@ -750,6 +803,57 @@ public class Megaman : MonoBehaviour
             hasPlayedChargeSound = false;
             AudioManager.Instance.Stop(chargingMegaBuster);
             Debug.Log("Charge interrupted due to damage.");
+        }
+    }
+
+    private void MagnetBeam()
+    {
+        // Find the weapon data for the current weapon type
+        WeaponsStruct currentWeapon = weaponsData[(int)playerWeapon];
+
+        if (shootButtonPressed && currentWeapon.weaponType == WeaponTypes.MagnetBeam)
+        {
+            if (currentMagnetBeam == null)
+            {
+                isShooting = true;
+
+                // Calculate direction based on player's facing direction
+                Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
+
+                // Calculate the starting position of the Magnet Beam
+                Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
+
+                // Instantiate the Magnet Beam prefab
+                currentMagnetBeam = Instantiate(currentWeapon.weaponPrefab, shootStartPosition, Quaternion.identity);
+
+                // Pass the direction to the Magnet Beam script
+                MagnetBeam magnetBeamScript = currentMagnetBeam.GetComponent<MagnetBeam>();
+                magnetBeamScript.SetBeamDirection(shootDirection);
+
+                // Start extending the beam
+                magnetBeamScript.StartExtending();
+
+                // Play the weapon-specific sound
+                if (currentWeapon.weaponClip != null)
+                {
+                    AudioManager.Instance.Play(currentWeapon.weaponClip, SoundCategory.SFX, 1f, 1f, true);
+                }
+            }
+        }
+        else if (shootButtonRelease && currentMagnetBeam != null)
+        {
+            isShooting = false;
+            // Stop extending the Magnet Beam and start the lifetime countdown
+            currentMagnetBeam.GetComponent<MagnetBeam>().StopExtending();
+            AudioManager.Instance.Stop(currentWeapon.weaponClip);
+            currentMagnetBeam = null;  // Optionally destroy or finalize the beam
+        }
+
+        if (currentMagnetBeam != null)
+        {
+            // Update the Magnet Beam position if the player is moving
+            Vector2 shootPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
+            currentMagnetBeam.GetComponent<MagnetBeam>().UpdatePosition(shootPosition);
         }
     }
     #endregion
@@ -1089,45 +1193,6 @@ public class Megaman : MonoBehaviour
         // Check if the point is within the water layer
         // Make sure waterLayer is a LayerMask and adjust as needed
         return Physics2D.OverlapPoint(point, waterLayer) != null;
-    }
-    #endregion
-
-    #region Weapons
-    public void SetWeapon(WeaponTypes weapon)
-    {
-        // set new selected weapon (determines color scheme)
-        playerWeapon = weapon;
-
-        // calculate weapon energy value to adjust the bars
-        int currentEnergy = weaponsData[(int)playerWeapon].currentEnergy;
-        int maxEnergy = weaponsData[(int)playerWeapon].maxEnergy;
-        float weaponEnergyValue = (float)currentEnergy / (float)maxEnergy;
-    }
-
-    public void SwitchWeapon(WeaponTypes weaponType)
-    {
-        // we can call this function to switch the player to the chosen weapon
-        // this is used when player is on the weapons menu
-        EndClimbing();
-        SetWeapon(weaponType);
-    }
-
-    private void SwitchToNextWeapon()
-    {
-        // increment weapon index and wrap around if necessary
-        int nextWeapon = (int)playerWeapon + 1;
-        if (nextWeapon >= weaponsData.Length) nextWeapon = 0;
-        SetWeapon((WeaponTypes)nextWeapon);
-        Debug.Log($"You switched to: {nextWeapon}");
-    }
-
-    private void SwitchToPreviousWeapon()
-    {
-        // decrement weapon index and wrap around if necessary
-        int previousWeapon = (int)playerWeapon - 1;
-        if (previousWeapon < 0) previousWeapon = weaponsData.Length - 1;
-        SetWeapon((WeaponTypes)previousWeapon);
-        Debug.Log($"You switched to: {previousWeapon}");
     }
     #endregion
 

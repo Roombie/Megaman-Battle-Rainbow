@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a65c073010f971e40bfff9ed0adb29ec
+guid: 4f38766ed1609b3478aea7ab7410d5d4
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 16
@@ -97,11 +97,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: spr_NES - Mega Man - Weapon_0
+      name: NES - Mega Man 5 - Pause Screen_1
       rect:
         serializedVersion: 2
-        x: 121
-        y: 252
+        x: 1
+        y: 59
         width: 16
         height: 16
       alignment: 0
@@ -111,92 +111,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: eaf524d8de90f8247a38121fa1c0a69a
-      internalID: -1552291358
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spr_NES - Mega Man - Weapon_1
-      rect:
-        serializedVersion: 2
-        x: 138
-        y: 252
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 083eeaa2f424dc0449202d0a3310b6ac
-      internalID: 151861528
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spr_NES - Mega Man - Weapon_2
-      rect:
-        serializedVersion: 2
-        x: 155
-        y: 252
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f7310cc8d4467e14fa11d0522fc8b8be
-      internalID: 2072959239
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: spr_NES - Mega Man - Weapon_3
-      rect:
-        serializedVersion: 2
-        x: 172
-        y: 256
-        width: 8
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 17b40501c0ac4624e994fc59547b1fe0
-      internalID: 1996796098
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MagnetBeam_0
-      rect:
-        serializedVersion: 2
-        x: 431
-        y: 299
-        width: 16
-        height: 8
-      alignment: 4
-      pivot: {x: 0, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6936f59e13eea0a4ebe62e49679fc7b9
-      internalID: 219994575
+      spriteID: e8139b42e339fb94d80f5479bc8f7804
+      internalID: -1267895830
       vertices: []
       indices: 
       edges: []
@@ -212,12 +128,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      MagnetBeam_0: 219994575
-      bullet: 589426476
-      spr_NES - Mega Man - Weapon_0: -1552291358
-      spr_NES - Mega Man - Weapon_1: 151861528
-      spr_NES - Mega Man - Weapon_2: 2072959239
-      spr_NES - Mega Man - Weapon_3: 1996796098
+      NES - Mega Man 5 - Pause Screen_0: -1633173031
+      NES - Mega Man 5 - Pause Screen_1: -1267895830
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
