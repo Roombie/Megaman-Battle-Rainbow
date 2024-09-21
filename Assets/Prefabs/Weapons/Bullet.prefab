@@ -197,3 +197,4 @@ MonoBehaviour:
   bulletSpeed: 5
   bulletDirection: {x: 1, y: 0}
   destroyDelay: 1
+  shootLevel: 0

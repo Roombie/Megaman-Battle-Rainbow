@@ -5,74 +5,87 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class MagnetBeam : MonoBehaviour
 {
-    [SerializeField] private float maxBeamLength = 30f;        // Maximum length of the beam
-    [SerializeField] private float tileExtendInterval = 0.2f;  // How quickly the beam extends
-    [SerializeField] private float lifetime = 5f;              // Time before the beam starts flashing
-    [SerializeField] private float flashDuration = 2f;         // How long the flashing lasts before destruction
-    [SerializeField] private float flashInterval = 0.1f;       // How quickly the beam flashes
-    [SerializeField] private LayerMask wallLayer;              // LayerMask to specify the wall layer
-    [SerializeField] private Vector2 offset = new (1f, 0f); // Offset for positioning the beam
+    [SerializeField] private float maxBeamLength = 30f;
+    [SerializeField] private float tileExtendInterval = 0.2f;
+    [SerializeField] private float lifetime = 5f;
+    [SerializeField] private float flashDuration = 2f;
+    [SerializeField] private float flashInterval = 0.1f;
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private Vector2 offset = new(1f, 0f);
+    [SerializeField] private float wallRadius = 0.1f;
 
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider;
-    private float currentBeamLength = 0f;                     // Current length of the beam
-    private float nextTileTime = 0f;                          // Timer to control when to extend the beam
-    private bool isExtending = false;                          // Flag to control beam extension
-    private Vector2 beamDirection = Vector2.right;             // Default direction is right
-    private bool isColliding = false;                          // Flag to stop extending when hitting a wall
-    private bool isShooting = false;                           // Flag to check if shooting
+    private Megaman megaman;
+    private float currentBeamLength = 0f;
+    private float nextTileTime = 0f;
+    private bool isExtending = false;
+    public bool hasReachedMaxLength = false; // Track if beam reaches max length
+    private Vector2 beamDirection = Vector2.right;
+    private bool isFlashing = false;
 
     private void Awake()
     {
-        // Get components
         spriteRenderer = GetComponent<SpriteRenderer>();
         boxCollider = GetComponent<BoxCollider2D>();
+        megaman = FindObjectOfType<Megaman>();
     }
 
     private void Update()
     {
-        if (isExtending && Time.time >= nextTileTime && !isColliding)
+        if (megaman != null && megaman.freezeInput)
+        {
+            // Stop extending the beam if input is frozen
+            StopExtending();
+            return;  // Exit Update early if input is frozen
+        }
+
+        if (isExtending && Time.time >= nextTileTime)
         {
             ExtendBeam();
             nextTileTime = Time.time + tileExtendInterval;
+
+            // Only update position while extending
+            UpdateBeamPosition((Vector2)transform.position);
         }
 
-        // Continuously update the position if the beam is extending
-        if (isExtending && !isColliding)
-        {
-            UpdatePosition();
-        }
-
-        // Check if the player has stopped shooting and the lifetime hasn't started
-        if (!isShooting && !isExtending)
+        if (!isExtending && !isFlashing)
         {
             StartFlashing(); // Start the flashing and destruction process
-            isShooting = true; // Reset flag to prevent repeated calls
         }
+
+        PerformRaycast(); // Check for walls
     }
 
     public void StartExtending()
     {
         isExtending = true;
-        isShooting = true; // Ensure the shooting flag is true when starting extension
+        hasReachedMaxLength = false; // Reset the max length flag
+        Debug.Log("The beam is extending now");
     }
 
     public void StopExtending()
     {
+        if (!isExtending) return;
+
         isExtending = false;
-        isShooting = false; // Player stopped shooting, so start the lifetime countdown
+        hasReachedMaxLength = true; // Set the flag when the beam stops
+        Debug.Log("Beam has stopped extending.");
         Invoke(nameof(StartFlashing), lifetime);
     }
 
     public void SetBeamDirection(Vector2 direction)
     {
-        beamDirection = direction;
+        beamDirection = direction.normalized;
         UpdateBeamFlip();
     }
 
-    public void UpdatePosition(Vector2 newPosition)
+    public void UpdateBeamPosition(Vector2 newPosition)
     {
-        transform.position = newPosition;
+        if (isExtending) // Only update position if the beam is extending
+        {
+            transform.position = newPosition;
+        }
     }
 
     private void ExtendBeam()
@@ -83,7 +96,6 @@ public class MagnetBeam : MonoBehaviour
             return;
         }
 
-        // Calculate the length to extend per interval
         float extendAmount = spriteRenderer.sprite.bounds.size.x;
 
         // Ensure we don't exceed the maximum beam length
@@ -95,6 +107,7 @@ public class MagnetBeam : MonoBehaviour
         else
         {
             Debug.Log("Max beam length reached.");
+            StopExtending(); // Stop extending when max length is reached
         }
     }
 
@@ -112,18 +125,13 @@ public class MagnetBeam : MonoBehaviour
 
         if (boxCollider != null)
         {
-            // Update the size of the collider
             boxCollider.size = new Vector2(newLength, boxCollider.size.y);
 
-            // Update the offset based on the direction
-            if (beamDirection == Vector2.right)
-            {
-                boxCollider.offset = new Vector2(newLength / 2f, boxCollider.offset.y);
-            }
-            else if (beamDirection == Vector2.left)
-            {
-                boxCollider.offset = new Vector2(-newLength / 2f, boxCollider.offset.y);
-            }
+            // Adjust collider based on direction
+            boxCollider.offset = new Vector2(
+                beamDirection == Vector2.right ? newLength / 2f : -newLength / 2f,
+                boxCollider.offset.y
+            );
         }
         else
         {
@@ -139,12 +147,17 @@ public class MagnetBeam : MonoBehaviour
             return;
         }
 
-        // Flip the sprite based on the direction
-        spriteRenderer.flipX = beamDirection == Vector2.left;
+        if (isExtending)
+        {
+            spriteRenderer.flipX = beamDirection == Vector2.left;
+        }
     }
 
     private void StartFlashing()
     {
+        if (isFlashing) return;
+
+        isFlashing = true;
         StartCoroutine(FlashAndDestroy());
     }
 
@@ -152,43 +165,44 @@ public class MagnetBeam : MonoBehaviour
     {
         float elapsedTime = 0f;
 
-        // Flash the beam for the duration before destruction
         while (elapsedTime < flashDuration)
         {
-            spriteRenderer.enabled = !spriteRenderer.enabled; // Toggle sprite visibility
+            spriteRenderer.enabled = !spriteRenderer.enabled;
             yield return new WaitForSeconds(flashInterval);
             elapsedTime += flashInterval;
         }
 
-        // Ensure the beam is visible when destroyed
         spriteRenderer.enabled = true;
-
-        // Destroy the game object
         Destroy(gameObject);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void PerformRaycast()
     {
-        if (((1 << collision.gameObject.layer) & wallLayer) != 0)
+        Vector2 raycastStart = (Vector2)transform.position;
+        Vector2 raycastEnd = raycastStart + (beamDirection * currentBeamLength);
+
+        RaycastHit2D hit = Physics2D.Raycast(raycastStart, beamDirection, currentBeamLength, wallLayer);
+
+        if (hit.collider != null)
         {
-            isColliding = true; // Stop extending when hitting a wall
-            StopExtending(); // Stop the extension and start flashing timer
-            Debug.Log("Beam collided with a wall and stopped extending.");
+            Debug.Log("Raycast hit: " + hit.collider.name);
+            StopExtending(); // Stop if a wall is detected
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void OnDrawGizmos()
     {
-        if (((1 << collision.gameObject.layer) & wallLayer) != 0)
-        {
-            isColliding = false;
-        }
-    }
+        Vector2 raycastStart = (Vector2)transform.position + offset;
+        Vector2 raycastEnd = raycastStart + (beamDirection * currentBeamLength);
 
-    private void UpdatePosition()
-    {
-        // Update position based on the player's current facing direction and offset
-        Vector2 newPosition = (Vector2)transform.position + (beamDirection * offset.x);
-        transform.position = newPosition;
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(raycastStart, raycastEnd);
+
+        RaycastHit2D hit = Physics2D.Raycast(raycastStart, beamDirection, currentBeamLength, wallLayer);
+        if (hit.collider != null)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(hit.point, wallRadius);
+        }
     }
 }

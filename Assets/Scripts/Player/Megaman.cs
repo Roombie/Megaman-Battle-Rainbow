@@ -21,7 +21,8 @@ public class Megaman : MonoBehaviour
     [SerializeField] private bool canShoot = true;
     [SerializeField] private bool canSlide = true;
     [SerializeField] private bool canClimb = true;
-    private bool freezeInput = false;
+    [HideInInspector]
+    public bool freezeInput = false;
     private bool freezePlayer = false;
     private bool freezeEverything = false;
 
@@ -399,6 +400,7 @@ public class Megaman : MonoBehaviour
                 else
                 {
                     StartDamageAnimation();
+                    Debug.Log("Taking Damage");
                 }
             }         
         }
@@ -671,6 +673,20 @@ public class Megaman : MonoBehaviour
     #endregion
 
     #region Shooting
+    private void InterruptChargeShoot()
+    {
+        if (chargeTime > 0)
+        {
+            chargeTime = 0f;
+            currentShootLevel = 0;
+            isShooting = false;
+            hasPlayedChargeSound = false;
+            AudioManager.Instance.Stop(chargingMegaBuster);
+            Debug.Log("Charge interrupted due to damage.");
+        }
+    }
+
+    #region MegaBuster
     private void MegaBuster()
     {
         shootTimeLength = 0;
@@ -792,70 +808,82 @@ public class Megaman : MonoBehaviour
             Destroy(bullet); // Ensure the bullet is destroyed
         };
     }
+    #endregion
 
-    private void InterruptChargeShoot()
-    {
-        if (chargeTime > 0)
-        {
-            chargeTime = 0f; 
-            currentShootLevel = 0;
-            isShooting = false;
-            hasPlayedChargeSound = false;
-            AudioManager.Instance.Stop(chargingMegaBuster);
-            Debug.Log("Charge interrupted due to damage.");
-        }
-    }
-
+    #region MagnetBeam
     private void MagnetBeam()
     {
         // Find the weapon data for the current weapon type
         WeaponsStruct currentWeapon = weaponsData[(int)playerWeapon];
+        // Calculate the direction based on facingRight
+        Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
+        // Calculate the starting point of the raycast using the offset
+        Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
+        // Always use the maximum ray length for the shoot position
+        Vector2 shootPosition = shootStartPosition + shootDirection * shootRayLength;
 
-        if (shootButtonPressed && currentWeapon.weaponType == WeaponTypes.MagnetBeam)
+        // Stop the beam if invincible, or if button is released
+        if (!shootButtonPressed && shootButtonRelease)
         {
-            if (currentMagnetBeam == null)
+            if (currentMagnetBeam != null)
             {
-                isShooting = true;
+                // Stop extending the beam
+                currentMagnetBeam.GetComponent<MagnetBeam>().StopExtending();
+                isShooting = false;
+                AudioManager.Instance.Stop(currentWeapon.weaponClip);
+                currentMagnetBeam = null;
+            }
+        }
 
-                // Calculate direction based on player's facing direction
-                Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
-
-                // Calculate the starting position of the Magnet Beam
-                Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
-
+        // Handle the beam creation only if not invincible, not taking damage, and shoot button is properly handled
+        if (shootButtonPressed && shootButtonRelease && !isSliding && !isInvincible)
+        {
+            if (GameObject.FindGameObjectsWithTag("PlatformBeam").Length < 5)
+            {
                 // Instantiate the Magnet Beam prefab
-                currentMagnetBeam = Instantiate(currentWeapon.weaponPrefab, shootStartPosition, Quaternion.identity);
+                currentMagnetBeam = Instantiate(currentWeapon.weaponPrefab, shootPosition, Quaternion.identity);
 
                 // Pass the direction to the Magnet Beam script
-                MagnetBeam magnetBeamScript = currentMagnetBeam.GetComponent<MagnetBeam>();
-                magnetBeamScript.SetBeamDirection(shootDirection);
+                currentMagnetBeam.GetComponent<MagnetBeam>().SetBeamDirection(shootPosition);
+                currentMagnetBeam.GetComponent<MagnetBeam>().SetBeamDirection(shootDirection);
+                currentMagnetBeam.GetComponent<MagnetBeam>().StartExtending();
 
-                // Start extending the beam
-                magnetBeamScript.StartExtending();
+                // Set shooting to true for the duration of instantiating
+                isShooting = true;
 
                 // Play the weapon-specific sound
                 if (currentWeapon.weaponClip != null)
                 {
-                    AudioManager.Instance.Play(currentWeapon.weaponClip, SoundCategory.SFX, 1f, 1f, true);
+                    AudioManager.Instance.Play(currentWeapon.weaponClip);
                 }
+
+                // Prevent further shooting until button is released
+                shootButtonRelease = false;
             }
         }
-        else if (shootButtonRelease && currentMagnetBeam != null)
+
+        // Only update the beam position and direction if not invincible
+        if (currentMagnetBeam != null && !isInvincible)
         {
-            isShooting = false;
-            // Stop extending the Magnet Beam and start the lifetime countdown
-            currentMagnetBeam.GetComponent<MagnetBeam>().StopExtending();
-            AudioManager.Instance.Stop(currentWeapon.weaponClip);
-            currentMagnetBeam = null;  // Optionally destroy or finalize the beam
+            currentMagnetBeam.GetComponent<MagnetBeam>().UpdateBeamPosition(shootPosition);
+            currentMagnetBeam.GetComponent<MagnetBeam>().SetBeamDirection(shootDirection);
+            Debug.Log("Repositioning");
         }
 
-        if (currentMagnetBeam != null)
+        // Reset the shoot button release when the button is no longer pressed
+        if (!shootButtonPressed && !shootButtonRelease)
         {
-            // Update the Magnet Beam position if the player is moving
-            Vector2 shootPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
-            currentMagnetBeam.GetComponent<MagnetBeam>().UpdatePosition(shootPosition);
+            shootButtonRelease = true;
+        }
+
+        // Check if beam has reached its maximum length to stop shooting animation
+        if (currentMagnetBeam != null && currentMagnetBeam.GetComponent<MagnetBeam>().hasReachedMaxLength)
+        {
+            isShooting = false;
+            currentMagnetBeam = null;
         }
     }
+    #endregion
     #endregion
 
     #region Sliding

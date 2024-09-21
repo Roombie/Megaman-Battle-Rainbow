@@ -10,6 +10,7 @@ TagManager:
   - PauseMenu
   - Explosion
   - Pause
+  - PlatformBeam
   layers:
   - Default
   - TransparentFX
@@ -56,11 +57,11 @@ TagManager:
   - name: Item
     uniqueID: 1775355063
     locked: 0
-  - name: Player
-    uniqueID: 1998687109
-    locked: 0
   - name: Bullet
     uniqueID: 2542913739
+    locked: 0
+  - name: Player
+    uniqueID: 1998687109
     locked: 0
   - name: Water
     uniqueID: 2742064295
