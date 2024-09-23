@@ -32,7 +32,7 @@ public abstract class BaseWeapon : MonoBehaviour
         currentChargeLevel = 0;
     }
 
-    protected int GetChargeLevel()
+    public int GetChargeLevel()
     {
         if (weaponData.chargeLevels == null || weaponData.chargeLevels.Count == 0)
         {
@@ -58,7 +58,9 @@ public abstract class BaseWeapon : MonoBehaviour
         // Instantiate Projectile
         GameObject projectile = Instantiate(weaponData.weaponPrefab, GetShootPosition(), GetShootRotation());
         Projectile projScript = projectile.GetComponent<Projectile>();
-        projScript.Initialize(weaponData, playerController.IsFacingRight);
+
+        // Pass the charge level to Initialize
+        projScript.Initialize(weaponData, playerController.IsFacingRight, currentChargeLevel);
 
         // Play Shoot Sound
         if (weaponData.weaponClip != null)

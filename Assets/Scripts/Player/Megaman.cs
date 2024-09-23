@@ -4,14 +4,6 @@ using UnityEditor;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
-[System.Serializable]
-public struct ShootLevel
-{
-    public float timeRequired;      // Time required to reach this charge level
-    public int damage;              // Damage associated with this charge level
-    public AudioClip shootSound;    // Sound to play when shooting at this level
-}
-
 public class Megaman : MonoBehaviour
 {
     // MEGAMAN
@@ -42,7 +34,7 @@ public class Megaman : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private bool facingRight = true;
-    public bool IsFacingRight => facingRight;
+    public bool IsFacingRight => facingRight; // This is to be referenced on WeaponBase script
     [SerializeField] private bool useStepDelay = true;
     [SerializeField] private float stepDelay = 0.1f;  // Time for the 1-pixel step
     [SerializeField] private float stepDistance = 2f; // Amount of the 1-pixel step
@@ -66,7 +58,6 @@ public class Megaman : MonoBehaviour
     private int extraJumpCount;
 
     [Header("Shooting")]
-    public List<ShootLevel> shootLevel = new();
     [SerializeField] private bool chargerEnabled = true;
     [SerializeField] private bool interruptChargeOnDamage = true;
     private int currentShootLevel = 0;  // Current shoot level (index in the shootLevel list)
@@ -74,11 +65,8 @@ public class Megaman : MonoBehaviour
     private bool hasPlayedChargeSound = false;
 
     [Header("Bullet Settings")]
-    [SerializeField] private float bulletSpeed = 20f;
-    [SerializeField] private float shootDelay = 0.2f;
     [SerializeField] private Vector2 bulletShootOffset = new(0.5f, 1f);
     [SerializeField] private float shootRayLength = 5f;
-    [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private bool limitBulletsOnScreen = true; // Control whether to limit bullets or not
     [SerializeField] private int maxBulletsOnScreen = 3;
     private readonly List<GameObject> activeBullets = new();  // Track active bullets
@@ -99,6 +87,7 @@ public class Megaman : MonoBehaviour
     public WeaponsStruct[] weaponsData;
     public WeaponTypes playerWeapon = WeaponTypes.MegaBuster;
     private BaseWeapon currentWeapon;
+    private WeaponData weaponData;
 
     private GameObject currentMagnetBeam = null;
 
@@ -170,6 +159,7 @@ public class Megaman : MonoBehaviour
     private BoxCollider2D boxCollider;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+
 
     void Awake()
     {
@@ -684,19 +674,13 @@ public class Megaman : MonoBehaviour
         {
             chargeTime += Time.deltaTime;
 
-            // Determine the current shoot level
-            for (int i = shootLevel.Count - 1; i >= 0; i--)
+            // Determine the current shoot level from the weapon
+            currentShootLevel = currentWeapon.GetChargeLevel();
+
+            if (currentShootLevel > 0 && !hasPlayedChargeSound)
             {
-                if (chargeTime >= shootLevel[i].timeRequired)
-                {
-                    currentShootLevel = i;
-                    if (!hasPlayedChargeSound && i > 0) // play the charging audio
-                    {
-                        AudioManager.Instance.Play(chargingMegaBuster);
-                        hasPlayedChargeSound = true; // to avoid spam the audio
-                    }
-                    break;
-                }
+                AudioManager.Instance.Play(chargingMegaBuster);
+                hasPlayedChargeSound = true; // Avoid spamming the audio
             }
         }
 
@@ -708,8 +692,8 @@ public class Megaman : MonoBehaviour
                 isShooting = true;
                 shootButtonRelease = false;
                 shootTime = Time.time;
-                Invoke(nameof(ShootMegaBuster), shootDelay);
-            }      
+                Invoke(nameof(ShootMegaBuster), weaponData.shootDelay);
+            }
         }
 
         // Handle shooting logic when the shoot button is released for the charged shot
@@ -740,6 +724,7 @@ public class Megaman : MonoBehaviour
             shootButtonRelease = false;
             hasPlayedChargeSound = false;
         }
+
         // shoot key isn't being pressed and key release flag is false
         if (!shootButtonPressed && !shootButtonRelease)
         {
@@ -755,45 +740,42 @@ public class Megaman : MonoBehaviour
             {
                 isShooting = false;
             }
-        } 
+        }
     }
 
     private void ShootMegaBuster()
     {
+        if (weaponData == null)
+        {
+            Debug.LogError("WeaponData is null! Make sure weaponData is assigned before calling ShootMegaBuster.");
+            return;
+        }
+
         // Calculate the direction based on facingRight
         Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
         // Calculate the starting point of the raycast using the offset
         Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
-        // Always use the maximum ray length for the shoot position
-        Vector2 shootPosition = shootStartPosition + shootDirection * shootRayLength;
 
-        GameObject bullet = Instantiate(bulletPrefab, shootPosition, Quaternion.identity);
-        bullet.name = bulletPrefab.name;
+        // Instantiate the bullet projectile
+        GameObject bullet = Instantiate(weaponData.weaponPrefab, shootStartPosition, Quaternion.identity);
+        Projectile projScript = bullet.GetComponent<Projectile>();
 
-        bullet.GetComponent<Animator>().SetInteger("shootLevel", currentShootLevel);
-        bullet.GetComponent<Bullet>().SetShootLevel(currentShootLevel);
-
-        // Assign damage and play the appropriate sound based on the current shoot level
-        int damage = shootLevel[currentShootLevel].damage;
-        AudioManager.Instance.Play(shootLevel[currentShootLevel].shootSound);
-
-        bullet.GetComponent<Bullet>().SetDamageValue(damage);
-        bullet.GetComponent<Bullet>().SetBulletSpeed(bulletSpeed);
-        bullet.GetComponent<Bullet>().SetBulletDirection(facingRight ? Vector2.right : Vector2.left);
-        bullet.GetComponent<Bullet>().Shoot();
+        // Initialize the projectile with weapon data and current charge level
+        projScript.Initialize(weaponData, facingRight, currentShootLevel);
 
         // Add bullet to the active bullets list
         activeBullets.Add(bullet);
 
-        // Reset charge level and time
-        currentShootLevel = 0;
-        chargeTime = 0f;
-
-        // Add a listener to remove the bullet from the list when it is destroyed
-        bullet.GetComponent<Bullet>().OnBulletDestroyed += () => {
+        // Subscribe to OnBulletDestroyed event to remove the bullet from the list when destroyed
+        projScript.OnBulletDestroyed += () =>
+        {
             activeBullets.Remove(bullet);
             Destroy(bullet); // Ensure the bullet is destroyed
         };
+
+        // Reset charge level and time
+        currentShootLevel = 0;
+        chargeTime = 0f;
     }
     #endregion
 
@@ -871,6 +853,7 @@ public class Megaman : MonoBehaviour
         }
     }
     #endregion
+
     #endregion
 
     #region Sliding

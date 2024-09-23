@@ -6,6 +6,8 @@ public class Projectile : MonoBehaviour
     protected WeaponData weaponData;
     protected Vector2 direction;
     protected int damage;
+    protected float bulletSpeed;
+    protected int shootLevel = 0;
     protected bool hasHoming;
     protected float homingStrength;
     protected bool canFreeze;
@@ -17,11 +19,24 @@ public class Projectile : MonoBehaviour
     protected float slowAmount;
     protected float slowDuration;
 
-    public virtual void Initialize(WeaponData data, bool facingRight)
+    public delegate void BulletDestroyed();
+    public event BulletDestroyed OnBulletDestroyed;
+
+    private SpriteRenderer spriteRenderer;
+    protected Rigidbody2D rb;
+
+    protected virtual void Awake()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    public virtual void Initialize(WeaponData data, bool facingRight, int level)
     {
         weaponData = data;
         direction = facingRight ? Vector2.right : Vector2.left;
-        damage = data.baseDamage;
+        damage = data.chargeLevels[level].damage;
+        shootLevel = level;
         hasHoming = data.hasHoming;
         homingStrength = data.homingStrength;
         canFreeze = data.canFreeze;
@@ -33,13 +48,25 @@ public class Projectile : MonoBehaviour
         slowAmount = data.slowAmount;
         slowDuration = data.slowDuration;
 
+        bulletSpeed = data.chargeLevels[level].bulletSpeed;
+        FlipSpriteBasedOnDirection();
+
         // Add components based on weapon data     
+    }
+
+    private void FlipSpriteBasedOnDirection()
+    {
+        if (spriteRenderer != null)
+        {
+            // Flip the sprite based on the direction (left or right)
+            spriteRenderer.flipX = direction.x < 0;
+        }
     }
 
     protected virtual void Update()
     {
         // Basic movement
-        transform.Translate(20f * Time.deltaTime * direction);
+        rb.velocity = direction * bulletSpeed * Time.deltaTime;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -57,5 +84,19 @@ public class Projectile : MonoBehaviour
         }
 
         // Additional effects handled by specific behaviors
+    }
+
+    // Destroy the projectile and notify listeners
+    protected void DestroyProjectile()
+    {
+        // Invoke the bullet destruction event
+        OnBulletDestroyed?.Invoke();
+        Destroy(gameObject); // Destroy the bullet object
+    }
+
+    private void OnBecameInvisible()
+    {
+        // Destroy when bullet goes off-screen
+        DestroyProjectile();
     }
 }

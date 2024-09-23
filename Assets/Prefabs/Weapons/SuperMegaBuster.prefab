@@ -193,8 +193,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3401bbe24f778a4f8ef138e98b1b07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 1
-  bulletSpeed: 5
-  bulletDirection: {x: 1, y: 0}
-  destroyDelay: 1
-  shootLevel: 0
+  bulletSpeed: 20
+  shootLevel: 1

@@ -74,23 +74,10 @@ MonoBehaviour:
   extraJumpForce: 12
   jumpBufferTime: 0.125
   coyoteTime: 0.125
-  shootLevel:
-  - timeRequired: 0
-    damage: 1
-    shootSound: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
-  - timeRequired: 0.25
-    damage: 2
-    shootSound: {fileID: 8300000, guid: 8b99f688fa9a3764c8ce660ff0f706d0, type: 3}
-  - timeRequired: 1.25
-    damage: 3
-    shootSound: {fileID: 8300000, guid: 908398d31921bf044b4ce7444a507b7f, type: 3}
   chargerEnabled: 1
   interruptChargeOnDamage: 0
-  bulletSpeed: 20
-  shootDelay: 0.15
   bulletShootOffset: {x: 0, y: 0.8}
   shootRayLength: 0.9
-  bulletPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
   limitBulletsOnScreen: 1
   maxBulletsOnScreen: 3
   weaponsData:
@@ -101,6 +88,7 @@ MonoBehaviour:
     weaponData: {fileID: 11400000, guid: fa8672f3ac8f5a84c8d32b7fd8d70418, type: 2}
     currentEnergy: 28
   playerWeapon: 0
+  weaponData: {fileID: 11400000, guid: c546215c3605ad54a9482526cf370933, type: 2}
   slideSpeed: 7.5
   slideDuration: 0.35
   slideDustPos: {fileID: 486739420861981772}

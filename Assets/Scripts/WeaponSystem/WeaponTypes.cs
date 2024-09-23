@@ -1,3 +1,4 @@
+// Assets/Scripts/Weapons/WeaponTypes.cs
 public enum WeaponTypes
 {
     MegaBuster,

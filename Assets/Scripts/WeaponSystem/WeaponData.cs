@@ -9,6 +9,7 @@ public struct ChargeLevel
     public int damage;         // Damage associated with this charge level
     public GameObject projectilePrefab; // The prefab to instantiate at this charge level
     public AudioClip weaponClip;
+    public float bulletSpeed;
 }
 
 [CreateAssetMenu(fileName = "NewWeapon", menuName = "Weapons/WeaponData")]
