@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 761953d57f820934db6d6cd93044505b, type: 3}
+  m_Name: MagnetBeam
+  m_EditorClassIdentifier: 
+  weaponName: MagnetBeam
+  weaponType: 1
+  weaponPrefab: {fileID: 4270421284652484171, guid: ad6e3e7fef98204429f097acc9fb4382, type: 3}
+  weaponIcon: {fileID: 1656209130, guid: 65f8d18b4070cd24aae0bceb8044483f, type: 3}
+  weaponClip: {fileID: 8300000, guid: 756c4884095d30c4f8d5d2433054c8f2, type: 3}
+  shootDelay: 0.25
+  maxEnergy: 28
+  currentEnergy: 28
+  energyCost: 2
+  baseDamage: 0
+  canStackDamage: 0
+  damageStackDuration: 0
+  hasHoming: 0
+  homingStrength: 0
+  allowsAngleAdjustment: 0
+  minAngle: 0
+  maxAngle: 0
+  skinSprites: []
+  canFreeze: 0
+  freezeDuration: 0
+  hasSplashDamage: 0
+  splashRadius: 0
+  splashDamage: 0
+  canSlowTime: 0
+  slowAmount: 0
+  slowDuration: 0

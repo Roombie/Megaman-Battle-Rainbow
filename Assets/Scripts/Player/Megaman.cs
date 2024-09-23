@@ -42,6 +42,7 @@ public class Megaman : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float speed = 5f;
     [SerializeField] private bool facingRight = true;
+    public bool IsFacingRight => facingRight;
     [SerializeField] private bool useStepDelay = true;
     [SerializeField] private float stepDelay = 0.1f;  // Time for the 1-pixel step
     [SerializeField] private float stepDistance = 2f; // Amount of the 1-pixel step
@@ -88,32 +89,16 @@ public class Megaman : MonoBehaviour
     private bool shootButtonRelease;
     private float shootButtonReleaseTimeLength;
 
-    public enum WeaponTypes
-    {
-        MegaBuster,
-        MagnetBeam,
-        HyperBomb,
-        ThunderBeam,
-        SuperArm,
-        IceSlasher,
-        RollingCutter,
-        FireStorm
-    };
-    public WeaponTypes playerWeapon = WeaponTypes.MegaBuster;
-
     [System.Serializable]
     public struct WeaponsStruct
     {
         public WeaponTypes weaponType;
-        public bool enabled;
-        public int currentEnergy;
-        public int maxEnergy;
-        public int energyCost;
-        public int weaponDamage;
-        public AudioClip weaponClip;
-        public GameObject weaponPrefab;
+        public WeaponData weaponData;  // Use WeaponData SO for flexible weapon properties
+        public int currentEnergy;      // Manage weapon energy usage per weapon
     }
     public WeaponsStruct[] weaponsData;
+    public WeaponTypes playerWeapon = WeaponTypes.MegaBuster;
+    private BaseWeapon currentWeapon;
 
     private GameObject currentMagnetBeam = null;
 
@@ -272,6 +257,7 @@ public class Megaman : MonoBehaviour
     #endregion
 
     #region Collision Detection (ground, above collision, front collision)
+
     // ground
     private bool IsGrounded()
     {
@@ -486,8 +472,8 @@ public class Megaman : MonoBehaviour
         playerWeapon = weapon;
 
         // calculate weapon energy value to adjust the bars
-        int currentEnergy = weaponsData[(int)playerWeapon].currentEnergy;
-        int maxEnergy = weaponsData[(int)playerWeapon].maxEnergy;
+        int currentEnergy = weaponsData[(int)playerWeapon].weaponData.currentEnergy;
+        int maxEnergy = weaponsData[(int)playerWeapon].weaponData.maxEnergy;
         float weaponEnergyValue = (float)currentEnergy / (float)maxEnergy;
     }
 
@@ -524,6 +510,7 @@ public class Megaman : MonoBehaviour
             case WeaponTypes.MegaBuster:
                 MegaBuster();
                 break;
+
             case WeaponTypes.MagnetBeam:
                 MagnetBeam();
                 break;
@@ -721,7 +708,7 @@ public class Megaman : MonoBehaviour
                 isShooting = true;
                 shootButtonRelease = false;
                 shootTime = Time.time;
-                Invoke(nameof(ShootBullet), shootDelay);
+                Invoke(nameof(ShootMegaBuster), shootDelay);
             }      
         }
 
@@ -743,7 +730,7 @@ public class Megaman : MonoBehaviour
                     isShooting = true;
                     shootTime = Time.time;
                     AudioManager.Instance.Stop(chargingMegaBuster);
-                    ShootBullet();
+                    ShootMegaBuster();
                 }
             }
 
@@ -771,7 +758,7 @@ public class Megaman : MonoBehaviour
         } 
     }
 
-    private void ShootBullet()
+    private void ShootMegaBuster()
     {
         // Calculate the direction based on facingRight
         Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
@@ -830,7 +817,7 @@ public class Megaman : MonoBehaviour
                 // Stop extending the beam
                 currentMagnetBeam.GetComponent<MagnetBeam>().StopExtending();
                 isShooting = false;
-                AudioManager.Instance.Stop(currentWeapon.weaponClip);
+                AudioManager.Instance.Play(currentWeapon.weaponData.weaponClip);
                 currentMagnetBeam = null;
             }
         }
@@ -841,7 +828,7 @@ public class Megaman : MonoBehaviour
             if (GameObject.FindGameObjectsWithTag("PlatformBeam").Length < 5)
             {
                 // Instantiate the Magnet Beam prefab
-                currentMagnetBeam = Instantiate(currentWeapon.weaponPrefab, shootPosition, Quaternion.identity);
+                currentMagnetBeam = Instantiate(currentWeapon.weaponData.weaponPrefab, shootPosition, Quaternion.identity);
 
                 // Pass the direction to the Magnet Beam script
                 currentMagnetBeam.GetComponent<MagnetBeam>().SetBeamDirection(shootPosition);
@@ -852,9 +839,9 @@ public class Megaman : MonoBehaviour
                 isShooting = true;
 
                 // Play the weapon-specific sound
-                if (currentWeapon.weaponClip != null)
+                if (currentWeapon.weaponData.weaponClip != null)
                 {
-                    AudioManager.Instance.Play(currentWeapon.weaponClip);
+                    AudioManager.Instance.Play(currentWeapon.weaponData.weaponClip);
                 }
 
                 // Prevent further shooting until button is released

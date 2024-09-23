@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
     [Header("Game Over")]
     [SerializeField] AudioClip gameOverSoundClip;
 
-    Megaman.WeaponTypes playerWeaponType;
+    WeaponTypes playerWeaponType;
     Megaman.WeaponsStruct[] playerWeapons;
 
     private void Start()
@@ -176,7 +176,7 @@ public class GameManager : MonoBehaviour
 
         if (weaponsMenu != null && player != null)
         {
-            weaponsMenu.GetComponent<WeaponsMenu>().SetMenuData(playerLives, player.GetComponent<Megaman>().playerWeapon,
+            weaponsMenu.GetComponent<WeaponsMenu>().SetMenuData(playerLives, playerWeaponType,
                     player.GetComponent<Megaman>().weaponsData);
             weaponsMenu.GetComponent<WeaponsMenu>().ShowMenu();
         }

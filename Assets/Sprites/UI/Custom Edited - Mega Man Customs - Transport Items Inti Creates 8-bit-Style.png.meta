@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4f38766ed1609b3478aea7ab7410d5d4
+guid: 65f8d18b4070cd24aae0bceb8044483f
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 16
@@ -97,32 +97,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: NES - Mega Man 5 - Pause Screen_1
+      name: Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 59
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e8139b42e339fb94d80f5479bc8f7804
-      internalID: -1267895830
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: NES - Mega Man 5 - Pause Screen_0
-      rect:
-        serializedVersion: 2
-        x: 1
-        y: 25
+        x: 3
+        y: 212
         width: 16
         height: 16
       alignment: 0
@@ -132,50 +111,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a45cf4a45b46e16438700a3ad23b8ba9
-      internalID: -1633173031
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: NES - Mega Man 5 - Pause Screen_2
-      rect:
-        serializedVersion: 2
-        x: 90
-        y: 25
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a073bdccfef8a794cb6fe56e70637dc1
-      internalID: 2106491574
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: NES - Mega Man 5 - Pause Screen_3
-      rect:
-        serializedVersion: 2
-        x: 891
-        y: 59
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: da9e93d0a7892b645bb0c8ca666207eb
-      internalID: -1824470948
+      spriteID: bf7e03450c2301d4983163a285f222e4
+      internalID: 1656209130
       vertices: []
       indices: 
       edges: []
@@ -191,10 +128,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      NES - Mega Man 5 - Pause Screen_0: -1633173031
-      NES - Mega Man 5 - Pause Screen_1: -1267895830
-      NES - Mega Man 5 - Pause Screen_2: 2106491574
-      NES - Mega Man 5 - Pause Screen_3: -1824470948
+      Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_0: 1656209130
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

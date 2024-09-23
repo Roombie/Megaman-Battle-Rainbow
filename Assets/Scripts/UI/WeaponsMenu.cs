@@ -7,10 +7,10 @@ public class WeaponsMenu : MonoBehaviour
     [SerializeField] private AudioClip menuSelectClip;
 
     private int playerLives;
-    private Megaman.WeaponTypes playerWeaponType;
+    private WeaponTypes playerWeaponType;
     private Megaman.WeaponsStruct[] playerWeaponsData;
 
-    public void SetMenuData(int lives, Megaman.WeaponTypes weaponType, Megaman.WeaponsStruct[] weaponsData)
+    public void SetMenuData(int lives, WeaponTypes weaponType, Megaman.WeaponsStruct[] weaponsData)
     {
         playerLives = lives;
         playerWeaponType = weaponType;
@@ -18,7 +18,7 @@ public class WeaponsMenu : MonoBehaviour
         UpdatePlayerLives();
     }
 
-    public Megaman.WeaponTypes GetWeaponSelection()
+    public WeaponTypes GetWeaponSelection()
     {
         // return the selected weapon
         return playerWeaponType;
