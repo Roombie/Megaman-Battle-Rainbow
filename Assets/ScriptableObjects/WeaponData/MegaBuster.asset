@@ -23,7 +23,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
     weaponClip: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
     bulletSpeed: 20
-  - timeRequired: 0.25
+  - timeRequired: 0.5
     damage: 2
     projectilePrefab: {fileID: 964785331528871214, guid: e2ea1122114485145b01e50bb158dfd3, type: 3}
     weaponClip: {fileID: 8300000, guid: 8b99f688fa9a3764c8ce660ff0f706d0, type: 3}
@@ -37,6 +37,8 @@ MonoBehaviour:
   maxEnergy: 28
   currentEnergy: 28
   energyCost: 0
+  limitBulletsOnScreen: 1
+  maxBulletsOnScreen: 3
   baseDamage: 1
   hasHoming: 0
   homingStrength: 0

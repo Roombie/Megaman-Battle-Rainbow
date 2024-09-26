@@ -1,9 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
-public class Bullet : Projectile
+public class MegaBuster : Projectile
 {
-    private float destroyTime; // Keep destroyTime as a local variable
+    private float destroyTime;
 
     protected override void Awake()
     {
@@ -15,7 +15,7 @@ public class Bullet : Projectile
         base.Initialize(data, facingRight, level);
 
         // Set bullet speed using the inherited bulletSpeed from Projectile
-        bulletSpeed = data.chargeLevels[level].projectilePrefab.GetComponent<Bullet>().bulletSpeed;
+        bulletSpeed = data.chargeLevels[level].projectilePrefab.GetComponent<MegaBuster>().bulletSpeed;
         destroyTime = data.shootDelay; // Use shootDelay for destroy time
 
         // Set initial velocity based on direction and bullet speed

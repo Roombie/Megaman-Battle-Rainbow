@@ -1,8 +1,11 @@
 // Assets/Scripts/Weapons/BaseWeapon.cs
+// This is the abstract base class for weapons, handling the overall functionality of the weapon itself.
+// It governs firing mechanics and managing ammo/energy usage.
+// In other words, it's for THE WEAPON FUNCTIONALITY THAT THE PLAYER WILL USE
 using System.Collections;
 using UnityEngine;
 
-public abstract class BaseWeapon : MonoBehaviour
+public abstract class WeaponBase : MonoBehaviour
 {
     public WeaponData weaponData;
     protected Megaman playerController;
@@ -53,10 +56,22 @@ public abstract class BaseWeapon : MonoBehaviour
 
     public virtual void Shoot()
     {
-        if (weaponData.currentEnergy <= 0) return;
+        // Check if the weapon is enabled
+        if (!weaponData.isEnabled)
+        {
+            Debug.Log(weaponData.weaponName + " is disabled.");
+            return;
+        }
+
+        // Check if there's enough energy to shoot
+        if (weaponData.currentEnergy < weaponData.energyCost)
+        {
+            Debug.Log(weaponData.weaponName + " has no energy.");
+            return;
+        }
 
         // Instantiate Projectile
-        GameObject projectile = Instantiate(weaponData.weaponPrefab, GetShootPosition(), GetShootRotation());
+        GameObject projectile = Instantiate(weaponData.chargeLevels[currentChargeLevel].projectilePrefab, GetShootPosition(), GetShootRotation());
         Projectile projScript = projectile.GetComponent<Projectile>();
 
         // Pass the charge level to Initialize

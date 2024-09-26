@@ -1,4 +1,7 @@
 // Assets/Scripts/Weapons/Projectile.cs
+// Handles the behavior and properties of individual projectiles (like bullets or beams)
+// that are spawned when a weapon is fired.
+// THIS APPLIES TO HELP CODING THE PROJECTILES FOR THE WEAPONS
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
@@ -35,8 +38,11 @@ public class Projectile : MonoBehaviour
     {
         weaponData = data;
         direction = facingRight ? Vector2.right : Vector2.left;
+
+        // used for charge shoot level properties
         damage = data.chargeLevels[level].damage;
         shootLevel = level;
+
         hasHoming = data.hasHoming;
         homingStrength = data.homingStrength;
         canFreeze = data.canFreeze;
@@ -65,7 +71,6 @@ public class Projectile : MonoBehaviour
 
     protected virtual void Update()
     {
-        // Basic movement
         rb.velocity = direction * bulletSpeed * Time.deltaTime;
     }
 

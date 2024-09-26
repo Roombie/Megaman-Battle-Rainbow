@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Megaman : MonoBehaviour
 {
@@ -58,17 +59,13 @@ public class Megaman : MonoBehaviour
     private int extraJumpCount;
 
     [Header("Shooting")]
+    [SerializeField] private Vector2 bulletShootOffset = new(0.5f, 1f);
+    [SerializeField] private float shootRayLength = 5f;
     [SerializeField] private bool chargerEnabled = true;
     [SerializeField] private bool interruptChargeOnDamage = true;
     private int currentShootLevel = 0;  // Current shoot level (index in the shootLevel list)
     private float chargeTime = 0f;      // Takes the current charge time
     private bool hasPlayedChargeSound = false;
-
-    [Header("Bullet Settings")]
-    [SerializeField] private Vector2 bulletShootOffset = new(0.5f, 1f);
-    [SerializeField] private float shootRayLength = 5f;
-    [SerializeField] private bool limitBulletsOnScreen = true; // Control whether to limit bullets or not
-    [SerializeField] private int maxBulletsOnScreen = 3;
     private readonly List<GameObject> activeBullets = new();  // Track active bullets
     private bool isShooting; // Check if we are currently shooting
     private float shootTime;
@@ -82,13 +79,15 @@ public class Megaman : MonoBehaviour
     {
         public WeaponTypes weaponType;
         public WeaponData weaponData;  // Use WeaponData SO for flexible weapon properties
-        public int currentEnergy;      // Manage weapon energy usage per weapon
+        public int currentEnergy;
+        public int maxEnergy;
     }
     public WeaponsStruct[] weaponsData;
     public WeaponTypes playerWeapon = WeaponTypes.MegaBuster;
-    private BaseWeapon currentWeapon;
-    private WeaponData weaponData;
-
+    public GameObject weaponSwitchIcon;
+    private float iconDisplayTime = 1.5f; // Time to display the weapon switch icon
+    private float iconTimer = 0f; // Timer for tracking icon display duration
+    private WeaponData currentWeaponData; // This stores the static data for the active weapon
     private GameObject currentMagnetBeam = null;
 
     [Header("Sliding")]
@@ -171,6 +170,8 @@ public class Megaman : MonoBehaviour
 
     void Start()
     {
+        SetWeapon(playerWeapon);
+        weaponSwitchIcon.gameObject.SetActive(false);
         // start at full health
         currentHealth = maxHealth;
         // start facing right always
@@ -190,6 +191,17 @@ public class Megaman : MonoBehaviour
             if (canSlide) PerformSlide();
             if (canClimb) HandleClimbing();
         }
+
+        // Check if the icon is active and update the timer
+        if (weaponSwitchIcon.activeSelf)
+        {
+            iconTimer += Time.deltaTime; // Increment the timer
+            if (iconTimer >= iconDisplayTime)
+            {
+                weaponSwitchIcon.SetActive(false); // Deactivate the icon after the time is up
+            }
+        }
+
         UpdateAnimations();
         HandleBubbleState();
         HandleSlideParticles();
@@ -456,15 +468,12 @@ public class Megaman : MonoBehaviour
     #endregion
 
     #region Weapons
-    public void SetWeapon(WeaponTypes weapon)
+    void SetWeapon(WeaponTypes weaponType)
     {
-        // set new selected weapon (determines color scheme)
-        playerWeapon = weapon;
-
-        // calculate weapon energy value to adjust the bars
-        int currentEnergy = weaponsData[(int)playerWeapon].weaponData.currentEnergy;
-        int maxEnergy = weaponsData[(int)playerWeapon].weaponData.maxEnergy;
-        float weaponEnergyValue = (float)currentEnergy / (float)maxEnergy;
+        // Set the currentWeaponData based on the selected weapon from the weaponsData array
+        WeaponsStruct selectedWeapon = weaponsData.First(w => w.weaponType == weaponType);
+        currentWeaponData = selectedWeapon.weaponData;
+        playerWeapon = weaponType;
     }
 
     public void SwitchWeapon(WeaponTypes weaponType)
@@ -477,20 +486,32 @@ public class Megaman : MonoBehaviour
 
     private void SwitchToNextWeapon()
     {
-        // increment weapon index and wrap around if necessary
         int nextWeapon = (int)playerWeapon + 1;
         if (nextWeapon >= weaponsData.Length) nextWeapon = 0;
+
         SetWeapon((WeaponTypes)nextWeapon);
-        Debug.Log($"You switched to: {nextWeapon}");
+        ShowWeaponSwitchIcon();
+        Debug.Log($"Switched to Next Weapon: {nextWeapon}"); // Debug log to verify
     }
 
     private void SwitchToPreviousWeapon()
     {
-        // decrement weapon index and wrap around if necessary
         int previousWeapon = (int)playerWeapon - 1;
         if (previousWeapon < 0) previousWeapon = weaponsData.Length - 1;
+
         SetWeapon((WeaponTypes)previousWeapon);
-        Debug.Log($"You switched to: {previousWeapon}");
+        ShowWeaponSwitchIcon();
+        Debug.Log($"Switched to Previous Weapon: {previousWeapon}"); // Debug log to verify
+    }
+
+    private void ShowWeaponSwitchIcon()
+    {
+        // Set the weapon icon to the current weapon's icon
+        weaponSwitchIcon.GetComponent<SpriteRenderer>().sprite = currentWeaponData.weaponIcon;
+        weaponSwitchIcon.SetActive(true); // Activate the icon
+
+        // Reset the timer
+        iconTimer = 0f; // Reset the timer whenever the icon is shown
     }
 
     private void UseWeapon()
@@ -669,13 +690,22 @@ public class Megaman : MonoBehaviour
         shootTimeLength = 0;
         shootButtonReleaseTimeLength = 0;
 
-        // Charge shoot level
+        WeaponsStruct currentWeaponStruct = weaponsData[(int)playerWeapon];
+
+        // Charge shoot level based on how long the button is held
         if (shootButtonPressed && !shootButtonRelease && chargerEnabled)
         {
             chargeTime += Time.deltaTime;
 
-            // Determine the current shoot level from the weapon
-            currentShootLevel = currentWeapon.GetChargeLevel();
+            // Determine the current shoot level based on charge time and WeaponData
+            currentShootLevel = 0;
+            for (int i = 0; i < currentWeaponData.chargeLevels.Count; i++)
+            {
+                if (chargeTime >= currentWeaponData.chargeLevels[i].timeRequired)
+                {
+                    currentShootLevel = i;
+                }
+            }
 
             if (currentShootLevel > 0 && !hasPlayedChargeSound)
             {
@@ -687,27 +717,27 @@ public class Megaman : MonoBehaviour
         // shoot button is being pressed and button release flag true
         if (shootButtonPressed && shootButtonRelease && !isSliding)
         {
-            if (!limitBulletsOnScreen || activeBullets.Count < maxBulletsOnScreen)
+            // Check bullet limit and energy
+            if ((!currentWeaponData.limitBulletsOnScreen || activeBullets.Count < currentWeaponData.maxBulletsOnScreen)
+                && currentWeaponStruct.currentEnergy > 0)
             {
                 isShooting = true;
                 shootButtonRelease = false;
                 shootTime = Time.time;
-                Invoke(nameof(ShootMegaBuster), weaponData.shootDelay);
+                Invoke(nameof(ShootMegaBuster), currentWeaponData.shootDelay);
             }
         }
 
-        // Handle shooting logic when the shoot button is released for the charged shot
+        // Handle shooting logic when the button is released for charged shots
         if (!shootButtonPressed && shootButtonRelease)
         {
             shootButtonReleaseTimeLength = Time.time - shootTime;
 
-            // Check if we need to wait for the player to stop sliding
             if (currentShootLevel > 0)
             {
                 if (isSliding)
                 {
-                    // If sliding, delay the shooting logic until the player stops sliding
-                    return;
+                    return; // Delay shooting if sliding
                 }
                 else
                 {
@@ -725,14 +755,6 @@ public class Megaman : MonoBehaviour
             hasPlayedChargeSound = false;
         }
 
-        // shoot key isn't being pressed and key release flag is false
-        if (!shootButtonPressed && !shootButtonRelease)
-        {
-            shootButtonReleaseTimeLength = Time.time - shootTime;
-            shootButtonRelease = true;
-        }
-
-        // while shooting limit its duration
         if (isShooting)
         {
             shootTimeLength = Time.time - shootTime;
@@ -745,23 +767,26 @@ public class Megaman : MonoBehaviour
 
     private void ShootMegaBuster()
     {
-        if (weaponData == null)
-        {
-            Debug.LogError("WeaponData is null! Make sure weaponData is assigned before calling ShootMegaBuster.");
-            return;
-        }
-
         // Calculate the direction based on facingRight
         Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
         // Calculate the starting point of the raycast using the offset
         Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
 
+        // Check if the projectile prefab for the current charge level is null
+        if (currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab == null)
+        {
+            Debug.LogError("Projectile prefab is null for the current charge level!");
+            return;
+        }
+
+        Debug.Log($"Instantiating projectile at level {currentShootLevel}");
+
         // Instantiate the bullet projectile
-        GameObject bullet = Instantiate(weaponData.weaponPrefab, shootStartPosition, Quaternion.identity);
+        GameObject bullet = Instantiate(currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab, shootStartPosition, Quaternion.identity);
         Projectile projScript = bullet.GetComponent<Projectile>();
 
         // Initialize the projectile with weapon data and current charge level
-        projScript.Initialize(weaponData, facingRight, currentShootLevel);
+        projScript.Initialize(currentWeaponData, facingRight, currentShootLevel);
 
         // Add bullet to the active bullets list
         activeBullets.Add(bullet);

@@ -16,6 +16,7 @@ public struct ChargeLevel
 public class WeaponData : ScriptableObject
 {
     public string weaponName;
+    public bool isEnabled = true;
     public WeaponTypes weaponType;
     public GameObject weaponPrefab;
     public Sprite weaponIcon;
@@ -25,6 +26,8 @@ public class WeaponData : ScriptableObject
     public int maxEnergy;
     public int currentEnergy;
     public int energyCost;
+    public bool limitBulletsOnScreen = true; // Control whether to limit bullets or not
+    public int maxBulletsOnScreen = 3; // Max bullets allowed on screen
 
     // Damage
     public int baseDamage;
