@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MegaBuster : Projectile
 {
-    private float destroyTime = 2.0f;
+    private float destroyTime = 5f;
 
     protected override void Awake()
     {

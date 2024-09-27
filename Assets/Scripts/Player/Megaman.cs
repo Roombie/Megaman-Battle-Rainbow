@@ -724,9 +724,6 @@ public class Megaman : MonoBehaviour
         // shoot button is being pressed and button release flag true
         if (shootButtonPressed && shootButtonRelease && !isSliding)
         {
-            GameObject bullet = Instantiate(currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab, transform.position, Quaternion.identity);
-            bullet.GetComponent<Rigidbody2D>().velocity = Vector2.right * 5; // Test with simple rightward movement
-
             // Check bullet limit and energy
             if ((!currentWeaponData.limitBulletsOnScreen || activeBullets.Count < currentWeaponData.maxBulletsOnScreen)
                 && currentWeaponStruct.currentEnergy > currentWeaponData.energyCost)
@@ -792,14 +789,14 @@ public class Megaman : MonoBehaviour
         Debug.Log($"Instantiating projectile at level {currentShootLevel}");
 
         // Instantiate the bullet projectile
-        GameObject bullet = Instantiate(currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab, shootStartPosition, Quaternion.identity);
-        MegaBuster projScript = bullet.GetComponent<MegaBuster>();
+        GameObject megaBusterPrefab = Instantiate(currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab, shootStartPosition, Quaternion.identity);
+        MegaBuster projScript = megaBusterPrefab.GetComponent<MegaBuster>();
 
         // Initialize the projectile with weapon data and current charge level
-        projScript.Initialize(currentWeaponData, facingRight, currentShootLevel);
+        projScript.Initialize(currentWeaponData, facingRight, currentShootLevel); // It should give the rest of the information to the MegaBuster using the current Weapon Data obtained due to Weapon Type in the struct
 
         // Add bullet to the active bullets list
-        activeBullets.Add(bullet);
+        activeBullets.Add(megaBusterPrefab);
 
         // Reset charge level and time
         currentShootLevel = 0;
@@ -808,8 +805,8 @@ public class Megaman : MonoBehaviour
         // Subscribe to OnBulletDestroyed event to remove the bullet from the list when destroyed
         projScript.OnBulletDestroyed += () =>
         {
-            activeBullets.Remove(bullet);
-            Destroy(bullet); // Ensure the bullet is destroyed
+            activeBullets.Remove(megaBusterPrefab);
+            Destroy(megaBusterPrefab); // Ensure the bullet is destroyed
         };
     }
     #endregion
