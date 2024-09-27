@@ -84,11 +84,12 @@ public class Megaman : MonoBehaviour
     }
     public WeaponsStruct[] weaponsData;
     public WeaponTypes playerWeapon = WeaponTypes.MegaBuster;
-    public GameObject weaponSwitchIcon;
-    private float iconDisplayTime = 1.5f; // Time to display the weapon switch icon
-    private float iconTimer = 0f; // Timer for tracking icon display duration
     private WeaponData currentWeaponData; // This stores the static data for the active weapon
     private GameObject currentMagnetBeam = null;
+
+    public GameObject weaponSwitchIcon;
+    [SerializeField] private float iconDisplayTime = 1.5f; // Time to display the weapon switch icon
+    private float iconTimer = 0f; // Timer for tracking icon display duration
 
     [Header("Sliding")]
     [SerializeField] private float slideSpeed = 6f;
@@ -171,7 +172,7 @@ public class Megaman : MonoBehaviour
     void Start()
     {
         SetWeapon(playerWeapon);
-        weaponSwitchIcon.gameObject.SetActive(false);
+        weaponSwitchIcon.SetActive(false);
         // start at full health
         currentHealth = maxHealth;
         // start facing right always
@@ -474,6 +475,9 @@ public class Megaman : MonoBehaviour
         WeaponsStruct selectedWeapon = weaponsData.First(w => w.weaponType == weaponType);
         currentWeaponData = selectedWeapon.weaponData;
         playerWeapon = weaponType;
+        // Reset charge level and time
+        currentShootLevel = 0;
+        chargeTime = 0f;
     }
 
     public void SwitchWeapon(WeaponTypes weaponType)
@@ -491,6 +495,9 @@ public class Megaman : MonoBehaviour
 
         SetWeapon((WeaponTypes)nextWeapon);
         ShowWeaponSwitchIcon();
+        // Reset charge level and time
+        currentShootLevel = 0;
+        chargeTime = 0f;
         Debug.Log($"Switched to Next Weapon: {nextWeapon}"); // Debug log to verify
     }
 
@@ -717,9 +724,12 @@ public class Megaman : MonoBehaviour
         // shoot button is being pressed and button release flag true
         if (shootButtonPressed && shootButtonRelease && !isSliding)
         {
+            GameObject bullet = Instantiate(currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab, transform.position, Quaternion.identity);
+            bullet.GetComponent<Rigidbody2D>().velocity = Vector2.right * 5; // Test with simple rightward movement
+
             // Check bullet limit and energy
             if ((!currentWeaponData.limitBulletsOnScreen || activeBullets.Count < currentWeaponData.maxBulletsOnScreen)
-                && currentWeaponStruct.currentEnergy > 0)
+                && currentWeaponStruct.currentEnergy > currentWeaponData.energyCost)
             {
                 isShooting = true;
                 shootButtonRelease = false;
@@ -783,7 +793,7 @@ public class Megaman : MonoBehaviour
 
         // Instantiate the bullet projectile
         GameObject bullet = Instantiate(currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab, shootStartPosition, Quaternion.identity);
-        Projectile projScript = bullet.GetComponent<Projectile>();
+        MegaBuster projScript = bullet.GetComponent<MegaBuster>();
 
         // Initialize the projectile with weapon data and current charge level
         projScript.Initialize(currentWeaponData, facingRight, currentShootLevel);
@@ -791,16 +801,16 @@ public class Megaman : MonoBehaviour
         // Add bullet to the active bullets list
         activeBullets.Add(bullet);
 
+        // Reset charge level and time
+        currentShootLevel = 0;
+        chargeTime = 0f;
+
         // Subscribe to OnBulletDestroyed event to remove the bullet from the list when destroyed
         projScript.OnBulletDestroyed += () =>
         {
             activeBullets.Remove(bullet);
             Destroy(bullet); // Ensure the bullet is destroyed
         };
-
-        // Reset charge level and time
-        currentShootLevel = 0;
-        chargeTime = 0f;
     }
     #endregion
 

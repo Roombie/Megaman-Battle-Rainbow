@@ -90,6 +90,7 @@ MonoBehaviour:
     maxEnergy: 28
   playerWeapon: 0
   weaponSwitchIcon: {fileID: 4265970674981735153}
+  iconDisplayTime: 1.5
   slideSpeed: 7.5
   slideDuration: 0.35
   slideDustPos: {fileID: 486739420861981772}

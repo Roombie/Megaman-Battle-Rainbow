@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MegaBuster : Projectile
 {
-    private float destroyTime;
+    private float destroyTime = 2.0f;
 
     protected override void Awake()
     {
@@ -16,7 +16,6 @@ public class MegaBuster : Projectile
 
         // Set bullet speed using the inherited bulletSpeed from Projectile
         bulletSpeed = data.chargeLevels[level].projectilePrefab.GetComponent<MegaBuster>().bulletSpeed;
-        destroyTime = data.shootDelay; // Use shootDelay for destroy time
 
         // Set initial velocity based on direction and bullet speed
         rb.velocity = direction * bulletSpeed;

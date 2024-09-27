@@ -2180,10 +2180,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Megaman
       objectReference: {fileID: 0}
-    - target: {fileID: 4265970674981735153, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7896349567260549571, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.638

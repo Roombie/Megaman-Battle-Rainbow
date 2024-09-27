@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    protected WeaponData weaponData;
+    public WeaponData weaponData; // It's used to get the information below
     protected Vector2 direction;
     protected int damage;
     protected float bulletSpeed;
@@ -71,7 +71,7 @@ public class Projectile : MonoBehaviour
 
     protected virtual void Update()
     {
-        rb.velocity = direction * bulletSpeed * Time.deltaTime;
+        rb.velocity = bulletSpeed * Time.deltaTime * direction;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
