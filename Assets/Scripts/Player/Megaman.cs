@@ -728,7 +728,7 @@ public class Megaman : MonoBehaviour
             }
         }
 
-        /*if (true)  // Bypass conditions temporarily
+        /*if (true)  // Bypass conditions temporarily (FOR SOME REASON THIS WORKS)
         {
             Debug.Log("Forcing shoot logic to run");
             ShootMegaBuster();

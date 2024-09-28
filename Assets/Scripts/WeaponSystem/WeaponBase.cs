@@ -21,7 +21,6 @@ public abstract class WeaponBase : MonoBehaviour
     public abstract void Fire();
     public abstract void Stop();
 
-
     protected void StartCharging()
     {
         chargeTime = 0f;
