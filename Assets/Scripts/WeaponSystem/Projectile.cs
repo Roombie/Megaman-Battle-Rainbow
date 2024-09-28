@@ -30,6 +30,12 @@ public class Projectile : MonoBehaviour
 
     protected virtual void Awake()
     {
+        // If you need to do something with weaponData here, ensure it's not null
+        if (weaponData == null)
+        {
+            Debug.LogWarning("Weapon data is not assigned!");
+        }
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
     }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour
 {
-    public WeaponData weaponData;
+    protected WeaponData weaponData;
     protected Megaman playerController;
     protected float chargeTime; // Time spent holding the shoot button
     protected int currentChargeLevel; // Current charge level index

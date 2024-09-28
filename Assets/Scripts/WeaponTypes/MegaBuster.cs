@@ -14,8 +14,8 @@ public class MegaBuster : Projectile
     {
         base.Initialize(data, facingRight, level);
 
-        // Set bullet speed using the inherited bulletSpeed from Projectile
-        bulletSpeed = data.chargeLevels[level].projectilePrefab.GetComponent<MegaBuster>().bulletSpeed;
+        // Use bullet speed from WeaponData instead of getting it from the prefab
+        bulletSpeed = data.chargeLevels[level].bulletSpeed;
 
         // Set initial velocity based on direction and bullet speed
         rb.velocity = direction * bulletSpeed;
@@ -33,7 +33,10 @@ public class MegaBuster : Projectile
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        ApplyEffects(other.gameObject);
-        Destroy(gameObject); // Destroy on collision
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            ApplyEffects(other.gameObject);
+            Destroy(gameObject); // Destroy on collision
+        }
     }
 }

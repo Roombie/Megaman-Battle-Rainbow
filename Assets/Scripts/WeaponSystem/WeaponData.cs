@@ -17,7 +17,6 @@ public class WeaponData : ScriptableObject
 {
     public string weaponName;
     public bool isEnabled = true;
-    public WeaponTypes weaponType;
     public GameObject weaponPrefab;
     public Sprite weaponIcon;
     public AudioClip weaponClip;

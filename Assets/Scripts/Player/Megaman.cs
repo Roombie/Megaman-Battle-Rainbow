@@ -694,17 +694,23 @@ public class Megaman : MonoBehaviour
     #region MegaBuster
     private void MegaBuster()
     {
+        Debug.Log("MegaBuster method called");
+        Debug.Log("shootButtonPressed: " + shootButtonPressed);
+        Debug.Log("shootButtonRelease: " + shootButtonRelease);
+        Debug.Log("isSliding: " + isSliding);
+
         shootTimeLength = 0;
         shootButtonReleaseTimeLength = 0;
 
         WeaponsStruct currentWeaponStruct = weaponsData[(int)playerWeapon];
+        WeaponData currentWeaponData = currentWeaponStruct.weaponData;
 
-        // Charge shoot level based on how long the button is held
+        // Charge shoot level based on button press duration
         if (shootButtonPressed && !shootButtonRelease && chargerEnabled)
         {
             chargeTime += Time.deltaTime;
 
-            // Determine the current shoot level based on charge time and WeaponData
+            // Determine the current shoot level
             currentShootLevel = 0;
             for (int i = 0; i < currentWeaponData.chargeLevels.Count; i++)
             {
@@ -714,54 +720,69 @@ public class Megaman : MonoBehaviour
                 }
             }
 
+            // Play charge sound if needed
             if (currentShootLevel > 0 && !hasPlayedChargeSound)
             {
                 AudioManager.Instance.Play(chargingMegaBuster);
-                hasPlayedChargeSound = true; // Avoid spamming the audio
+                hasPlayedChargeSound = true;
             }
         }
 
-        // shoot button is being pressed and button release flag true
+        /*if (true)  // Bypass conditions temporarily
+        {
+            Debug.Log("Forcing shoot logic to run");
+            ShootMegaBuster();
+        }*/
+
+
+        // Handle shooting when button is pressed and released
         if (shootButtonPressed && shootButtonRelease && !isSliding)
-        {
-            // Check bullet limit and energy
-            if ((!currentWeaponData.limitBulletsOnScreen || activeBullets.Count < currentWeaponData.maxBulletsOnScreen)
-                && currentWeaponStruct.currentEnergy > currentWeaponData.energyCost)
-            {
-                isShooting = true;
-                shootButtonRelease = false;
-                shootTime = Time.time;
-                Invoke(nameof(ShootMegaBuster), currentWeaponData.shootDelay);
-            }
-        }
+         {
+             if ((!currentWeaponData.limitBulletsOnScreen || activeBullets.Count < currentWeaponData.maxBulletsOnScreen)
+                 && currentWeaponStruct.currentEnergy >= currentWeaponData.energyCost)
+             {
+                 isShooting = true;
+                 shootButtonRelease = false;
+                 shootTime = Time.time;
 
-        // Handle shooting logic when the button is released for charged shots
-        if (!shootButtonPressed && shootButtonRelease)
-        {
-            shootButtonReleaseTimeLength = Time.time - shootTime;
+                 // Deduct energy for the shot
+                 currentWeaponStruct.currentEnergy -= currentWeaponData.energyCost;
 
-            if (currentShootLevel > 0)
-            {
-                if (isSliding)
-                {
-                    return; // Delay shooting if sliding
-                }
-                else
-                {
-                    isShooting = true;
-                    shootTime = Time.time;
-                    AudioManager.Instance.Stop(chargingMegaBuster);
-                    ShootMegaBuster();
-                }
-            }
+                 // Delay shot based on weapon data
+                 Invoke(nameof(ShootMegaBuster), currentWeaponData.shootDelay);
+             }
+         }
 
-            // Reset charge time and button states
-            chargeTime = 0f;
-            currentShootLevel = 0;
-            shootButtonRelease = false;
-            hasPlayedChargeSound = false;
-        }
+         // Handle releasing the button for charged shots
+         if (!shootButtonPressed && shootButtonRelease)
+         {
+             Debug.Log("Button released, checking for charged shot");
+             shootButtonReleaseTimeLength = Time.time - shootTime;
 
+             if (currentShootLevel > 0)
+             {
+                 if (isSliding)
+                 {
+                     Debug.Log("Player is sliding, delaying shot");
+                     return; // Delay shooting if sliding
+                 }
+                 else
+                 {
+                     isShooting = true;
+                     shootTime = Time.time;
+                     AudioManager.Instance.Stop(chargingMegaBuster);
+                     ShootMegaBuster();
+                 }
+             }
+
+             // Reset charge time and button states
+             chargeTime = 0f;
+             currentShootLevel = 0;
+             shootButtonRelease = false;
+             hasPlayedChargeSound = false;
+         }
+
+        // Limit shooting duration
         if (isShooting)
         {
             shootTimeLength = Time.time - shootTime;
@@ -774,39 +795,37 @@ public class Megaman : MonoBehaviour
 
     private void ShootMegaBuster()
     {
+        Debug.Log("ShootMegaBuster Called");
+        Debug.Log("Current Shoot Level: " + currentShootLevel);
+        Debug.Log("Projectile Prefab: " + currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab);
+
+        if (currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab == null)
+        {
+            Debug.LogError("Projectile prefab is not assigned!");
+            return;
+        }
+
         // Calculate the direction based on facingRight
         Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
         // Calculate the starting point of the raycast using the offset
         Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
+        // Always use the maximum ray length for the shoot position
+        Vector2 shootPosition = shootStartPosition + shootDirection * shootRayLength;
 
-        // Check if the projectile prefab for the current charge level is null
-        if (currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab == null)
-        {
-            Debug.LogError("Projectile prefab is null for the current charge level!");
-            return;
-        }
+        GameObject megaBusterPrefab = Instantiate(currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab, shootPosition, Quaternion.identity);
 
-        Debug.Log($"Instantiating projectile at level {currentShootLevel}");
-
-        // Instantiate the bullet projectile
-        GameObject megaBusterPrefab = Instantiate(currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab, shootStartPosition, Quaternion.identity);
         MegaBuster projScript = megaBusterPrefab.GetComponent<MegaBuster>();
+        projScript.Initialize(currentWeaponData, facingRight, currentShootLevel);
 
-        // Initialize the projectile with weapon data and current charge level
-        projScript.Initialize(currentWeaponData, facingRight, currentShootLevel); // It should give the rest of the information to the MegaBuster using the current Weapon Data obtained due to Weapon Type in the struct
-
-        // Add bullet to the active bullets list
         activeBullets.Add(megaBusterPrefab);
 
-        // Reset charge level and time
         currentShootLevel = 0;
         chargeTime = 0f;
 
-        // Subscribe to OnBulletDestroyed event to remove the bullet from the list when destroyed
         projScript.OnBulletDestroyed += () =>
         {
             activeBullets.Remove(megaBusterPrefab);
-            Destroy(megaBusterPrefab); // Ensure the bullet is destroyed
+            Destroy(megaBusterPrefab);
         };
     }
     #endregion
@@ -901,27 +920,25 @@ public class Megaman : MonoBehaviour
 
     private void StartSliding()
     {
-        // When you press slide button OR jump + down (if you want) when grounded and not currently sliding will lead to sliding
-        if (((slideButtonPressed && slideButtonRelease) || CanSlideWithDownJump()) && IsGrounded() && !isSliding)
+        // Start sliding if the button is pressed (or down + jump) when grounded and not already sliding
+        if (((slideButtonPressed && slideButtonRelease) || CanSlideWithDownJump()) && IsGrounded() && !isSliding && !IsFrontCollision())
         {
-            if (!IsFrontCollision())
+            //Debug.Log("Start Slide!");
+            isSliding = true;
+            slideTime = Time.time;
+            slideTimeLength = 0;
+
+            GameObject slideDust = Instantiate(slideDustPrefab);
+            slideDust.name = slideDustPrefab.name;
+            slideDust.transform.position = slideDustPos.transform.position;
+
+            if (!facingRight)
             {
-                //Debug.Log("Start Slide!");
-                isSliding = true;
-                slideTime = Time.time;
-                slideTimeLength = 0;
-
-                GameObject slideDust = Instantiate(slideDustPrefab);
-                slideDust.name = slideDustPrefab.name;
-                slideDust.transform.position = slideDustPos.transform.position;
-                if (!facingRight)
-                {
-                    slideDust.transform.Rotate(0f, 180f, 0f);
-                }
-
-                slideButtonPressed = false;
-                slideButtonRelease = false;
+                slideDust.transform.Rotate(0f, 180f, 0f);
             }
+
+            slideButtonPressed = false;
+            slideButtonRelease = false;
         }
     }
 
@@ -929,84 +946,66 @@ public class Megaman : MonoBehaviour
     {
         if (state == PlayerStates.Climb) return;
 
-        // change box collider's size and offset if the player's currently sliding or not
+        // Adjust collider based on sliding state
         boxCollider.offset = isSliding ? slideBoxOffset : defaultBoxOffset;
         boxCollider.size = isSliding ? slideBoxSize : defaultBoxSize;
 
-        if (isSliding) // if it's currently sliding
-        {
-            //Debug.Log("Slide performed!");
-            bool exitSlide = false;
-            bool isTouchingTop = IsColAbove();
-            bool isTouchingFront = IsFrontCollision();
-            slideTimeLength = Time.time - slideTime; // get how long the slide has run for
-
-            if (moveInput.x < 0) // if you move to the left
-            {
-                if (facingRight) // you change direction to right
-                {
-                    if (isTouchingTop)// there's no colliding object above
-                    {
-                        Flip();
-                    }
-                    else
-                    {
-                        //Debug.Log("There's nothing above and you move to the right, exit slide");
-                        exitSlide = true; // stop the slide
-                    }
-                }
-            }
-            // is the same as the previous if statement but on the opposite direction
-            // if you move to the right
-            else if (moveInput.x > 0)
-            {
-                if (!facingRight) // you change direction to left
-                {
-                    if (isTouchingTop)// there's no colliding object above
-                    {
-                        Flip();
-                    } 
-                    else
-                    {
-                        //Debug.Log("There's nothing above and you move to the left, exit slide");
-                        exitSlide = true; // stop the slide
-                    }
-                }
-            }
-
-            // when you press jump and there's no colliding object above the player during the sliding
-            if (jumpButtonPressed && !isTouchingTop)
-            {
-                //Debug.Log("Slide jump!");
-                exitSlide = true;
-            }
-
-            // when it detects a colliding object in front but not above and there's still slide time left
-            if (isTouchingFront && !isTouchingTop && slideTimeLength >= 0.1f)
-            {
-                //Debug.Log("There's something in front, stopping sliding!");
-                exitSlide = true;
-            }
-
-            // when slide time is over AND there's no collding object above OR you're not grounded OR you exit the slide
-            // you stop sliding
-            if ((slideTimeLength >= slideDuration && !isTouchingTop) || !IsGrounded() || exitSlide)
-            {
-                //Debug.Log("You're not sliding anymore!");
-                rb.velocity = new Vector2(0, rb.velocity.y);
-                isSliding = false;
-                slideButtonRelease = true;
-            }
-            else // the slide force is applied 
-            {
-                //Debug.Log("Slide force applied!");
-                rb.velocity = new Vector2(slideSpeed * ((facingRight) ? 1f : -1f), rb.velocity.y);
-            }
-        }
-        else // if it's not sliding
+        if (!isSliding)
         {
             StartSliding();
+            return;
         }
+
+        // Track slide duration
+        bool isTouchingTop = IsColAbove();
+        bool isTouchingFront = IsFrontCollision();
+        slideTimeLength = Time.time - slideTime;
+
+        // Check if we need to exit slide
+        bool exitSlide = ShouldExitSlide(isTouchingTop, isTouchingFront);
+
+        // Stop sliding if conditions are met
+        if (exitSlide || slideTimeLength >= slideDuration && !isTouchingTop || !IsGrounded())
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            isSliding = false;
+            slideButtonRelease = true;
+        }
+        else
+        {
+            // Apply sliding force
+            rb.velocity = new Vector2(slideSpeed * (facingRight ? 1f : -1f), rb.velocity.y);
+        }
+    }
+
+    private bool ShouldExitSlide(bool isTouchingTop, bool isTouchingFront)
+    {
+        // Check if player attempts to change direction while sliding
+        if ((moveInput.x < 0 && facingRight) || (moveInput.x > 0 && !facingRight))
+        {
+            if (isTouchingTop)
+            {
+                Flip(); // Flip if there's no colliding object above
+            }
+            else
+            {
+                return true; // Exit slide if there's something blocking the direction change
+            }
+        }
+
+        // Exit slide if jump is pressed with no obstacle above
+        if (jumpButtonPressed && !isTouchingTop)
+        {
+            return true;
+        }
+
+        // Exit slide if there's a front collision after some time
+        if (isTouchingFront && !isTouchingTop && slideTimeLength >= 0.1f)
+        {
+            return true;
+        }
+
+        return false;
     }
     #endregion
 
