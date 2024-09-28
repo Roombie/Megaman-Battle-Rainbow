@@ -782,6 +782,13 @@ public class Megaman : MonoBehaviour
              hasPlayedChargeSound = false;
          }
 
+        // shoot key isn't being pressed and key release flag is false
+        if (!shootButtonPressed && !shootButtonRelease)
+        {
+            shootButtonReleaseTimeLength = Time.time - shootTime;
+            shootButtonRelease = true;
+        }
+
         // Limit shooting duration
         if (isShooting)
         {
