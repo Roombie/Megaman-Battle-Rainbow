@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3207372261075411899}
   - component: {fileID: 1795432546596044667}
   - component: {fileID: 4834286306082666798}
+  - component: {fileID: 1161270765676308422}
   m_Layer: 11
   m_Name: MagnetBeamShot
   m_TagString: PlatformBeam
@@ -202,3 +203,15 @@ MonoBehaviour:
   offset: {x: 1, y: 0}
   wallRadius: 0.1
   hasReachedMaxLength: 0
+--- !u!114 &1161270765676308422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4270421284652484171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f355bec82695c42498f496839fcf2f20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

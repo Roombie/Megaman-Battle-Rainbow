@@ -84,7 +84,7 @@ public class Megaman : MonoBehaviour
     }
     public WeaponsStruct[] weaponsData;
     public WeaponTypes playerWeapon = WeaponTypes.MegaBuster;
-    private WeaponData currentWeaponData; // This stores the static data for the active weapon
+    private WeaponBase currentWeapon; 
     private GameObject currentMagnetBeam = null;
 
     public GameObject weaponSwitchIcon;
@@ -171,7 +171,8 @@ public class Megaman : MonoBehaviour
 
     void Start()
     {
-        SetWeapon(playerWeapon);
+        InitializeWeapon(playerWeapon); // Ensure currentWeapon is set
+        SetWeapon(playerWeapon); // Now safe to call SetWeapon
         weaponSwitchIcon.SetActive(false);
         // start at full health
         currentHealth = maxHealth;
@@ -194,8 +195,13 @@ public class Megaman : MonoBehaviour
         }
 
         // Check if the icon is active and update the timer
-        if (weaponSwitchIcon.activeSelf)
+        if (weaponSwitchIcon.activeSelf && weaponSwitchIcon != null)
         {
+            // Set the local scale based on the player's facing direction
+            Vector3 iconScale = weaponSwitchIcon.transform.localScale;
+            iconScale.x = facingRight ? 1 : -1; // Flip the icon based on the player's facing direction
+            weaponSwitchIcon.transform.localScale = iconScale;
+
             iconTimer += Time.deltaTime; // Increment the timer
             if (iconTimer >= iconDisplayTime)
             {
@@ -469,16 +475,56 @@ public class Megaman : MonoBehaviour
     #endregion
 
     #region Weapons
+    private void InitializeWeapon(WeaponTypes weaponType)
+    {
+        // Find the selected weapon data
+        WeaponsStruct selectedWeapon = weaponsData.First(w => w.weaponType == weaponType);
+
+        // Check if the selected weapon prefab is not null
+        if (selectedWeapon.weaponData.weaponPrefab != null)
+        {
+            // Assign the weapon prefab to the current weapon
+            currentWeapon = selectedWeapon.weaponData.weaponPrefab.GetComponent<WeaponBase>();
+
+            // Ensure the weapon data is also assigned
+            currentWeapon.weaponData = selectedWeapon.weaponData;
+        }
+        else
+        {
+            Debug.LogError("Weapon prefab is not assigned for " + weaponType);
+        }
+    }
+
     void SetWeapon(WeaponTypes weaponType)
     {
-        // Set the currentWeaponData based on the selected weapon from the weaponsData array
-        WeaponsStruct selectedWeapon = weaponsData.First(w => w.weaponType == weaponType);
-        currentWeaponData = selectedWeapon.weaponData;
+        // Check if the weaponsData is populated
+        if (weaponsData == null || weaponsData.Length == 0)
+        {
+            Debug.LogError("Weapons data is not initialized or empty.");
+            return;
+        }
+
+        // Find the selected weapon from the weaponsData array
+        WeaponsStruct selectedWeapon = weaponsData.FirstOrDefault(w => w.weaponType == weaponType);
+
+        // Check if the selected weapon is valid
+        if (selectedWeapon.weaponData == null)
+        {
+            Debug.LogError($"Selected weapon {weaponType} is not valid or doesn't have associated data.");
+            return;
+        }
+
+        // Assign the weapon data to the current weapon
+        currentWeapon.weaponData = selectedWeapon.weaponData;
+
+        // Update the player's weapon type
         playerWeapon = weaponType;
+
         // Reset charge level and time
         currentShootLevel = 0;
         chargeTime = 0f;
     }
+
 
     public void SwitchWeapon(WeaponTypes weaponType)
     {
@@ -490,31 +536,34 @@ public class Megaman : MonoBehaviour
 
     private void SwitchToNextWeapon()
     {
-        int nextWeapon = (int)playerWeapon + 1;
-        if (nextWeapon >= weaponsData.Length) nextWeapon = 0;
+        int nextWeaponIndex = (int)playerWeapon + 1;
+        if (nextWeaponIndex >= weaponsData.Length) nextWeaponIndex = 0;
 
-        SetWeapon((WeaponTypes)nextWeapon);
+        SetWeapon((WeaponTypes)nextWeaponIndex);
         ShowWeaponSwitchIcon();
-        // Reset charge level and time
+        Debug.Log($"Switched to Next Weapon: {nextWeaponIndex}"); // Debug log to verify
+
         currentShootLevel = 0;
         chargeTime = 0f;
-        Debug.Log($"Switched to Next Weapon: {nextWeapon}"); // Debug log to verify
     }
 
     private void SwitchToPreviousWeapon()
     {
-        int previousWeapon = (int)playerWeapon - 1;
-        if (previousWeapon < 0) previousWeapon = weaponsData.Length - 1;
+        int previousWeaponIndex = (int)playerWeapon - 1;
+        if (previousWeaponIndex < 0) previousWeaponIndex = weaponsData.Length - 1;
 
-        SetWeapon((WeaponTypes)previousWeapon);
+        SetWeapon((WeaponTypes)previousWeaponIndex);
         ShowWeaponSwitchIcon();
-        Debug.Log($"Switched to Previous Weapon: {previousWeapon}"); // Debug log to verify
+        Debug.Log($"Switched to Previous Weapon: {previousWeaponIndex}"); // Debug log to verify
+
+        currentShootLevel = 0;
+        chargeTime = 0f;
     }
 
     private void ShowWeaponSwitchIcon()
     {
         // Set the weapon icon to the current weapon's icon
-        weaponSwitchIcon.GetComponent<SpriteRenderer>().sprite = currentWeaponData.weaponIcon;
+        weaponSwitchIcon.GetComponent<SpriteRenderer>().sprite = currentWeapon.weaponData.weaponIcon;
         weaponSwitchIcon.SetActive(true); // Activate the icon
 
         // Reset the timer
@@ -694,11 +743,6 @@ public class Megaman : MonoBehaviour
     #region MegaBuster
     private void MegaBuster()
     {
-        Debug.Log("MegaBuster method called");
-        Debug.Log("shootButtonPressed: " + shootButtonPressed);
-        Debug.Log("shootButtonRelease: " + shootButtonRelease);
-        Debug.Log("isSliding: " + isSliding);
-
         shootTimeLength = 0;
         shootButtonReleaseTimeLength = 0;
 
@@ -730,53 +774,52 @@ public class Megaman : MonoBehaviour
 
         // Handle shooting when button is pressed and released
         if (shootButtonPressed && shootButtonRelease && !isSliding)
-         {
-             if ((!currentWeaponData.limitBulletsOnScreen || activeBullets.Count < currentWeaponData.maxBulletsOnScreen)
-                 && currentWeaponStruct.currentEnergy >= currentWeaponData.energyCost)
-             {
-                 isShooting = true;
-                 shootButtonRelease = false;
-                 shootTime = Time.time;
+        {
+            if ((!currentWeaponData.limitBulletsOnScreen || activeBullets.Count < currentWeaponData.maxBulletsOnScreen)
+                && currentWeaponStruct.currentEnergy >= currentWeaponData.energyCost)
+            {
+                isShooting = true;
+                shootButtonRelease = false;
+                shootTime = Time.time;
 
-                 // Deduct energy for the shot
-                 currentWeaponStruct.currentEnergy -= currentWeaponData.energyCost;
+                // Deduct energy for the shot
+                currentWeaponStruct.currentEnergy -= currentWeaponData.energyCost;
 
-                 // Delay shot based on weapon data
-                 Invoke(nameof(ShootMegaBuster), currentWeaponData.shootDelay);
-             }
-         }
+                // Delay shot based on weapon data
+                Invoke(nameof(ShootMegaBuster), currentWeaponData.shootDelay);
+            }
+        }
 
-         // Handle releasing the button for charged shots
-         if (!shootButtonPressed && shootButtonRelease)
-         {
-             Debug.Log("Button released, checking for charged shot");
-             shootButtonReleaseTimeLength = Time.time - shootTime;
+        // Handle releasing the button for charged shots
+        if (!shootButtonPressed && shootButtonRelease)
+        {
+            Debug.Log("Button released, checking for charged shot");
+            shootButtonReleaseTimeLength = Time.time - shootTime;
 
-             if (currentShootLevel > 0)
-             {
-                 if (isSliding)
-                 {
-                     Debug.Log("Player is sliding, delaying shot");
-                     return; // Delay shooting if sliding
-                 }
-                 else
-                 {
-                     isShooting = true;
-                     shootTime = Time.time;
-                     AudioManager.Instance.Stop(chargingMegaBuster);
-                     ShootMegaBuster();
-                 }
-             }
+            if (currentShootLevel > 0)
+            {
+                if (isSliding)
+                {
+                    Debug.Log("Player is sliding, delaying shot");
+                    return; // Delay shooting if sliding
+                }
+                else
+                {
+                    isShooting = true;
+                    shootTime = Time.time;
+                    AudioManager.Instance.Stop(chargingMegaBuster);
+                    ShootMegaBuster(); // Call the new method to handle shooting
+                }
+            }
 
-             // Reset charge time and button states
-             chargeTime = 0f;
-             currentShootLevel = 0;
-             shootButtonRelease = false;
-             hasPlayedChargeSound = false;
-         }
+            // Reset charge time and button states
+            chargeTime = 0f;
+            currentShootLevel = 0;
+            shootButtonRelease = false;
+            hasPlayedChargeSound = false;
+        }
 
         // shoot key isn't being pressed and key release flag is false
-        // if this doesn't exist, you wouldn't be able to shoot
         if (!shootButtonPressed && !shootButtonRelease)
         {
             shootButtonReleaseTimeLength = Time.time - shootTime;
@@ -796,22 +839,14 @@ public class Megaman : MonoBehaviour
 
     private void ShootMegaBuster()
     {
-        WeaponsStruct currentWeaponStruct = weaponsData[(int)playerWeapon];
-        WeaponBase weaponBase = currentWeaponStruct.weaponData.weaponPrefab.GetComponent<WeaponBase>();
+        // Call the Shoot method of the current weapon, which handles the position calculation
+        currentWeapon.Shoot(transform, bulletShootOffset, facingRight, currentShootLevel, shootRayLength);
 
-        if (weaponBase != null)
-        {
-            weaponBase.Shoot(transform, bulletShootOffset, facingRight, currentShootLevel);
-        }
-        else
-        {
-            Debug.LogError("WeaponBase component not found on weapon prefab!");
-        }
-
-        // Reset shoot level and charge time
+        // Reset the current shoot level and charge time after shooting
         currentShootLevel = 0;
         chargeTime = 0f;
     }
+
     #endregion
 
     #region MagnetBeam

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9192409411891400786}
   - component: {fileID: 582588571725103974}
   - component: {fileID: 3013797735324756993}
+  - component: {fileID: 8883317049542566197}
   m_Layer: 0
   m_Name: HyperMegaBuster
   m_TagString: Bullet
@@ -191,6 +192,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3401bbe24f778a4f8ef138e98b1b07f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8883317049542566197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 964785331528871214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 020417bd37a8afc46abc807bb0aac3b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: c546215c3605ad54a9482526cf370933, type: 2}
