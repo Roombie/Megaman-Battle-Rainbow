@@ -728,13 +728,6 @@ public class Megaman : MonoBehaviour
             }
         }
 
-        /*if (true)  // Bypass conditions temporarily (FOR SOME REASON THIS WORKS)
-        {
-            Debug.Log("Forcing shoot logic to run");
-            ShootMegaBuster();
-        }*/
-
-
         // Handle shooting when button is pressed and released
         if (shootButtonPressed && shootButtonRelease && !isSliding)
          {
@@ -783,6 +776,7 @@ public class Megaman : MonoBehaviour
          }
 
         // shoot key isn't being pressed and key release flag is false
+        // if this doesn't exist, you wouldn't be able to shoot
         if (!shootButtonPressed && !shootButtonRelease)
         {
             shootButtonReleaseTimeLength = Time.time - shootTime;
@@ -802,38 +796,21 @@ public class Megaman : MonoBehaviour
 
     private void ShootMegaBuster()
     {
-        Debug.Log("ShootMegaBuster Called");
-        Debug.Log("Current Shoot Level: " + currentShootLevel);
-        Debug.Log("Projectile Prefab: " + currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab);
+        WeaponsStruct currentWeaponStruct = weaponsData[(int)playerWeapon];
+        WeaponBase weaponBase = currentWeaponStruct.weaponData.weaponPrefab.GetComponent<WeaponBase>();
 
-        if (currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab == null)
+        if (weaponBase != null)
         {
-            Debug.LogError("Projectile prefab is not assigned!");
-            return;
+            weaponBase.Shoot(transform, bulletShootOffset, facingRight, currentShootLevel);
+        }
+        else
+        {
+            Debug.LogError("WeaponBase component not found on weapon prefab!");
         }
 
-        // Calculate the direction based on facingRight
-        Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
-        // Calculate the starting point of the raycast using the offset
-        Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
-        // Always use the maximum ray length for the shoot position
-        Vector2 shootPosition = shootStartPosition + shootDirection * shootRayLength;
-
-        GameObject megaBusterPrefab = Instantiate(currentWeaponData.chargeLevels[currentShootLevel].projectilePrefab, shootPosition, Quaternion.identity);
-
-        MegaBuster projScript = megaBusterPrefab.GetComponent<MegaBuster>();
-        projScript.Initialize(currentWeaponData, facingRight, currentShootLevel);
-
-        activeBullets.Add(megaBusterPrefab);
-
+        // Reset shoot level and charge time
         currentShootLevel = 0;
         chargeTime = 0f;
-
-        projScript.OnBulletDestroyed += () =>
-        {
-            activeBullets.Remove(megaBusterPrefab);
-            Destroy(megaBusterPrefab);
-        };
     }
     #endregion
 

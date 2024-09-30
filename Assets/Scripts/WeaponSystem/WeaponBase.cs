@@ -1,115 +1,72 @@
-// Assets/Scripts/Weapons/BaseWeapon.cs
-// This is the abstract base class for weapons, handling the overall functionality of the weapon itself.
-// It governs firing mechanics and managing ammo/energy usage.
-// In other words, it's for THE WEAPON FUNCTIONALITY THAT THE PLAYER WILL USE
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class WeaponBase : MonoBehaviour
 {
-    protected WeaponData weaponData;
-    protected Megaman playerController;
-    protected float chargeTime; // Time spent holding the shoot button
-    protected int currentChargeLevel; // Current charge level index
-    protected bool isCharging; // Whether the weapon is charging
+    public WeaponData weaponData; // Reference to the weapon's data
+    protected List<GameObject> activeBullets = new(); // List to track active bullets
 
-    protected virtual void Awake()
+    public virtual bool CanShoot()
     {
-        playerController = GetComponent<Megaman>();
+        // Check if the weapon has enough energy and if bullet limits are respected
+        return (weaponData.currentEnergy >= weaponData.energyCost) &&
+               (!weaponData.limitBulletsOnScreen || activeBullets.Count < weaponData.maxBulletsOnScreen);
     }
 
-    public abstract void Fire();
-    public abstract void Stop();
-
-    protected void StartCharging()
+    public virtual void Shoot(Transform shooterTransform, Vector2 bulletOffset, bool facingRight, int currentShootLevel)
     {
-        chargeTime = 0f;
-        isCharging = true;
-    }
+        if (!CanShoot())
+            return;
 
-    protected void StopCharging()
-    {
-        isCharging = false;
-        chargeTime = 0f;
-        currentChargeLevel = 0;
-    }
+        // Get the shoot position based on facing direction and the passed bullet offset
+        Vector2 shootPosition = GetShootPosition(shooterTransform, bulletOffset, facingRight);
 
-    public int GetChargeLevel()
-    {
-        if (weaponData.chargeLevels == null || weaponData.chargeLevels.Count == 0)
+        // Get the bullet prefab (whether charged or uncharged)
+        GameObject bulletPrefab = GetBulletPrefab(currentShootLevel);
+        if (bulletPrefab == null)
         {
-            return 0; // If there are no charge levels, just return the base charge level.
-        }
-
-        // Determine the current charge level based on how long the player has held the fire button.
-        for (int i = weaponData.chargeLevels.Count - 1; i >= 0; i--)
-        {
-            if (chargeTime >= weaponData.chargeLevels[i].timeRequired)
-            {
-                return i; // Return the highest level for which the time requirement has been met.
-            }
-        }
-
-        return 0;
-    }
-
-    public virtual void Shoot()
-    {
-        // Check if the weapon is enabled
-        if (!weaponData.isEnabled)
-        {
-            Debug.Log(weaponData.weaponName + " is disabled.");
+            Debug.LogError("Projectile prefab is not assigned!");
             return;
         }
 
-        // Check if there's enough energy to shoot
-        if (weaponData.currentEnergy < weaponData.energyCost)
+        GameObject bulletInstance = Instantiate(bulletPrefab, shootPosition, Quaternion.identity);
+
+        // Initialize the bullet
+        Projectile bulletScript = bulletInstance.GetComponent<Projectile>();
+        bulletScript.Initialize(weaponData, facingRight, currentShootLevel);
+
+        activeBullets.Add(bulletInstance);
+
+        bulletScript.OnBulletDestroyed += () => activeBullets.Remove(bulletInstance);
+
+        DeductEnergy();
+    }
+
+    protected virtual void DeductEnergy()
+    {
+        weaponData.currentEnergy -= weaponData.energyCost;
+    }
+
+    protected virtual Vector2 GetShootPosition(Transform shooterTransform, Vector2 bulletOffset, bool facingRight)
+    {
+        Vector2 offset = facingRight ? bulletOffset : new Vector2(-bulletOffset.x, bulletOffset.y);
+        return (Vector2)shooterTransform.position + offset;
+    }
+
+    // This method handles both charge levels and standard weaponPrefab
+    protected virtual GameObject GetBulletPrefab(int currentShootLevel)
+    {
+        // Check if the weapon has charge levels
+        if (weaponData.chargeLevels != null && weaponData.chargeLevels.Count > 0)
         {
-            Debug.Log(weaponData.weaponName + " has no energy.");
-            return;
+            // Return the projectile prefab for the current charge level
+            return weaponData.chargeLevels[currentShootLevel].projectilePrefab;
         }
 
-        // Instantiate Projectile
-        GameObject projectile = Instantiate(weaponData.chargeLevels[currentChargeLevel].projectilePrefab, GetShootPosition(), GetShootRotation());
-        Projectile projScript = projectile.GetComponent<Projectile>();
-
-        // Pass the charge level to Initialize
-        projScript.Initialize(weaponData, playerController.IsFacingRight, currentChargeLevel);
-
-        // Play Shoot Sound
-        if (weaponData.weaponClip != null)
-        {
-            AudioManager.Instance.Play(weaponData.weaponClip);
-        }
-
-        // Reduce Ammo
-        weaponData.currentEnergy--;
-
-        // Implement Shoot Delay
-        StartCoroutine(ShootDelay());
+        // If no charge levels exist, use the standard weapon prefab
+        return weaponData.weaponPrefab;
     }
 
-    protected virtual Vector2 GetShootPosition()
-    {
-        // Calculate shoot position based on player's position and facing direction
-        Vector2 offset = playerController.IsFacingRight ? (weaponData.currentEnergy > 0 ? Vector2.right : Vector2.left) : (weaponData.currentEnergy > 0 ? Vector2.left : Vector2.right);
-        return (Vector2)transform.position + offset;
-    }
-
-    protected virtual Quaternion GetShootRotation()
-    {
-        // Adjust rotation based on facing direction
-        return playerController.IsFacingRight ? Quaternion.identity : Quaternion.Euler(0, 180, 0);
-    }
-
-    protected IEnumerator ShootDelay()
-    {
-        yield return new WaitForSeconds(weaponData.shootDelay);
-
-    }
-
-    public virtual void Reload()
-    {
-        weaponData.currentEnergy = weaponData.maxEnergy;
-    }
+    // Override this to get the current level for chargeable weapons
+    protected virtual int GetCurrentLevel() => 0;
 }

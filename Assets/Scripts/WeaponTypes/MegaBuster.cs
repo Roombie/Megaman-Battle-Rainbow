@@ -3,7 +3,10 @@ using UnityEngine;
 
 public class MegaBuster : Projectile
 {
-    private float destroyTime = 5f;
+    private float destroyTime = 5f;  
+    private int damage;               // Damage value from ChargeLevel
+    private ChargeLevel currentChargeLevel; // Store current charge level data
+    private int currentLevel;          // Variable to hold the current charge level index
 
     protected override void Awake()
     {
@@ -14,16 +17,24 @@ public class MegaBuster : Projectile
     {
         base.Initialize(data, facingRight, level);
 
-        // Use bullet speed from WeaponData instead of getting it from the prefab
-        bulletSpeed = data.chargeLevels[level].bulletSpeed;
+        // Store the current charge level index
+        currentLevel = level;
+
+        // Retrieve and store data from the specific charge level
+        currentChargeLevel = data.chargeLevels[currentLevel];
+
+        // Set bullet speed and damage
+        bulletSpeed = currentChargeLevel.bulletSpeed;
+        damage = currentChargeLevel.damage;
+        AudioManager.Instance.Play(currentChargeLevel.weaponClip);
 
         // Set initial velocity based on direction and bullet speed
-        rb.velocity = direction * bulletSpeed;
+        rb.velocity = bulletSpeed * direction;
     }
 
-    protected override void Update()
+    private void Update()
     {
-        // Reduce destroy time
+        // Handle projectile's lifetime and destruction
         destroyTime -= Time.deltaTime;
         if (destroyTime <= 0)
         {
@@ -31,12 +42,36 @@ public class MegaBuster : Projectile
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    // Override the base OnTriggerEnter2D method
+    protected override void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
+            // Apply damage to the enemy
             ApplyEffects(other.gameObject);
-            Destroy(gameObject); // Destroy on collision
+
+            // Check if the current level is greater than 0
+            if (currentLevel < 1) // Check the current charge level
+            {
+                Destroy(gameObject);  // Destroy the bullet on collision
+            }
         }
+    }
+
+    // Apply effects to the main target (like damage)
+    protected override void ApplyEffects(GameObject target)
+    {
+        EnemyController enemy = target.GetComponent<EnemyController>();
+        if (enemy != null)
+        {
+            // Apply base damage
+            enemy.TakeDamage(damage);
+        }
+    }
+
+    // Handle projectile becoming invisible (off-screen)
+    private void OnBecameInvisible()
+    {
+        Destroy(gameObject);
     }
 }
