@@ -514,8 +514,8 @@ public class Megaman : MonoBehaviour
             return;
         }
 
-        // Assign the weapon data to the current weapon
-        currentWeapon.weaponData = selectedWeapon.weaponData;
+        // Initialize the weapon using the selected weapon type
+        InitializeWeapon(weaponType);
 
         // Update the player's weapon type
         playerWeapon = weaponType;
@@ -523,7 +523,11 @@ public class Megaman : MonoBehaviour
         // Reset charge level and time
         currentShootLevel = 0;
         chargeTime = 0f;
+
+        // Debug log to confirm the weapon change
+        Debug.Log($"Weapon switched to: {playerWeapon}");
     }
+
 
 
     public void SwitchWeapon(WeaponTypes weaponType)
@@ -852,74 +856,47 @@ public class Megaman : MonoBehaviour
     #region MagnetBeam
     private void MagnetBeam()
     {
-        // Find the weapon data for the current weapon type
-        WeaponsStruct currentWeapon = weaponsData[(int)playerWeapon];
-        // Calculate the direction based on facingRight
+        WeaponsStruct currentWeaponStruct = weaponsData[(int)playerWeapon];
+        WeaponData currentWeaponData = currentWeaponStruct.weaponData;
+
+        // Calculate the direction and starting position for the beam
         Vector2 shootDirection = facingRight ? Vector2.right : Vector2.left;
-        // Calculate the starting point of the raycast using the offset
         Vector2 shootStartPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
-        // Always use the maximum ray length for the shoot position
         Vector2 shootPosition = shootStartPosition + shootDirection * shootRayLength;
 
-        // Stop the beam if invincible, or if button is released
+        MagnetBeamWeapon magnetBeamWeapon = currentWeapon as MagnetBeamWeapon;
+
+        // Stop the beam if button is released
         if (!shootButtonPressed && shootButtonRelease)
         {
-            if (currentMagnetBeam != null)
+            if (magnetBeamWeapon != null)
             {
-                // Stop extending the beam
-                currentMagnetBeam.GetComponent<MagnetBeam>().StopExtending();
+                magnetBeamWeapon.StopBeam();
                 isShooting = false;
-                AudioManager.Instance.Play(currentWeapon.weaponData.weaponClip);
-                currentMagnetBeam = null;
+                shootButtonRelease = true;
             }
         }
 
-        // Handle the beam creation only if not invincible, not taking damage, and shoot button is properly handled
-        if (shootButtonPressed && shootButtonRelease && !isSliding && !isInvincible)
+        // Handle beam creation when shoot button is pressed and not released
+        if (shootButtonPressed && !isShooting && !isSliding && magnetBeamWeapon != null)
         {
-            if (GameObject.FindGameObjectsWithTag("PlatformBeam").Length < 5)
-            {
-                // Instantiate the Magnet Beam prefab
-                currentMagnetBeam = Instantiate(currentWeapon.weaponData.weaponPrefab, shootPosition, Quaternion.identity);
-
-                // Pass the direction to the Magnet Beam script
-                currentMagnetBeam.GetComponent<MagnetBeam>().SetBeamDirection(shootPosition);
-                currentMagnetBeam.GetComponent<MagnetBeam>().SetBeamDirection(shootDirection);
-                currentMagnetBeam.GetComponent<MagnetBeam>().StartExtending();
-
-                // Set shooting to true for the duration of instantiating
-                isShooting = true;
-
-                // Play the weapon-specific sound
-                if (currentWeapon.weaponData.weaponClip != null)
-                {
-                    AudioManager.Instance.Play(currentWeapon.weaponData.weaponClip);
-                }
-
-                // Prevent further shooting until button is released
-                shootButtonRelease = false;
-            }
+            // Call the Shoot method to instantiate the beam
+            magnetBeamWeapon.Shoot(transform, bulletShootOffset, facingRight, currentShootLevel, shootRayLength);
+            isShooting = true;
+            shootButtonRelease = false;
         }
 
-        // Only update the beam position and direction if not invincible
-        if (currentMagnetBeam != null && !isInvincible)
-        {
-            currentMagnetBeam.GetComponent<MagnetBeam>().UpdateBeamPosition(shootPosition);
-            currentMagnetBeam.GetComponent<MagnetBeam>().SetBeamDirection(shootDirection);
-            Debug.Log("Repositioning");
-        }
-
-        // Reset the shoot button release when the button is no longer pressed
-        if (!shootButtonPressed && !shootButtonRelease)
-        {
-            shootButtonRelease = true;
-        }
-
-        // Check if beam has reached its maximum length to stop shooting animation
+        // Check if the beam has reached its max length and reset the shooting state
         if (currentMagnetBeam != null && currentMagnetBeam.GetComponent<MagnetBeam>().hasReachedMaxLength)
         {
             isShooting = false;
             currentMagnetBeam = null;
+        }
+
+        // If the shoot button is no longer pressed, reset the release flag
+        if (!shootButtonPressed && !shootButtonRelease)
+        {
+            shootButtonRelease = true;
         }
     }
     #endregion

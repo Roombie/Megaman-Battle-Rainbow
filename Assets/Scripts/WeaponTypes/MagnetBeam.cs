@@ -3,7 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(BoxCollider2D))]
-public class MagnetBeam : MonoBehaviour
+public class MagnetBeam : Projectile
 {
     [SerializeField] private float maxBeamLength = 30f;
     [SerializeField] private float tileExtendInterval = 0.2f;
@@ -14,44 +14,32 @@ public class MagnetBeam : MonoBehaviour
     [SerializeField] private Vector2 offset = new(1f, 0f);
     [SerializeField] private float wallRadius = 0.1f;
 
-    private SpriteRenderer spriteRenderer;
+    private new SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider;
-    private Megaman megaman;
     private float currentBeamLength = 0f;
     private float nextTileTime = 0f;
     private bool isExtending = false;
     public bool hasReachedMaxLength = false; // Track if beam reaches max length
-    private Vector2 beamDirection = Vector2.right;
     private bool isFlashing = false;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         spriteRenderer = GetComponent<SpriteRenderer>();
         boxCollider = GetComponent<BoxCollider2D>();
-        megaman = FindObjectOfType<Megaman>();
     }
 
     private void Update()
     {
-        if (megaman != null && megaman.freezeInput)
-        {
-            // Stop extending the beam if input is frozen
-            StopExtending();
-            return;  // Exit Update early if input is frozen
-        }
-
         if (isExtending && Time.time >= nextTileTime)
         {
             ExtendBeam();
             nextTileTime = Time.time + tileExtendInterval;
-
-            // Only update position while extending
-            UpdateBeamPosition((Vector2)transform.position);
         }
 
         if (!isExtending && !isFlashing)
         {
-            StartFlashing(); // Start the flashing and destruction process
+            StartFlashing(); // Start flashing after stopping
         }
 
         PerformRaycast(); // Check for walls
@@ -60,54 +48,32 @@ public class MagnetBeam : MonoBehaviour
     public void StartExtending()
     {
         isExtending = true;
-        hasReachedMaxLength = false; // Reset the max length flag
-        Debug.Log("The beam is extending now");
+        hasReachedMaxLength = false; // Reset max length flag
     }
 
     public void StopExtending()
     {
-        if (!isExtending) return;
-
         isExtending = false;
-        hasReachedMaxLength = true; // Set the flag when the beam stops
-        Debug.Log("Beam has stopped extending.");
+        hasReachedMaxLength = true; // Mark beam as finished extending
         Invoke(nameof(StartFlashing), lifetime);
     }
 
     public void SetBeamDirection(Vector2 direction)
     {
-        beamDirection = direction.normalized;
+        this.direction = direction.normalized; // Using direction from Projectile class
         UpdateBeamFlip();
-    }
-
-    public void UpdateBeamPosition(Vector2 newPosition)
-    {
-        if (isExtending) // Only update position if the beam is extending
-        {
-            transform.position = newPosition;
-        }
     }
 
     private void ExtendBeam()
     {
-        if (spriteRenderer == null)
+        if (currentBeamLength + spriteRenderer.sprite.bounds.size.x <= maxBeamLength)
         {
-            Debug.LogError("Cannot extend beam because SpriteRenderer is not assigned.");
-            return;
-        }
-
-        float extendAmount = spriteRenderer.sprite.bounds.size.x;
-
-        // Ensure we don't exceed the maximum beam length
-        if (currentBeamLength + extendAmount <= maxBeamLength)
-        {
-            currentBeamLength += extendAmount;
+            currentBeamLength += spriteRenderer.sprite.bounds.size.x;
             UpdateBeamLength(currentBeamLength);
         }
         else
         {
-            Debug.Log("Max beam length reached.");
-            StopExtending(); // Stop extending when max length is reached
+            StopExtending();
         }
     }
 
@@ -115,41 +81,21 @@ public class MagnetBeam : MonoBehaviour
     {
         if (spriteRenderer.drawMode == SpriteDrawMode.Tiled)
         {
-            Vector2 newSize = new(newLength, spriteRenderer.size.y);
-            spriteRenderer.size = newSize;
-        }
-        else
-        {
-            Debug.LogWarning("SpriteRenderer draw mode is not set to Tiled.");
+            spriteRenderer.size = new Vector2(newLength, spriteRenderer.size.y);
         }
 
         if (boxCollider != null)
         {
             boxCollider.size = new Vector2(newLength, boxCollider.size.y);
-
-            // Adjust collider based on direction
-            boxCollider.offset = new Vector2(
-                beamDirection == Vector2.right ? newLength / 2f : -newLength / 2f,
-                boxCollider.offset.y
-            );
-        }
-        else
-        {
-            Debug.LogError("BoxCollider2D is not assigned. Cannot update beam collider size.");
+            boxCollider.offset = new Vector2(direction.x > 0 ? newLength / 2f : -newLength / 2f, boxCollider.offset.y);
         }
     }
 
     private void UpdateBeamFlip()
     {
-        if (spriteRenderer == null)
+        if (spriteRenderer != null)
         {
-            Debug.LogError("Cannot flip beam because SpriteRenderer is not assigned.");
-            return;
-        }
-
-        if (isExtending)
-        {
-            spriteRenderer.flipX = beamDirection == Vector2.left;
+            spriteRenderer.flipX = direction.x < 0;
         }
     }
 
@@ -178,31 +124,16 @@ public class MagnetBeam : MonoBehaviour
 
     private void PerformRaycast()
     {
-        Vector2 raycastStart = (Vector2)transform.position;
-        Vector2 raycastEnd = raycastStart + (beamDirection * currentBeamLength);
-
-        RaycastHit2D hit = Physics2D.Raycast(raycastStart, beamDirection, currentBeamLength, wallLayer);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, currentBeamLength, wallLayer);
 
         if (hit.collider != null)
         {
-            Debug.Log("Raycast hit: " + hit.collider.name);
-            StopExtending(); // Stop if a wall is detected
+            StopExtending(); // Stop when hitting a wall
         }
     }
 
-    private void OnDrawGizmos()
+    protected override void ApplyEffects(GameObject target)
     {
-        Vector2 raycastStart = (Vector2)transform.position + offset;
-        Vector2 raycastEnd = raycastStart + (beamDirection * currentBeamLength);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(raycastStart, raycastEnd);
-
-        RaycastHit2D hit = Physics2D.Raycast(raycastStart, beamDirection, currentBeamLength, wallLayer);
-        if (hit.collider != null)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(hit.point, wallRadius);
-        }
+        
     }
 }
