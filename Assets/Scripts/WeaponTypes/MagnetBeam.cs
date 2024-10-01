@@ -12,9 +12,8 @@ public class MagnetBeam : Projectile
     [SerializeField] private float flashInterval = 0.1f;
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private Vector2 offset = new(1f, 0f);
-    [SerializeField] private float wallRadius = 0.1f;
 
-    private new SpriteRenderer spriteRenderer;
+    private SpriteRenderer beamSpriteRenderer;
     private BoxCollider2D boxCollider;
     private float currentBeamLength = 0f;
     private float nextTileTime = 0f;
@@ -25,7 +24,7 @@ public class MagnetBeam : Projectile
     protected override void Awake()
     {
         base.Awake();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        beamSpriteRenderer = GetComponent<SpriteRenderer>();
         boxCollider = GetComponent<BoxCollider2D>();
     }
 
@@ -64,11 +63,20 @@ public class MagnetBeam : Projectile
         UpdateBeamFlip();
     }
 
+    public void UpdateBeamPosition(Vector2 newPosition)
+    {
+        // This will be called to update the position as the player moves or extends the beam
+        if (isExtending)
+        {
+            transform.position = newPosition;
+        }
+    }
+
     private void ExtendBeam()
     {
-        if (currentBeamLength + spriteRenderer.sprite.bounds.size.x <= maxBeamLength)
+        if (currentBeamLength + beamSpriteRenderer.sprite.bounds.size.x <= maxBeamLength)
         {
-            currentBeamLength += spriteRenderer.sprite.bounds.size.x;
+            currentBeamLength += beamSpriteRenderer.sprite.bounds.size.x;
             UpdateBeamLength(currentBeamLength);
         }
         else
@@ -79,9 +87,9 @@ public class MagnetBeam : Projectile
 
     private void UpdateBeamLength(float newLength)
     {
-        if (spriteRenderer.drawMode == SpriteDrawMode.Tiled)
+        if (beamSpriteRenderer.drawMode == SpriteDrawMode.Tiled)
         {
-            spriteRenderer.size = new Vector2(newLength, spriteRenderer.size.y);
+            beamSpriteRenderer.size = new Vector2(newLength, beamSpriteRenderer.size.y);
         }
 
         if (boxCollider != null)
@@ -93,9 +101,9 @@ public class MagnetBeam : Projectile
 
     private void UpdateBeamFlip()
     {
-        if (spriteRenderer != null)
+        if (beamSpriteRenderer != null)
         {
-            spriteRenderer.flipX = direction.x < 0;
+            beamSpriteRenderer.flipX = direction.x < 0;
         }
     }
 
@@ -113,12 +121,12 @@ public class MagnetBeam : Projectile
 
         while (elapsedTime < flashDuration)
         {
-            spriteRenderer.enabled = !spriteRenderer.enabled;
+            beamSpriteRenderer.enabled = !beamSpriteRenderer.enabled;
             yield return new WaitForSeconds(flashInterval);
             elapsedTime += flashInterval;
         }
 
-        spriteRenderer.enabled = true;
+        beamSpriteRenderer.enabled = true;
         Destroy(gameObject);
     }
 
@@ -134,6 +142,6 @@ public class MagnetBeam : Projectile
 
     protected override void ApplyEffects(GameObject target)
     {
-        
+        // Implement damage or effects on the target if applicable
     }
 }

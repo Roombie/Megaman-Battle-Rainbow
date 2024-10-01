@@ -9,7 +9,7 @@ public abstract class Projectile : MonoBehaviour
     protected Rigidbody2D rb;
     protected Vector2 direction;
     protected float bulletSpeed;
-    protected SpriteRenderer spriteRenderer; // Reference to the projectile's sprite renderer
+    protected SpriteRenderer spriteRenderer;
 
     public delegate void BulletDestroyed();
     public event BulletDestroyed OnBulletDestroyed;
@@ -17,7 +17,7 @@ public abstract class Projectile : MonoBehaviour
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>(); // Find the sprite renderer on the projectile
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     public virtual void Initialize(WeaponData data, bool facingRight, int level)
