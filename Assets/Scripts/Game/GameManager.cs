@@ -108,6 +108,37 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    #region Weapon Energy Management
+    // Add energy to the current weapon
+    public void AddWeaponEnergy(int amount)
+    {
+        // Get the current weapon type and its corresponding weapon data
+        WeaponTypes currentWeaponType = playerWeaponType;
+        Megaman.WeaponsStruct currentWeaponStruct = playerWeapons[(int)currentWeaponType];
+        WeaponData currentWeaponData = currentWeaponStruct.weaponData;
+
+        // Add energy, but ensure it doesn't exceed the maximum
+        currentWeaponData.currentEnergy = Mathf.Clamp(currentWeaponData.currentEnergy + amount, 0, currentWeaponData.maxEnergy);
+
+        Debug.Log($"Added {amount} energy to {currentWeaponData.weaponName}. Current energy: {currentWeaponData.currentEnergy}/{currentWeaponData.maxEnergy}");
+    }
+
+    // Restore all weapons to their maximum energy
+    public void RestoreAllWeaponsToMaxEnergy()
+    {
+        // Loop through all weapons in the player's inventory and restore their energy
+        foreach (Megaman.WeaponsStruct weaponStruct in playerWeapons)
+        {
+            WeaponData weaponData = weaponStruct.weaponData;
+
+            // Set the weapon's energy to its max
+            weaponData.currentEnergy = weaponData.maxEnergy;
+
+            Debug.Log($"{weaponData.weaponName} restored to full energy: {weaponData.maxEnergy}");
+        }
+    }
+    #endregion
+
     #region Respawn & Game Over
     public void RespawnPlayer()
     {
@@ -134,16 +165,6 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    public void AddScorePoints(int points)
-    {
-        score += points;
-    }
-
-    public void SetCheckpoint(Transform checkpoint)
-    {
-        currentCheckpoint = checkpoint;
-    }
-
     #region Screws
     // Add a screw
     public void AddScrew(int amount)
@@ -168,6 +189,16 @@ public class GameManager : MonoBehaviour
         }
     }
     #endregion
+
+    public void AddScorePoints(int points)
+    {
+        score += points;
+    }
+
+    public void SetCheckpoint(Transform checkpoint)
+    {
+        currentCheckpoint = checkpoint;
+    }
 
     #region Weapon Menu
     public void ShowWeaponsMenu()

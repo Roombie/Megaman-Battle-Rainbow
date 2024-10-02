@@ -96,7 +96,7 @@ public class MegamanItem : MonoBehaviour
                 playerObject.RestoreHealth(value, itemSound, freezeEverything);
                 break;
             case ItemType.WeaponEnergy:
-                // playerObject.RestoreWeaponEnergy(value);
+                GameManager.Instance.AddWeaponEnergy(value);
                 AudioManager.Instance.Play(itemSound);
                 break;
             case ItemType.ExtraLife:

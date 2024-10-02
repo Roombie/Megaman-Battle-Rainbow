@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3830b6a2a256b14ea06904fe936dddc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemType: 1
+  itemType: 2
   objectType: 0
   addToInventory: 0
   value: 2
@@ -259,3 +259,5 @@ MonoBehaviour:
   itemSound: {fileID: 0}
   freezeEverything: 1
   temporalItemLifetime: 10
+  flashDuration: 2
+  flashInterval: 0.2
