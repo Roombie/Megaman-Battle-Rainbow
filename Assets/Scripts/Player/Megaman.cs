@@ -78,9 +78,7 @@ public class Megaman : MonoBehaviour
     public struct WeaponsStruct
     {
         public WeaponTypes weaponType;
-        public WeaponData weaponData;  // Use WeaponData SO for flexible weapon properties
-        public int currentEnergy;
-        public int maxEnergy;
+        public WeaponData weaponData;  // Use WeaponData SO for FLEXIBLE weapon properties
     }
     public WeaponsStruct[] weaponsData;
     public WeaponTypes playerWeapon = WeaponTypes.MegaBuster;
@@ -748,9 +746,6 @@ public class Megaman : MonoBehaviour
         shootTimeLength = 0;
         shootButtonReleaseTimeLength = 0;
 
-        WeaponsStruct currentWeaponStruct = weaponsData[(int)playerWeapon];
-        WeaponData currentWeaponData = currentWeaponStruct.weaponData;
-
         // Charge shoot level based on button press duration
         if (shootButtonPressed && !shootButtonRelease && chargerEnabled)
         {
@@ -758,9 +753,9 @@ public class Megaman : MonoBehaviour
 
             // Determine the current shoot level
             currentShootLevel = 0;
-            for (int i = 0; i < currentWeaponData.chargeLevels.Count; i++)
+            for (int i = 0; i < currentWeapon.weaponData.chargeLevels.Count; i++)
             {
-                if (chargeTime >= currentWeaponData.chargeLevels[i].timeRequired)
+                if (chargeTime >= currentWeapon.weaponData.chargeLevels[i].timeRequired)
                 {
                     currentShootLevel = i;
                 }
@@ -777,18 +772,18 @@ public class Megaman : MonoBehaviour
         // Handle shooting when button is pressed and released
         if (shootButtonPressed && shootButtonRelease && !isSliding)
         {
-            if ((!currentWeaponData.limitBulletsOnScreen || activeBullets.Count < currentWeaponData.maxBulletsOnScreen)
-                && currentWeaponStruct.currentEnergy >= currentWeaponData.energyCost)
+            if ((!currentWeapon.weaponData.limitBulletsOnScreen || activeBullets.Count < currentWeapon.weaponData.maxBulletsOnScreen)
+                && currentWeapon.weaponData.currentEnergy >= currentWeapon.weaponData.energyCost)
             {
                 isShooting = true;
                 shootButtonRelease = false;
                 shootTime = Time.time;
 
                 // Deduct energy for the shot
-                currentWeaponStruct.currentEnergy -= currentWeaponData.energyCost;
+                currentWeapon.weaponData.currentEnergy -= currentWeapon.weaponData.energyCost;
 
                 // Delay shot based on weapon data
-                Invoke(nameof(ShootMegaBuster), currentWeaponData.shootDelay);
+                Invoke(nameof(ShootMegaBuster), currentWeapon.weaponData.shootDelay);
             }
         }
 
@@ -855,49 +850,46 @@ public class Megaman : MonoBehaviour
     {
         MagnetBeamWeapon magnetBeamWeapon = currentWeapon as MagnetBeamWeapon;
 
-        // Stop the beam if the button is released
+        // Stop the beam if button is released
         if (!shootButtonPressed && shootButtonRelease)
         {
             if (magnetBeamWeapon != null)
             {
-                Debug.Log("Stop the beam NOW");
+                Debug.Log("Stopping the beam");
                 magnetBeamWeapon.StopBeam();
-                isShooting = false;
-                shootButtonRelease = true;
+                isShooting = false; // Reset shooting state
             }
         }
 
-        // Handle beam creation when shoot button is pressed and not released
-        if (shootButtonPressed && !isShooting && !isSliding && magnetBeamWeapon != null)
+        // Handle beam creation when the shoot button is pressed and released
+        if (shootButtonPressed && shootButtonRelease && !isShooting && !isSliding && !isInvincible && magnetBeamWeapon != null)
         {
-            Debug.Log("beam creation");
+            Debug.Log("Creating beam");
             // Call the Shoot method to instantiate the beam
             magnetBeamWeapon.Shoot(transform, bulletShootOffset, facingRight, currentShootLevel, shootRayLength);
-            isShooting = true;
-            shootButtonRelease = false;
+            isShooting = true; // Set shooting to true
+            shootButtonRelease = false; // Reset shoot button release
         }
 
-        // Update the beam position while the player is shooting (move it with the player)
-        if (magnetBeamWeapon != null && isShooting)
+        // Update the beam position while the player is shooting
+        if (magnetBeamWeapon != null && isShooting && !isInvincible)
         {
-            // Update the beam's position as the player moves
-            Vector2 updatedPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
-            magnetBeamWeapon.UpdateMagnetBeamPosition(updatedPosition);
-            Debug.Log($"Updating beam position to {updatedPosition}");
+            Vector2 newBeamPosition = (Vector2)transform.position + new Vector2(facingRight ? bulletShootOffset.x : -bulletShootOffset.x, bulletShootOffset.y);
+            magnetBeamWeapon.UpdateMagnetBeamPosition(newBeamPosition, facingRight);
         }
 
         // Check if the beam has reached its max length
-        if (magnetBeamWeapon != null && magnetBeamWeapon.HasReachedMaxLength())
+        if (magnetBeamWeapon != null && magnetBeamWeapon.HasReachedMaxLength() || isInvincible)
         {
             Debug.Log("Beam reached its limit");
-            isShooting = false; // Stop shooting if the beam has reached its maximum length
+            magnetBeamWeapon.StopBeam(); // Stop the beam when it reaches max length
+            isShooting = false; // Stop shooting
         }
 
         // Reset the shoot button release flag if needed
         if (!shootButtonPressed && !shootButtonRelease)
         {
-            Debug.Log("You're not shooting");
-            shootButtonRelease = true;
+            shootButtonRelease = true; // Reset the shoot button release flag
         }
     }
     #endregion

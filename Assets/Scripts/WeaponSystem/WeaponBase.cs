@@ -9,6 +9,10 @@ public abstract class WeaponBase : MonoBehaviour
 
     public virtual bool CanShoot()
     {
+        // Check the energy and active bullet count
+        Debug.Log($"Current Energy: {weaponData.currentEnergy}, Energy Cost: {weaponData.energyCost}");
+        Debug.Log($"Limit Bullets On Screen: {weaponData.limitBulletsOnScreen}, Active Bullets: {activeBullets.Count}, Max Bullets: {weaponData.maxBulletsOnScreen}");
+
         // Check if the weapon has enough energy and if bullet limits are respected
         return (weaponData.currentEnergy >= weaponData.energyCost) &&
                (!weaponData.limitBulletsOnScreen || activeBullets.Count < weaponData.maxBulletsOnScreen);

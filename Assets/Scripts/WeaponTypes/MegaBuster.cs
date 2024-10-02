@@ -51,7 +51,7 @@ public class MegaBuster : Projectile
             ApplyEffects(other.gameObject);
 
             // Check if the current level is greater than 0
-            if (currentLevel < 1) // Check the current charge level
+            if (currentLevel <= 1) // Check the current charge level
             {
                 Destroy(gameObject);  // Destroy the bullet on collision
             }
