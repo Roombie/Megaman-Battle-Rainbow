@@ -568,6 +568,9 @@ public class Megaman : MonoBehaviour
         // Update the player's weapon type
         playerWeapon = weaponType;
 
+        // Update the weapon energy bar UI
+        UIEnergyBar.Instance.SetValue(currentWeapon.weaponData.currentEnergy / (float)currentWeapon.weaponData.maxEnergy);
+
         // Reset charge level and time
         currentShootLevel = 0;
         chargeTime = 0f;

@@ -46,7 +46,13 @@ public abstract class WeaponBase : MonoBehaviour
 
     protected virtual void DeductEnergy()
     {
+        // Deduct the weapon's energy based on the energy cost
         weaponData.currentEnergy -= weaponData.energyCost;
+        // Ensure the energy does not go below zero
+        weaponData.currentEnergy = Mathf.Max(weaponData.currentEnergy, 0);
+
+        // Update the energy bar UI to reflect the new energy value
+        UIEnergyBar.Instance.SetValue(weaponData.currentEnergy / (float)weaponData.maxEnergy);
     }
 
     protected virtual Vector2 GetShootPosition(Transform shooterTransform, Vector2 bulletOffset, bool facingRight, int currentShootLevel, float shootRayLength = 1f)
