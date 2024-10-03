@@ -16,7 +16,7 @@ MonoBehaviour:
   isEnabled: 1
   weaponPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
   weaponIcon: {fileID: -1267895830, guid: 4f38766ed1609b3478aea7ab7410d5d4, type: 3}
-  weaponBarSprite: {fileID: 1352484102, guid: c17e788c3222efb4193805bef425ca74, type: 3}
+  weaponBarSprite: {fileID: 0}
   weaponClip: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
   chargeLevels:
   - timeRequired: 0
