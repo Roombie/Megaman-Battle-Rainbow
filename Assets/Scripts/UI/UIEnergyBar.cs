@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class UIEnergyBar : MonoBehaviour
 {
     public Image mask;  // The image mask for energy levels
+    public Image weaponImage;
     float originalSize;
 
     public static UIEnergyBar Instance { get; private set; }
@@ -22,5 +23,19 @@ public class UIEnergyBar : MonoBehaviour
     {
         Debug.Log("Setting energy bar value to: " + value);
         mask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, originalSize * value);
+    }
+
+    public void SetEnergyBar(Sprite weaponBarImage)
+    {
+        if (weaponImage != null)
+        {
+            // Set the weaponImage's sprite to the passed weapon sprite
+            weaponImage.sprite = weaponBarImage;
+            Debug.Log("Weapon image updated successfully!");
+        }
+        else
+        {
+            Debug.LogError("Weapon image is not assigned or missing!");
+        }
     }
 }

@@ -569,6 +569,7 @@ public class Megaman : MonoBehaviour
 
         // Update the weapon energy bar UI and weapon sprite
         UIEnergyBar.Instance.SetValue(currentWeapon.weaponData.currentEnergy / (float)currentWeapon.weaponData.maxEnergy);
+        UIEnergyBar.Instance.SetEnergyBar(currentWeapon.weaponData.weaponBarSprite);
 
         // Reset charge level and time
         currentShootLevel = 0;
