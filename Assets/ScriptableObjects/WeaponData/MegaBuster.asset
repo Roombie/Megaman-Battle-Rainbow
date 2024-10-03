@@ -16,6 +16,7 @@ MonoBehaviour:
   isEnabled: 1
   weaponPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
   weaponIcon: {fileID: -1267895830, guid: 4f38766ed1609b3478aea7ab7410d5d4, type: 3}
+  weaponBarSprite: {fileID: 1352484102, guid: c17e788c3222efb4193805bef425ca74, type: 3}
   weaponClip: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
   chargeLevels:
   - timeRequired: 0
@@ -28,7 +29,7 @@ MonoBehaviour:
     projectilePrefab: {fileID: 964785331528871214, guid: e2ea1122114485145b01e50bb158dfd3, type: 3}
     weaponClip: {fileID: 8300000, guid: 8b99f688fa9a3764c8ce660ff0f706d0, type: 3}
     bulletSpeed: 20
-  - timeRequired: 1.25
+  - timeRequired: 1.5
     damage: 3
     projectilePrefab: {fileID: 964785331528871214, guid: c17941fafe90dfe45972befcd635c5d6, type: 3}
     weaponClip: {fileID: 8300000, guid: 908398d31921bf044b4ce7444a507b7f, type: 3}

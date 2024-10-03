@@ -180,6 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mask: {fileID: 1178319700943232527}
+  weaponImage: {fileID: 1807357060011230642}
 --- !u!1 &1313267083425369197
 GameObject:
   m_ObjectHideFlags: 0
@@ -1001,7 +1002,7 @@ GameObject:
   - component: {fileID: 2337169965512084209}
   - component: {fileID: 1807357060011230642}
   m_Layer: 5
-  m_Name: HealthBar
+  m_Name: EnergyBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1076,7 +1077,7 @@ GameObject:
   - component: {fileID: 3197597876856864185}
   - component: {fileID: 1561281587161592719}
   m_Layer: 5
-  m_Name: HealthBar
+  m_Name: EnemyBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

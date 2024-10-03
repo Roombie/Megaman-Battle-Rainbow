@@ -53,6 +53,7 @@ public abstract class WeaponBase : MonoBehaviour
 
         // Update the energy bar UI to reflect the new energy value
         UIEnergyBar.Instance.SetValue(weaponData.currentEnergy / (float)weaponData.maxEnergy);
+        UIEnergyBar.Instance.SetWeaponBarSprite(weaponData.weaponBarSprite);
     }
 
     protected virtual Vector2 GetShootPosition(Transform shooterTransform, Vector2 bulletOffset, bool facingRight, int currentShootLevel, float shootRayLength = 1f)

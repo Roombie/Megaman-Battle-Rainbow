@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIEnergyBar : MonoBehaviour
 {
-    public Image mask;
+    public Image mask;  // The image mask for energy levels
+    public Image weaponImage;  // The image to represent the current weapon's energy bar
     float originalSize;
 
     public static UIEnergyBar Instance { get; private set; }
@@ -15,17 +14,44 @@ public class UIEnergyBar : MonoBehaviour
         Instance = this;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-        // get the initial height of the mask
         originalSize = mask.rectTransform.rect.height;
+        if (weaponImage == null)
+        {
+            Debug.LogError("Weapon Image is not assigned in the Inspector!");
+        }
     }
 
     public void SetValue(float value)
     {
-        Debug.Log("Setting health bar value to: " + value);
-        // adjust the height of the mask to "hide" lost health bars
+        Debug.Log("Setting energy bar value to: " + value);
         mask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, originalSize * value);
+    }
+
+    // Assign the sprite from WeaponData to the energy bar's Image
+    public void SetWeaponBarSprite(Sprite weaponSprite)
+    {
+        if (weaponImage == null)
+        {
+            Debug.LogError("Weapon Image reference is missing!");
+            return;
+        }
+
+        if (weaponSprite != null)
+        {
+            weaponImage.sprite = weaponSprite;
+            Debug.Log($"Weapon bar sprite set to {weaponSprite.name}");
+        }
+        else
+        {
+            Debug.LogError("Weapon sprite is null.");
+        }
+    }
+
+    public void SetVisibility(bool isVisible)
+    {
+        weaponImage.gameObject.SetActive(isVisible);
+        Debug.Log($"Energy bar visibility set to {isVisible}");
     }
 }

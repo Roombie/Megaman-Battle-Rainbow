@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 65f8d18b4070cd24aae0bceb8044483f
+guid: e2cd18c8525c8cb45bda6e0af562f5b7
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 16
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_0
+      name: ui_energyBars_0
       rect:
         serializedVersion: 2
-        x: 3
-        y: 212
-        width: 16
-        height: 16
+        x: 8
+        y: 0
+        width: 8
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,71 +111,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bf7e03450c2301d4983163a285f222e4
-      internalID: 1656209130
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_1
-      rect:
-        serializedVersion: 2
-        x: 140
-        y: 156
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 04d10d56906742f4ca407a64b3584431
-      internalID: -1000563330
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_2
-      rect:
-        serializedVersion: 2
-        x: 91
-        y: 156
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 715e2ef3685a2364bb902269e075aa8a
-      internalID: 599554244
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_3
-      rect:
-        serializedVersion: 2
-        x: 99
-        y: 212
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9f50ebc38080576448b619db5d307e76
-      internalID: -741217860
+      spriteID: 01dcf6879b584b04fa4030df6e9a69b3
+      internalID: 1374572244
       vertices: []
       indices: 
       edges: []
@@ -191,10 +128,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_0: 1656209130
-      Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_1: -1000563330
-      Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_2: 599554244
-      Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_3: -741217860
+      ui_energyBars_0: 1374572244
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

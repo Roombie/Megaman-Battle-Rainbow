@@ -394,6 +394,7 @@ public class Megaman : MonoBehaviour
 
             // Update the weapon energy bar UI
             UIEnergyBar.Instance.SetValue(currentWeapon.weaponData.currentEnergy / (float)currentWeapon.weaponData.maxEnergy);
+            UIEnergyBar.Instance.SetWeaponBarSprite(currentWeapon.weaponData.weaponBarSprite);
 
             Debug.Log($"Current energy: {currentWeapon.weaponData.currentEnergy}");
 
@@ -410,7 +411,6 @@ public class Megaman : MonoBehaviour
         GameManager.Instance.FreezeEverything(false);
     }
     #endregion
-
 
     #region Damage state
     public void HitSide(bool rightSide)
@@ -568,8 +568,9 @@ public class Megaman : MonoBehaviour
         // Update the player's weapon type
         playerWeapon = weaponType;
 
-        // Update the weapon energy bar UI
+        // Update the weapon energy bar UI and weapon sprite
         UIEnergyBar.Instance.SetValue(currentWeapon.weaponData.currentEnergy / (float)currentWeapon.weaponData.maxEnergy);
+        UIEnergyBar.Instance.SetWeaponBarSprite(currentWeapon.weaponData.weaponBarSprite);
 
         // Reset charge level and time
         currentShootLevel = 0;
@@ -578,8 +579,6 @@ public class Megaman : MonoBehaviour
         // Debug log to confirm the weapon change
         Debug.Log($"Weapon switched to: {playerWeapon}");
     }
-
-
 
     public void SwitchWeapon(WeaponTypes weaponType)
     {

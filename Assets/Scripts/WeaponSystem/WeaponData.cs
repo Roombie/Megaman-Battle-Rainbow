@@ -1,6 +1,7 @@
 // Assets/Scripts/Weapons/WeaponData.cs
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public struct ChargeLevel
@@ -19,6 +20,7 @@ public class WeaponData : ScriptableObject
     public bool isEnabled = true;
     public GameObject weaponPrefab;
     public Sprite weaponIcon;
+    public Sprite weaponBarSprite;
     public AudioClip weaponClip;
     public List<ChargeLevel> chargeLevels;
     public float shootDelay;
