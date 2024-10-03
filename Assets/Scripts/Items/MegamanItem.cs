@@ -96,8 +96,7 @@ public class MegamanItem : MonoBehaviour
                 playerObject.RestoreHealth(value, itemSound, freezeEverything);
                 break;
             case ItemType.WeaponEnergy:
-                GameManager.Instance.AddWeaponEnergy(value);
-                AudioManager.Instance.Play(itemSound);
+                playerObject.RestoreWeaponEnergy(value, itemSound);
                 break;
             case ItemType.ExtraLife:
                 GameManager.Instance.AddExtraLife(value);
@@ -106,6 +105,9 @@ public class MegamanItem : MonoBehaviour
             case ItemType.ETank:
                 AudioManager.Instance.Play(itemSound);
                 playerObject.RestoreFullHealth(itemSound);
+                break;
+            case ItemType.WTank:
+                playerObject.RestoreFullWeaponEnergy(itemSound);
                 break;
             case ItemType.ScoreBall:
                 GameManager.Instance.AddScorePoints(value);

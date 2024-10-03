@@ -195,7 +195,7 @@ public class Megaman : MonoBehaviour
         {
             // Set the local scale based on the player's facing direction
             Vector3 iconScale = weaponSwitchIcon.transform.localScale;
-            iconScale.x = facingRight ? 1 : -1; // Flip the icon based on the player's facing direction
+            iconScale.x = facingRight ? 1 : -1; // Flip the icon based on the player's facing direction (this is so it looks like its facing the same direction no matter if the player flips
             weaponSwitchIcon.transform.localScale = iconScale;
 
             iconTimer += Time.deltaTime; // Increment the timer
@@ -359,6 +359,58 @@ public class Megaman : MonoBehaviour
         GameManager.Instance.FreezeEverything(false);
     }
     #endregion
+
+    #region Weapon Energy Management
+    public void RestoreFullWeaponEnergy(AudioClip itemSound)
+    {
+        if (currentWeapon.weaponData.currentEnergy < currentWeapon.weaponData.maxEnergy)
+        {
+            StartCoroutine(IncrementWeaponEnergy(currentWeapon.weaponData.maxEnergy - currentWeapon.weaponData.currentEnergy, itemSound));
+        }
+    }
+
+    public void RestoreWeaponEnergy(int amount, AudioClip itemSound, bool freezeEverything = true)
+    {
+        if (currentWeapon.weaponData.currentEnergy < currentWeapon.weaponData.maxEnergy)
+        {
+            StartCoroutine(IncrementWeaponEnergy(amount, itemSound, freezeEverything));
+        }
+    }
+
+    private IEnumerator IncrementWeaponEnergy(int amount, AudioClip itemSound, bool freezeEverything = true)
+    {
+        int energyToRestore = Mathf.Clamp(amount, 0, currentWeapon.weaponData.maxEnergy - currentWeapon.weaponData.currentEnergy);
+
+        // Optionally freeze everything while restoring energy
+        if (freezeEverything) GameManager.Instance.FreezeEverything(true);
+
+        while (energyToRestore > 0)
+        {
+            // Play item sound during the restoration process
+            AudioManager.Instance.Play(itemSound, SoundCategory.SFX, 1, 1, true);
+
+            // Increment the current weapon's energy
+            currentWeapon.weaponData.currentEnergy++;
+
+            // Update the weapon energy bar UI
+            UIEnergyBar.Instance.SetValue(currentWeapon.weaponData.currentEnergy / (float)currentWeapon.weaponData.maxEnergy);
+
+            Debug.Log($"Current energy: {currentWeapon.weaponData.currentEnergy}");
+
+            energyToRestore--;
+
+            // Wait for a small interval before restoring the next point of energy
+            yield return new WaitForSeconds(0.05f);
+        }
+
+        // Stop the sound once the restoration process is complete
+        AudioManager.Instance.Stop(itemSound);
+
+        // Unfreeze everything after the restoration process
+        GameManager.Instance.FreezeEverything(false);
+    }
+    #endregion
+
 
     #region Damage state
     public void HitSide(bool rightSide)
@@ -867,7 +919,10 @@ public class Megaman : MonoBehaviour
             Debug.Log("Creating beam");
             // Call the Shoot method to instantiate the beam
             magnetBeamWeapon.Shoot(transform, bulletShootOffset, facingRight, currentShootLevel, shootRayLength);
-            isShooting = true; // Set shooting to true
+            if (magnetBeamWeapon.CanShoot())
+            {
+                isShooting = true; // Set shooting to true
+            }
             shootButtonRelease = false; // Reset shoot button release
         }
 
