@@ -170,14 +170,10 @@ public class Megaman : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-        colorSwap = GetComponent<ColorSwap>();
     }
 
     void Start()
     {
-        InitializeWeapon(playerWeapon); // Ensure currentWeapon is set
-        SetWeapon(playerWeapon); // Now safe to call SetWeapon
-        weaponSwitchIcon.SetActive(false);
         // start at full health
         currentHealth = maxHealth;
         // start facing right always
@@ -185,6 +181,12 @@ public class Megaman : MonoBehaviour
         // store box collider's size and offset
         defaultBoxOffset = new(boxCollider.offset.x, boxCollider.offset.y);
         defaultBoxSize = new(boxCollider.size.x, boxCollider.size.y);
+
+        InitializeWeapon(playerWeapon); // Ensure currentWeapon is set
+        SetWeapon(playerWeapon); // Now safe to call SetWeapon
+        weaponSwitchIcon.SetActive(false);
+
+        colorSwap = GetComponent<ColorSwap>();
     }
 
     void Update()
@@ -559,6 +561,34 @@ public class Megaman : MonoBehaviour
 
     void SetWeapon(WeaponTypes weaponType)
     {
+        /* ColorSwap and Shader to change MegaMan's color scheme
+         * 
+         * his spritesheets have been altered to greyscale for his outfit
+         * Red 64 for the helmet, gloves, boots, etc ( SwapIndex.Primary )
+         * Red 128 for his shirt, pants, etc ( SwapIndex.Secondary )
+         * 
+         * couple ways to code this but I settled on #2
+         * 
+         * #1 using Lists
+         * 
+         * var colorIndex = new List<int>();
+         * var playerColors = new List<Color>();
+         * colorIndex.Add((int)SwapIndex.Primary);
+         * colorIndex.Add((int)SwapIndex.Secondary);
+         * playerColors.Add(ColorSwap.ColorFromIntRGB(64, 64, 64));
+         * playerColors.Add(ColorSwap.ColorFromIntRGB(128, 128, 128));
+         * colorSwap.SwapColors(colorIndex, playerColors);
+         * 
+         * #2 using SwapColor as needed then ApplyColor
+         * 
+         * colorSwap.SwapColor((int)SwapIndex.Primary, ColorSwap.ColorFromInt(0x0073F7));
+         * colorSwap.SwapColor((int)SwapIndex.Secondary, ColorSwap.ColorFromInt(0x00FFFF));
+         * colorSwap.ApplyColor();
+         * 
+         * Also, we'll change the color of our weapon energy bar
+         * and adjust the energy value as given in the playerWeaponsStruct
+         * 
+         */
         // Check if the weaponsData is populated
         if (weaponsData == null || weaponsData.Length == 0)
         {
@@ -588,6 +618,8 @@ public class Megaman : MonoBehaviour
 
         if (weaponType == WeaponTypes.MegaBuster)
         {
+            currentWeapon.weaponData.currentEnergy = currentHealth;
+            UIEnergyBar.Instance.SetValue((float)currentHealth / maxHealth);
             UIEnergyBar.Instance.SetVisibility(false);
         }
         else
@@ -598,6 +630,8 @@ public class Megaman : MonoBehaviour
         // Reset charge level and time
         currentShootLevel = 0;
         chargeTime = 0f;
+
+        // colorSwap.ApplyColor();
 
         // Debug log to confirm the weapon change
         Debug.Log($"Weapon switched to: {playerWeapon}");

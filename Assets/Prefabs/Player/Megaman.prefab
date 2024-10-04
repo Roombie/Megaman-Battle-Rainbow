@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6110860310967769817}
   - component: {fileID: 3372955503883790708}
   - component: {fileID: 1422703566580898831}
+  - component: {fileID: 4752652672859147621}
   m_Layer: 6
   m_Name: Megaman
   m_TagString: Player
@@ -82,12 +83,8 @@ MonoBehaviour:
   weaponsData:
   - weaponType: 0
     weaponData: {fileID: 11400000, guid: c546215c3605ad54a9482526cf370933, type: 2}
-    currentEnergy: 28
-    maxEnergy: 28
   - weaponType: 1
     weaponData: {fileID: 11400000, guid: fa8672f3ac8f5a84c8d32b7fd8d70418, type: 2}
-    currentEnergy: 28
-    maxEnergy: 28
   playerWeapon: 0
   weaponSwitchIcon: {fileID: 4265970674981735153}
   iconDisplayTime: 1.5
@@ -448,6 +445,18 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &4752652672859147621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427787303008531883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f981578aca0d2f449ae1e36c30c338d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3137224801792183357
 GameObject:
   m_ObjectHideFlags: 0
