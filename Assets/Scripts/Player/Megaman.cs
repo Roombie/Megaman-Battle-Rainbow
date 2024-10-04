@@ -88,6 +88,12 @@ public class Megaman : MonoBehaviour
     [SerializeField] private float iconDisplayTime = 1.5f; // Time to display the weapon switch icon
     private float iconTimer = 0f; // Timer for tracking icon display duration
 
+    private enum SwapIndex
+    {
+        Primary = 64,
+        Secondary = 128
+    }
+
     [Header("Sliding")]
     [SerializeField] private float slideSpeed = 6f;
     [SerializeField] private float slideDuration = 0.35f;
@@ -156,6 +162,7 @@ public class Megaman : MonoBehaviour
     private BoxCollider2D boxCollider;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+    private ColorSwap colorSwap;
 
     void Awake()
     {
@@ -163,6 +170,7 @@ public class Megaman : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        colorSwap = GetComponent<ColorSwap>();
     }
 
     void Start()
@@ -434,6 +442,13 @@ public class Megaman : MonoBehaviour
                 currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
                 UIHealthBar.Instance.SetValue(currentHealth / (float)maxHealth);
 
+                if (playerWeapon == WeaponTypes.MegaBuster)
+                {
+                    // Update energy bar with health percentage
+                    float healthPercentage = (float)currentHealth / maxHealth;
+                    UIEnergyBar.Instance.SetValue(healthPercentage);
+                }
+
                 // no more health means defeat, otherwise take damage
                 if (currentHealth <= 0)
                 {
@@ -570,6 +585,15 @@ public class Megaman : MonoBehaviour
         // Update the weapon energy bar UI and weapon sprite
         UIEnergyBar.Instance.SetValue(currentWeapon.weaponData.currentEnergy / (float)currentWeapon.weaponData.maxEnergy);
         UIEnergyBar.Instance.SetEnergyBar(currentWeapon.weaponData.weaponBarSprite);
+
+        if (weaponType == WeaponTypes.MegaBuster)
+        {
+            UIEnergyBar.Instance.SetVisibility(false);
+        }
+        else
+        {
+            UIEnergyBar.Instance.SetVisibility(true);
+        }
 
         // Reset charge level and time
         currentShootLevel = 0;

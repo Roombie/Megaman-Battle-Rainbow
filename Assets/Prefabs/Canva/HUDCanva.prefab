@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 5356441858188145463}
   - component: {fileID: 3776076385174881405}
   - component: {fileID: 6529202333592157506}
+  - component: {fileID: 748017406570900845}
   - component: {fileID: 5525725883392726394}
   m_Layer: 5
   m_Name: PlayerWeaponBar
@@ -167,6 +168,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &748017406570900845
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699913184936085566}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &5525725883392726394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,6 +193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mask: {fileID: 1178319700943232527}
+  weaponImage: {fileID: 1807357060011230642}
 --- !u!1 &1313267083425369197
 GameObject:
   m_ObjectHideFlags: 0

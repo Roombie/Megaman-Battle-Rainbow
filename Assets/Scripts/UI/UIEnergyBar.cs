@@ -38,4 +38,10 @@ public class UIEnergyBar : MonoBehaviour
             Debug.LogError("Weapon image is not assigned or missing!");
         }
     }
+
+    public void SetVisibility(bool isVisible)
+    {
+        gameObject.GetComponent<CanvasGroup>().alpha = isVisible ? 1f : 0f;     
+        Debug.Log($"Energy bar visibility set to {isVisible}");
+    }
 }

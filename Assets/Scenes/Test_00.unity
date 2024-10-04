@@ -2223,7 +2223,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1427787303008531883, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1608327745}
   m_SourcePrefab: {fileID: 100100000, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
 --- !u!4 &1206865205 stripped
 Transform:
@@ -2563,6 +2566,23 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f2f9e873c4d4784f8611309d80924e0, type: 3}
+--- !u!1 &1608327738 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1427787303008531883, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
+  m_PrefabInstance: {fileID: 1167790922}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1608327745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1608327738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f981578aca0d2f449ae1e36c30c338d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1628842404
 GameObject:
   m_ObjectHideFlags: 0
@@ -2873,17 +2893,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e86e2a7610a8aaf41a08efa5766bae0c, type: 3}
---- !u!114 &1797579157 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1807357060011230642, guid: 38a7f4d9938f95d4ca7dfb835656b627, type: 3}
-  m_PrefabInstance: {fileID: 7904133742592325281}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1866041292
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3716,10 +3725,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUDCanva
       objectReference: {fileID: 0}
-    - target: {fileID: 5525725883392726394, guid: 38a7f4d9938f95d4ca7dfb835656b627, type: 3}
-      propertyPath: weaponImage
-      value: 
-      objectReference: {fileID: 1797579157}
     - target: {fileID: 7869719135105644834, guid: 38a7f4d9938f95d4ca7dfb835656b627, type: 3}
       propertyPath: m_Pivot.x
       value: 0
