@@ -100,6 +100,7 @@ public class ColorSwap : MonoBehaviour
     public void ApplyColor()
     {
         mColorSwapTex.Apply();
+        Debug.Log("Color applied");
         // save the color swap texture to local storage for debugging
         //byte[] data = mColorSwapTex.EncodeToPNG();
         //File.WriteAllBytes(Application.dataPath + "/../ColorSwapTexture.png", data);

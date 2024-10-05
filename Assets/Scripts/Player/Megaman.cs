@@ -334,7 +334,7 @@ public class Megaman : MonoBehaviour
     }
     #endregion
 
-    #region Health state
+    #region Health Management
     public void RestoreFullHealth(AudioClip itemSound)
     {
         if (currentHealth < maxHealth)
@@ -470,6 +470,7 @@ public class Megaman : MonoBehaviour
         // depending which side we were hit on, and then apply that force
         if (!isTakingDamage)
         {
+            isSliding = false;
             if (interruptChargeOnDamage) InterruptChargeShoot();
             AudioManager.Instance.Play(damage);
             isTakingDamage = true;
@@ -771,62 +772,68 @@ public class Megaman : MonoBehaviour
     #region Jumping
     private void CheckJump()
     {
-        if (isClimbing) return;
+        if (isClimbing) return;  // Exit early if climbing
 
-        // Check if the player is grounded and reset inAirFromJump flag
-        if (IsGrounded())
+        bool isGrounded = IsGrounded();  // Cache the result of IsGrounded() for performance
+
+        // Reset jump states when grounded
+        if (isGrounded)
         {
             inAirFromJump = false;
             isJumping = false;
-            extraJumpCount = maxExtraJumps; // Reset extra jump count when grounded
+            isFalling = false;
+            extraJumpCount = maxExtraJumps;  // Reset extra jumps
         }
-
-        if (!IsGrounded() && rb.velocity.y < 0)
+        else if (rb.velocity.y < 0)
         {
             isFalling = true;
         }
 
-        if (IsGrounded() && isFalling)
+        // Play landing sound when grounded after falling
+        if (isGrounded && isFalling)
         {
             AudioManager.Instance.Play(land);
-            isFalling = false;
         }
 
-        // Check if the player is falling or has reached the peak of the jump
+        // Cancel jumping state when player is falling or reaches jump peak
         if (isJumping && rb.velocity.y <= 0)
         {
             isJumping = false;
         }
 
-        // Prevent jumping if sliding and there's a colliding object above the player
+        // Prevent jumping if sliding and an object is above
         if (isSliding && IsColAbove())
         {
             jumpButtonPressed = false;
+            return; // Exit early since jumping isn't allowed
         }
 
-        if (CanSlideWithDownJump() && IsGrounded() && !isSliding)
+        // Slide logic
+        if (CanSlideWithDownJump() && isGrounded && !isSliding)
         {
-            PerformSlide(); // Start sliding if conditions are met
-            jumpButtonPressed = false; // Ensure jump button press is not registered after sliding
-            return; // Skip the jump logic
+            PerformSlide();
+            jumpButtonPressed = false;  // Ensure no jump after sliding
+            return;
         }
 
-        // Handle normal jump
-        if (jumpButtonPressed && (Time.time - lastJumpTime <= jumpBufferTime)) // Check if the jump button is pressed and if the time since the last jump is within the jump buffer time
+        // Handle jumping
+        if (jumpButtonPressed && Time.time - lastJumpTime <= jumpBufferTime)
         {
-            if (IsGrounded() || (Time.time - lastGroundedTime <= coyoteTime && !inAirFromJump)) // Check if the player is grounded or if within the coyote time and not in the air from a previous jump
+            // Normal jump or coyote time jump
+            if (isGrounded || (Time.time - lastGroundedTime <= coyoteTime && !inAirFromJump))
             {
                 Jump(jumpForce);
             }
-            else if (!IsGrounded() && extraJumpCount > 0 && !isJumping)  // If not grounded and there are extra jumps available and the player is not currently jumping
+            // Extra jump logic
+            else if (!isGrounded && extraJumpCount > 0 && !isJumping)
             {
                 Jump(extraJumpForce);
-                extraJumpCount--;  // Decrease the count of available extra jumps
+                extraJumpCount--;
             }
         }
 
-        // Reduce upward velocity for variable jump height
-        if (!jumpButtonPressed && rb.velocity.y > 0 && inAirFromJump && isJumping)
+        // Variable jump height (reduce upward velocity if jump button is released mid-air)
+        if (!jumpButtonPressed && rb.velocity.y > 0 && inAirFromJump)
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
