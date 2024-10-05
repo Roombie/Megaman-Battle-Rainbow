@@ -90,8 +90,8 @@ public class Megaman : MonoBehaviour
 
     private enum SwapIndex
     {
-        Primary = 64,
-        Secondary = 128
+        Primary = 64,   // Red 64 for the helmet, gloves, boots, etc (SwapIndex.Primary )
+        Secondary = 128 // Red 128 for his shirt, pants, etc ( SwapIndex.Secondary )
     }
 
     [Header("Sliding")]
@@ -183,8 +183,7 @@ public class Megaman : MonoBehaviour
         defaultBoxSize = new(boxCollider.size.x, boxCollider.size.y);
 
         colorSwap = GetComponent<ColorSwap>();
-        InitializeWeapon(playerWeapon); // Ensure currentWeapon is set
-        SetWeapon(playerWeapon); // Now safe to call SetWeapon
+        SetWeapon(playerWeapon);
         weaponSwitchIcon.SetActive(false);
     }
 
@@ -607,22 +606,6 @@ public class Megaman : MonoBehaviour
             return;
         }
 
-        // Change player's colors based on the curretn weapon
-        if (colorSwap != null)
-        {
-            // Get the primary and secondary colors from the weapon data
-            Color primaryColor = currentWeapon.weaponData.primaryColor; // Assume these are defined in WeaponData
-            Color secondaryColor = currentWeapon.weaponData.secondaryColor;
-
-            // Convert Colors to Ints
-            int primaryColorInt = ColorSwap.IntFromColor(primaryColor);
-            int secondaryColorInt = ColorSwap.IntFromColor(secondaryColor);
-
-            // Swap colors using the integer representation
-            colorSwap.SwapColor((int)SwapIndex.Primary, primaryColorInt);
-            colorSwap.SwapColor((int)SwapIndex.Secondary, secondaryColorInt);
-        }
-
         // Initialize the weapon using the selected weapon type
         InitializeWeapon(weaponType);
 
@@ -647,6 +630,12 @@ public class Megaman : MonoBehaviour
         // Reset charge level and time
         currentShootLevel = 0;
         chargeTime = 0f;
+
+        // Change player's colors based on the current weapon
+        // Swap colors using the integer representation
+        colorSwap.SwapColor((int)SwapIndex.Primary, ColorSwap.ColorFromInt(0x0073F7));
+        colorSwap.SwapColor((int)SwapIndex.Secondary, ColorSwap.ColorFromInt(0x00FFFF));
+        colorSwap.ApplyColor();
 
         // Debug log to confirm the weapon change
         // Debug.Log($"Weapon switched to: {playerWeapon}");

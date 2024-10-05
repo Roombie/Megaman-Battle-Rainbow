@@ -19,7 +19,7 @@ MonoBehaviour:
   weaponBarSprite: {fileID: 1352484102, guid: c17e788c3222efb4193805bef425ca74, type: 3}
   weaponClip: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
   primaryColor: {r: 0, g: 0.4392157, b: 0.9254902, a: 1}
-  secondaryColor: {r: 0, g: 0.9098039, b: 0.84705883, a: 1}
+  secondaryColor: {r: 0, g: 0.909804, b: 0.8470589, a: 1}
   chargeLevels:
   - timeRequired: 0
     damage: 1
@@ -38,7 +38,7 @@ MonoBehaviour:
     bulletSpeed: 20
   shootDelay: 0.25
   maxEnergy: 28
-  currentEnergy: 28
+  currentEnergy: 25
   energyCost: 0
   limitBulletsOnScreen: 1
   maxBulletsOnScreen: 3

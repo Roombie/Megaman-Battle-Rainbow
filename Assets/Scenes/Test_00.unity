@@ -2181,9 +2181,17 @@ PrefabInstance:
       value: Megaman
       objectReference: {fileID: 0}
     - target: {fileID: 5113326230600032249, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -706261057, guid: 9fd4a25dd373a984182a62591ce6b10c, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5113326230600032249, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5113326230600032249, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7896349567260549571, guid: 434729b5e2e8b2d48b9c5acaeb7315a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.638

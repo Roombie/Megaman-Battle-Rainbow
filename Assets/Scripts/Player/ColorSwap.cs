@@ -91,9 +91,8 @@ public class ColorSwap : MonoBehaviour
         mColorSwapTex.Apply();
     }
 
-    public void SwapColor(int index, int colorInt)
+    public void SwapColor(int index, Color color)
     {
-        Color color = ColorFromInt(colorInt); // Convert int to Color
         mSpriteColors[index] = color;
         mColorSwapTex.SetPixel(index, 0, color);
     }
