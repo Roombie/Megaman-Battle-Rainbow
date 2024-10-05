@@ -21,7 +21,7 @@ public class UIEnergyBar : MonoBehaviour
 
     public void SetValue(float value)
     {
-        Debug.Log("Setting energy bar value to: " + value);
+        // Debug.Log("Setting energy bar value to: " + value);
         mask.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, originalSize * value);
     }
 
@@ -31,7 +31,7 @@ public class UIEnergyBar : MonoBehaviour
         {
             // Set the weaponImage's sprite to the passed weapon sprite
             weaponImage.sprite = weaponBarImage;
-            Debug.Log("Weapon image updated successfully!");
+            // Debug.Log("Weapon image updated successfully!");
         }
         else
         {
@@ -42,6 +42,6 @@ public class UIEnergyBar : MonoBehaviour
     public void SetVisibility(bool isVisible)
     {
         gameObject.GetComponent<CanvasGroup>().alpha = isVisible ? 1f : 0f;     
-        Debug.Log($"Energy bar visibility set to {isVisible}");
+        // Debug.Log($"Energy bar visibility set to {isVisible}");
     }
 }

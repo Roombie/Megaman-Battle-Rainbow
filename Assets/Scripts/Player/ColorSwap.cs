@@ -53,6 +53,17 @@ public class ColorSwap : MonoBehaviour
         mColorSwapTex = colorSwapTex;
     }
 
+    public static int IntFromColor(Color color)
+    {
+        // Clamp the color components to the range of 0 to 1, then scale to 0-255
+        int r = Mathf.Clamp(Mathf.RoundToInt(color.r * 255), 0, 255);
+        int g = Mathf.Clamp(Mathf.RoundToInt(color.g * 255), 0, 255);
+        int b = Mathf.Clamp(Mathf.RoundToInt(color.b * 255), 0, 255);
+
+        // Combine RGB values into a single int representing the hex value
+        return (r << 16) | (g << 8) | b; // Equivalent to 0xRRGGBB
+    }
+
     public static Color ColorFromInt(int c, float alpha = 1.0f)
     {
         int r = (c >> 16) & 0x000000FF;
@@ -80,8 +91,9 @@ public class ColorSwap : MonoBehaviour
         mColorSwapTex.Apply();
     }
 
-    public void SwapColor(int index, Color color)
+    public void SwapColor(int index, int colorInt)
     {
+        Color color = ColorFromInt(colorInt); // Convert int to Color
         mSpriteColors[index] = color;
         mColorSwapTex.SetPixel(index, 0, color);
     }

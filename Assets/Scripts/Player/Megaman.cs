@@ -182,11 +182,10 @@ public class Megaman : MonoBehaviour
         defaultBoxOffset = new(boxCollider.offset.x, boxCollider.offset.y);
         defaultBoxSize = new(boxCollider.size.x, boxCollider.size.y);
 
+        colorSwap = GetComponent<ColorSwap>();
         InitializeWeapon(playerWeapon); // Ensure currentWeapon is set
         SetWeapon(playerWeapon); // Now safe to call SetWeapon
         weaponSwitchIcon.SetActive(false);
-
-        colorSwap = GetComponent<ColorSwap>();
     }
 
     void Update()
@@ -500,9 +499,11 @@ public class Megaman : MonoBehaviour
         float flashDelay = 0.0833f;
         for (int i = 0; i < 10; i++)
         {
-            spriteRenderer.color = Color.clear;
+            // Toggle transparency
+            // Calling the sprite renderer's material transparency and change it to 0 and 1 for 
+            spriteRenderer.material.SetFloat("_Transparency", 0f);
             yield return new WaitForSeconds(flashDelay);
-            spriteRenderer.color = Color.white;
+            spriteRenderer.material.SetFloat("_Transparency", 1f);
             yield return new WaitForSeconds(flashDelay);
         }
         Invincible(false);
@@ -561,7 +562,7 @@ public class Megaman : MonoBehaviour
 
     void SetWeapon(WeaponTypes weaponType)
     {
-        /* ColorSwap and Shader to change MegaMan's color scheme
+        /* ColorSwap and Shader to change MegaMan's color scheme (Explained by Gamedev with Tony)
          * 
          * his spritesheets have been altered to greyscale for his outfit
          * Red 64 for the helmet, gloves, boots, etc ( SwapIndex.Primary )
@@ -606,6 +607,22 @@ public class Megaman : MonoBehaviour
             return;
         }
 
+        // Change player's colors based on the curretn weapon
+        if (colorSwap != null)
+        {
+            // Get the primary and secondary colors from the weapon data
+            Color primaryColor = currentWeapon.weaponData.primaryColor; // Assume these are defined in WeaponData
+            Color secondaryColor = currentWeapon.weaponData.secondaryColor;
+
+            // Convert Colors to Ints
+            int primaryColorInt = ColorSwap.IntFromColor(primaryColor);
+            int secondaryColorInt = ColorSwap.IntFromColor(secondaryColor);
+
+            // Swap colors using the integer representation
+            colorSwap.SwapColor((int)SwapIndex.Primary, primaryColorInt);
+            colorSwap.SwapColor((int)SwapIndex.Secondary, secondaryColorInt);
+        }
+
         // Initialize the weapon using the selected weapon type
         InitializeWeapon(weaponType);
 
@@ -631,10 +648,8 @@ public class Megaman : MonoBehaviour
         currentShootLevel = 0;
         chargeTime = 0f;
 
-        // colorSwap.ApplyColor();
-
         // Debug log to confirm the weapon change
-        Debug.Log($"Weapon switched to: {playerWeapon}");
+        // Debug.Log($"Weapon switched to: {playerWeapon}");
     }
 
     public void SwitchWeapon(WeaponTypes weaponType)
@@ -652,7 +667,7 @@ public class Megaman : MonoBehaviour
 
         SetWeapon((WeaponTypes)nextWeaponIndex);
         ShowWeaponSwitchIcon();
-        Debug.Log($"Switched to Next Weapon: {nextWeaponIndex}"); // Debug log to verify
+        // Debug.Log($"Switched to Next Weapon: {nextWeaponIndex}"); // Debug log to verify
 
         currentShootLevel = 0;
         chargeTime = 0f;
@@ -665,7 +680,7 @@ public class Megaman : MonoBehaviour
 
         SetWeapon((WeaponTypes)previousWeaponIndex);
         ShowWeaponSwitchIcon();
-        Debug.Log($"Switched to Previous Weapon: {previousWeaponIndex}"); // Debug log to verify
+        // Debug.Log($"Switched to Previous Weapon: {previousWeaponIndex}"); // Debug log to verify
 
         currentShootLevel = 0;
         chargeTime = 0f;

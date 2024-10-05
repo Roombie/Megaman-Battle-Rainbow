@@ -18,6 +18,8 @@ MonoBehaviour:
   weaponIcon: {fileID: -1267895830, guid: 4f38766ed1609b3478aea7ab7410d5d4, type: 3}
   weaponBarSprite: {fileID: 1352484102, guid: c17e788c3222efb4193805bef425ca74, type: 3}
   weaponClip: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
+  primaryColor: {r: 0, g: 0.4392157, b: 0.9254902, a: 1}
+  secondaryColor: {r: 0, g: 0.9098039, b: 0.84705883, a: 1}
   chargeLevels:
   - timeRequired: 0
     damage: 1

@@ -22,6 +22,8 @@ public class WeaponData : ScriptableObject
     public Sprite weaponIcon;
     public Sprite weaponBarSprite;
     public AudioClip weaponClip;
+    public Color primaryColor; // RGB 0x0070ec
+    public Color secondaryColor; // RGB 0x00e8d8
     public List<ChargeLevel> chargeLevels;
     public float shootDelay;
     public int maxEnergy;
