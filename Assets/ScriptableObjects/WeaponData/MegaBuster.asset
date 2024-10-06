@@ -38,7 +38,7 @@ MonoBehaviour:
     bulletSpeed: 20
   shootDelay: 0.25
   maxEnergy: 28
-  currentEnergy: 25
+  currentEnergy: 28
   energyCost: 0
   limitBulletsOnScreen: 1
   maxBulletsOnScreen: 3

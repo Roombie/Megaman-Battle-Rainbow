@@ -23,7 +23,7 @@ MonoBehaviour:
   chargeLevels: []
   shootDelay: 0.25
   maxEnergy: 28
-  currentEnergy: 8
+  currentEnergy: 28
   energyCost: 2
   limitBulletsOnScreen: 1
   maxBulletsOnScreen: 5
