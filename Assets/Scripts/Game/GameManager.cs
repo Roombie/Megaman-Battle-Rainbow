@@ -32,24 +32,6 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    // Define the missing OnSceneLoaded method
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // Handle actions after a scene is loaded
-        weaponsMenu = GameObject.Find("WeaponsMenu");
-        HideWeaponsMenu(); // Ensure the menu is hidden when the scene loads
-    }
-
     [Header("Lives")]
     public int playerLives = 3;
     public int gamePlayerStartLives = 3;
@@ -70,7 +52,7 @@ public class GameManager : MonoBehaviour
     public int screwsCollected = 0;
 
     [Header("Weapons Menu")]
-    private GameObject weaponsMenu;
+    public GameObject weaponsMenu;
 
     [Header("Game Over")]
     [SerializeField] AudioClip gameOverSoundClip;
@@ -81,9 +63,18 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         player = FindObjectOfType<Megaman>();
-        // Find the WeaponsMenu GameObject in the scene
-        weaponsMenu = GameObject.Find("WeaponsMenu");
-        HideWeaponsMenu(); // Ensure the menu is hidden at the start
+        // Use FindObjectsOfTypeAll to find all WeaponsMenu instances
+        var weaponsMenus = Object.FindObjectsOfType<WeaponsMenu>(true);
+
+        if (weaponsMenus.Length > 0)
+        {
+            weaponsMenu = weaponsMenus[0].gameObject; // Assuming you want the first instance
+            Debug.Log("WeaponsMenu found successfully");
+        }
+        else
+        {
+            Debug.LogError("WeaponsMenu not found in the scene");
+        }
     }
 
     #region Lives
@@ -172,13 +163,24 @@ public class GameManager : MonoBehaviour
     #region Weapon Menu
     public void ShowWeaponsMenu()
     {
-        if (!canPauseGame) return;
+        // if (!canPauseGame) return;
 
-        if (weaponsMenu != null && player != null)
+        // Find all WeaponsMenu instances, including inactive ones
+        var weaponsMenus = Object.FindObjectsOfType<WeaponsMenu>(true);
+
+        if (weaponsMenus.Length > 0)
         {
+            // Access the first found WeaponsMenu
+            weaponsMenu = weaponsMenus[0].gameObject;
+
+            // Set menu data and show the menu
             weaponsMenu.GetComponent<WeaponsMenu>().SetMenuData(playerLives, playerWeaponType,
-                    player.GetComponent<Megaman>().weaponsData);
+                player.GetComponent<Megaman>().weaponsData);
             weaponsMenu.GetComponent<WeaponsMenu>().ShowMenu();
+        }
+        else
+        {
+            Debug.LogError("WeaponsMenu not found when trying to show the menu");
         }
     }
 
@@ -204,19 +206,18 @@ public class GameManager : MonoBehaviour
 
     public void ToggleWeaponsMenu(bool pauseMusic = true)
     {
-        weaponsMenu = GameObject.Find("WeaponsMenu");
         isGamePaused = !isGamePaused;
-        Debug.Log("Toggle pause");
+        Debug.Log("Toggle pause: " + isGamePaused);
 
         if (isGamePaused)
         {
             AudioManager.Instance.Play(openPauseMenuSoundClip);
-            ShowWeaponsMenu();
+            ShowWeaponsMenu(); // Show weapons menu when pausing
         }
         else
         {
             AudioManager.Instance.Play(closePauseMenuSoundClip);
-            HideWeaponsMenu();
+            HideWeaponsMenu(); // Hide weapons menu when unpausing
         }
     }
     #endregion

@@ -90,8 +90,8 @@ public class Megaman : MonoBehaviour
 
     private enum SwapIndex
     {
-        Primary = 64,   // Red 64 for the helmet, gloves, boots, etc (SwapIndex.Primary )
-        Secondary = 128 // Red 128 for his shirt, pants, etc ( SwapIndex.Secondary )
+        Primary = 64,   // Red 64 for the helmet, gloves, boots, etc (SwapIndex.Primary) | 64: Grey value
+        Secondary = 128 // Red 128 for his shirt, pants, etc (SwapIndex.Secondary) | 128:
     }
 
     [Header("Sliding")]
@@ -797,8 +797,6 @@ public class Megaman : MonoBehaviour
         // Play landing sound when grounded after falling
         if (isGrounded && isFalling)
         {
-            Debug.Log($"Is grounded? {isGrounded}");
-            Debug.Log($"Is player falling? {isFalling}");
             AudioManager.Instance.Play(land);
             isFalling = false;
         }
@@ -920,7 +918,7 @@ public class Megaman : MonoBehaviour
         // Handle releasing the button for charged shots
         if (!shootButtonPressed && shootButtonRelease)
         {
-            Debug.Log("Button released, checking for charged shot");
+            // Debug.Log("Button released, checking for charged shot");
             shootButtonReleaseTimeLength = Time.time - shootTime;
 
             if (currentShootLevel > 0)

@@ -3,8 +3,21 @@ using TMPro;
 
 public class WeaponsMenu : MonoBehaviour
 {
-    [SerializeField] private TMP_Text playerLivesText;
     [SerializeField] private AudioClip menuSelectClip;
+    [SerializeField] private TMP_Text playerLivesText;
+
+    [Header("Additional menu text")]
+    [SerializeField] private TMP_Text energyTankText;
+    [SerializeField] private TMP_Text mysteryTankText;
+    [SerializeField] private TMP_Text guardPowerUpText;
+    [SerializeField] private TMP_Text eddieCallText;
+    [SerializeField] private TMP_Text weaponTankText;
+    [SerializeField] private TMP_Text superTankText;
+    [SerializeField] private TMP_Text lifeTankText;
+    [SerializeField] private TMP_Text screwText;
+    [SerializeField] private TMP_Text beatCallText;
+    [SerializeField] private TMP_Text shockGuardText;
+    [SerializeField] private TMP_Text energyBalancerText;
 
     private int playerLives;
     private WeaponTypes playerWeaponType;
@@ -39,8 +52,9 @@ public class WeaponsMenu : MonoBehaviour
     public void ShowMenu()
     {
         // enable the menu
+        Debug.Log("ShowMenu called");
         gameObject.SetActive(true);
-        Debug.Log("Activate weapons menu");
+        Debug.Log("Weapons menu active state: " + gameObject.activeSelf);
     }
 
     public void ExitMenu()

@@ -16,7 +16,7 @@ public class ColorSwap : MonoBehaviour
     Image mImage;
 
     Texture2D mColorSwapTex;
-    Color[] mSpriteColors;
+    public Color[] mSpriteColors;
 
     void Awake()
     {
@@ -33,7 +33,7 @@ public class ColorSwap : MonoBehaviour
 
     public void InitColorSwapTex()
     {
-        Texture2D colorSwapTex = new Texture2D(256, 1, TextureFormat.RGBA32, false, false);
+        Texture2D colorSwapTex = new(256, 1, TextureFormat.RGBA32, false, false);
         colorSwapTex.filterMode = FilterMode.Point;
 
         for (int i = 0; i < colorSwapTex.width; ++i)
@@ -89,18 +89,26 @@ public class ColorSwap : MonoBehaviour
         int g = Mathf.RoundToInt(color.g * 255f);
         int b = Mathf.RoundToInt(color.b * 255f);
 
-        return (r << 16) | (g << 8) | b;
+        return (r << 16) | (g << 8) | b;  // Equivalent to 0xRRGGBB
     }
 
     public void SwapColors(List<int> indexes, List<Color> colors)
     {
         for (int i = 0; i < indexes.Count; ++i)
         {
-            mSpriteColors[indexes[i]] = colors[i];
-            mColorSwapTex.SetPixel(indexes[i], 0, colors[i]);
+            if (indexes[i] >= 0 && indexes[i] < mSpriteColors.Length) // Check bounds
+            {
+                mSpriteColors[indexes[i]] = colors[i];
+                mColorSwapTex.SetPixel(indexes[i], 0, colors[i]);
+            }
+            else
+            {
+                Debug.LogWarning($"Index {indexes[i]} is out of bounds for sprite colors.");
+            }
         }
         mColorSwapTex.Apply();
     }
+
 
     public void SwapColor(int index, Color color)
     {
