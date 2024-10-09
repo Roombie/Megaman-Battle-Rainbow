@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 /*
  * Comes from this article with some minor changes by GameDev with Tony
+ * And I added a minor change as well. A method called ColorToHex - Roombie
  * https://gamedevelopment.tutsplus.com/tutorials/how-to-use-a-shader-to-dynamically-swap-a-sprites-colors--cms-25129
  */
 
@@ -79,6 +80,16 @@ public class ColorSwap : MonoBehaviour
     public static Color ColorFromIntRGB(int r, int g, int b)
     {
         return new Color((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 1.0f);
+    }
+
+    public static int ColorToHex(Color color)
+    {
+        // Convert Unity Color (normalized values) to an integer representing the hex color
+        int r = Mathf.RoundToInt(color.r * 255f);
+        int g = Mathf.RoundToInt(color.g * 255f);
+        int b = Mathf.RoundToInt(color.b * 255f);
+
+        return (r << 16) | (g << 8) | b;
     }
 
     public void SwapColors(List<int> indexes, List<Color> colors)

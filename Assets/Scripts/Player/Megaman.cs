@@ -632,11 +632,17 @@ public class Megaman : MonoBehaviour
         currentShootLevel = 0;
         chargeTime = 0f;
 
-        // Change player's colors based on the current weapon
+        // Convert Color to integer representation for ColorFromInt usage
+        int primaryColorInt = ColorSwap.ColorToHex(selectedWeapon.weaponData.primaryColor);
+        int secondaryColorInt = ColorSwap.ColorToHex(selectedWeapon.weaponData.secondaryColor);
+
         // Swap colors using the integer representation
-        colorSwap.SwapColor((int)SwapIndex.Primary, ColorSwap.ColorFromInt(0x0073F7));
-        colorSwap.SwapColor((int)SwapIndex.Secondary, ColorSwap.ColorFromInt(0x00FFFF));
+        // Change player's colors based on the current weapon
+        colorSwap.SwapColor((int)SwapIndex.Primary, ColorSwap.ColorFromInt(primaryColorInt));
+        colorSwap.SwapColor((int)SwapIndex.Secondary, ColorSwap.ColorFromInt(secondaryColorInt));
         colorSwap.ApplyColor();
+
+        Debug.Log($"Primary color: {primaryColorInt}, Secondary color: {secondaryColorInt}");
 
         // Debug log to confirm the weapon change
         // Debug.Log($"Weapon switched to: {playerWeapon}");
@@ -781,7 +787,6 @@ public class Megaman : MonoBehaviour
         {
             inAirFromJump = false;
             isJumping = false;
-            isFalling = false;
             extraJumpCount = maxExtraJumps;  // Reset extra jumps
         }
         else if (rb.velocity.y < 0)
@@ -792,7 +797,10 @@ public class Megaman : MonoBehaviour
         // Play landing sound when grounded after falling
         if (isGrounded && isFalling)
         {
+            Debug.Log($"Is grounded? {isGrounded}");
+            Debug.Log($"Is player falling? {isFalling}");
             AudioManager.Instance.Play(land);
+            isFalling = false;
         }
 
         // Cancel jumping state when player is falling or reaches jump peak

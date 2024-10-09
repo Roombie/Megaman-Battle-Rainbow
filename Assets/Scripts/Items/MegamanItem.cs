@@ -99,8 +99,8 @@ public class MegamanItem : MonoBehaviour
                 playerObject.RestoreWeaponEnergy(value, itemSound);
                 break;
             case ItemType.ExtraLife:
-                GameManager.Instance.AddExtraLife(value);
                 AudioManager.Instance.Play(itemSound);
+                GameManager.Instance.AddExtraLife(value);
                 break;
             case ItemType.ETank:
                 AudioManager.Instance.Play(itemSound);

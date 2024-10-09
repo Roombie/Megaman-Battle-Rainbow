@@ -47,4 +47,4 @@ MonoBehaviour:
   sfxMixerGroup: {fileID: -3588671416588361874, guid: f4cbfbb614eed924b88581a4b8d82279, type: 2}
   musicMixerGroup: {fileID: 8126865308339870810, guid: f4cbfbb614eed924b88581a4b8d82279, type: 2}
   voiceMixerGroup: {fileID: 8917366234205726741, guid: f4cbfbb614eed924b88581a4b8d82279, type: 2}
-  poolSize: 10
+  poolSize: 15
