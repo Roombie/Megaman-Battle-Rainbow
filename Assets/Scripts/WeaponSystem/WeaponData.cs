@@ -20,6 +20,7 @@ public class WeaponData : ScriptableObject
     public bool isEnabled = true;
     public GameObject weaponPrefab;
     public Sprite weaponIcon;
+    public Sprite weaponIconNotSelected;
     public Sprite weaponBarSprite;
     public AudioClip weaponClip;
     public Color primaryColor; // RGB 0x0070ec

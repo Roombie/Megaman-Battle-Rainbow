@@ -58,12 +58,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] AudioClip gameOverSoundClip;
 
     WeaponTypes playerWeaponType;
-    Megaman.WeaponsStruct[] playerWeapons;
+    Megaman.WeaponsStruct[] playerWeapons; // Store the player's weapons
 
     private void Start()
     {
         player = FindObjectOfType<Megaman>();
-        // Use FindObjectsOfTypeAll to find all WeaponsMenu instances
         var weaponsMenus = Object.FindObjectsOfType<WeaponsMenu>(true);
 
         if (weaponsMenus.Length > 0)
@@ -75,6 +74,11 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("WeaponsMenu not found in the scene");
         }
+
+        // Ensure we fetch the player's weapons
+        playerWeapons = player.GetWeapons();
+        // Fetch the player's current weapon type
+        playerWeaponType = player.GetCurrentWeaponType();
     }
 
     #region Lives
@@ -126,14 +130,12 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Screws
-    // Add a screw
     public void AddScrew(int amount)
     {
         screwsCollected += amount;
         Debug.Log($"Screws collected: {screwsCollected}");
     }
 
-    // Spend screws in a shop
     public bool SpendScrews(int amount)
     {
         if (screwsCollected >= amount)
@@ -163,8 +165,6 @@ public class GameManager : MonoBehaviour
     #region Weapon Menu
     public void ShowWeaponsMenu()
     {
-        // if (!canPauseGame) return;
-
         // Find all WeaponsMenu instances, including inactive ones
         var weaponsMenus = Object.FindObjectsOfType<WeaponsMenu>(true);
 
@@ -173,16 +173,22 @@ public class GameManager : MonoBehaviour
             // Access the first found WeaponsMenu
             weaponsMenu = weaponsMenus[0].gameObject;
 
+            // Get player's weapon data
+            playerWeapons = player.GetWeapons();  // Get the player's weapons data
+            playerWeaponType = player.GetCurrentWeaponType(); // Get the player's current weapon type
+
             // Set menu data and show the menu
-            weaponsMenu.GetComponent<WeaponsMenu>().SetMenuData(playerLives, playerWeaponType,
-                player.GetComponent<Megaman>().weaponsData);
+            weaponsMenu.GetComponent<WeaponsMenu>().SetMenuData(playerLives, playerWeaponType, playerWeapons);
             weaponsMenu.GetComponent<WeaponsMenu>().ShowMenu();
+
+            Debug.Log($"Lives: {playerLives}, Weapon Type: {playerWeaponType}, Information: {playerWeapons}");
         }
         else
         {
             Debug.LogError("WeaponsMenu not found when trying to show the menu");
         }
     }
+
 
     public void HideWeaponsMenu()
     {

@@ -126,7 +126,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -147,7 +147,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -168,7 +168,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -176,6 +176,27 @@ TextureImporter:
       bones: []
       spriteID: 9f50ebc38080576448b619db5d307e76
       internalID: -741217860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_4
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 136
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c28702659b347364d9037988209b747c
+      internalID: -1789080786
       vertices: []
       indices: 
       edges: []
@@ -195,6 +216,7 @@ TextureImporter:
       Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_1: -1000563330
       Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_2: 599554244
       Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_3: -741217860
+      Custom Edited - Mega Man Customs - Transport Items Inti Creates 8-bit-Style_4: -1789080786
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

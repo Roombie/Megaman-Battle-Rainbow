@@ -1,7 +1,12 @@
 using System.Collections;
 using UnityEngine;
 
-public class MegamanItem : MonoBehaviour
+[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(SpriteRenderer))]
+
+public class Item : MonoBehaviour
 {
     public enum ItemType { Empty, Health, WeaponEnergy, ExtraLife, ETank, LTank, MTank, WTank, STank, Screw, ScoreBall, RandomItem}
     public enum ObjectType { Permanent, Temporal, PowerUp }
@@ -9,7 +14,6 @@ public class MegamanItem : MonoBehaviour
     public ItemType itemType;
     public ObjectType objectType;
 
-    public bool addToInventory = false;
     [Tooltip("The amount of health, energy, or lives the item grants")]
     public int value = 10;
 
@@ -28,15 +32,13 @@ public class MegamanItem : MonoBehaviour
     private bool isCollected = false;
     private Coroutine flashCoroutine;
 
-    private void Start()
+    private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer == null)
-        {
-            Debug.LogError("No SpriteRenderer found on this GameObject.");
-            return;
-        }
+    }
 
+    private void Start()
+    {
         if (animationSprites.Length > 0)
         {
             spriteRenderer.sprite = animationSprites[0]; // Start with the first frame
@@ -99,15 +101,8 @@ public class MegamanItem : MonoBehaviour
                 playerObject.RestoreWeaponEnergy(value, itemSound);
                 break;
             case ItemType.ExtraLife:
-                AudioManager.Instance.Play(itemSound);
                 GameManager.Instance.AddExtraLife(value);
-                break;
-            case ItemType.ETank:
                 AudioManager.Instance.Play(itemSound);
-                playerObject.RestoreFullHealth(itemSound);
-                break;
-            case ItemType.WTank:
-                playerObject.RestoreFullWeaponEnergy(itemSound);
                 break;
             case ItemType.ScoreBall:
                 GameManager.Instance.AddScorePoints(value);
@@ -115,11 +110,9 @@ public class MegamanItem : MonoBehaviour
             case ItemType.Screw:
                 GameManager.Instance.AddScrew(value);
                 break;
-        }
-
-        if (addToInventory)
-        {
-            //InventoryManager.Instance.AddItem(this);
+            default:
+                InventoryManager.Instance.AddItem(itemType, 1);
+                break;
         }
     }
 

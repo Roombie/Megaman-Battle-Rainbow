@@ -126,7 +126,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -147,7 +147,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -168,7 +168,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -176,6 +176,90 @@ TextureImporter:
       bones: []
       spriteID: da9e93d0a7892b645bb0c8ca666207eb
       internalID: -1824470948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NES - Mega Man 5 - Pause Screen_4
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 76
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a79665e488847d847801c0b10576529e
+      internalID: -1444261215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NES - Mega Man 5 - Pause Screen_5
+      rect:
+        serializedVersion: 2
+        x: 891
+        y: 76
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f21bcbb23feec248aacd9f83387cd31
+      internalID: -1011451197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NES - Mega Man 5 - Pause Screen_6
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 42
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a3b94eb86e7e78c41976219ef697c312
+      internalID: 1746207102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NES - Mega Man 5 - Pause Screen_7
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 42
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63fa945dd1a239c4ab11ca4297205734
+      internalID: -347413344
       vertices: []
       indices: 
       edges: []
@@ -195,6 +279,12 @@ TextureImporter:
       NES - Mega Man 5 - Pause Screen_1: -1267895830
       NES - Mega Man 5 - Pause Screen_2: 2106491574
       NES - Mega Man 5 - Pause Screen_3: -1824470948
+      NES - Mega Man 5 - Pause Screen_4: -1444261215
+      NES - Mega Man 5 - Pause Screen_5: -1011451197
+      NES - Mega Man 5 - Pause Screen_6: 1746207102
+      NES - Mega Man 5 - Pause Screen_7: -347413344
+      NES - Mega Man 5 - Pause Screen_8: 1213474606
+      NES - Mega Man 5 - Pause Screen_9: 1281424096
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

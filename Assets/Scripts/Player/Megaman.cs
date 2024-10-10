@@ -84,6 +84,16 @@ public class Megaman : MonoBehaviour
     public WeaponTypes playerWeapon = WeaponTypes.MegaBuster;
     private WeaponBase currentWeapon;
 
+    public WeaponsStruct[] GetWeapons()
+    {
+        return weaponsData;
+    }
+
+    public WeaponTypes GetCurrentWeaponType()
+    {
+        return playerWeapon;
+    }
+
     public GameObject weaponSwitchIcon;
     [SerializeField] private float iconDisplayTime = 1.5f; // Time to display the weapon switch icon
     private float iconTimer = 0f; // Timer for tracking icon display duration

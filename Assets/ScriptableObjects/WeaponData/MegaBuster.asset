@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 761953d57f820934db6d6cd93044505b, type: 3}
   m_Name: MegaBuster
   m_EditorClassIdentifier: 
-  weaponName: MegaBuster
+  weaponName: M. Buster
   isEnabled: 1
   weaponPrefab: {fileID: 964785331528871214, guid: 98d40c9f14d20ae459ab1565f0fa2535, type: 3}
   weaponIcon: {fileID: -1267895830, guid: 4f38766ed1609b3478aea7ab7410d5d4, type: 3}
+  weaponIconNotSelected: {fileID: -1444261215, guid: 4f38766ed1609b3478aea7ab7410d5d4, type: 3}
   weaponBarSprite: {fileID: 1352484102, guid: c17e788c3222efb4193805bef425ca74, type: 3}
   weaponClip: {fileID: 8300000, guid: 4dc11b98c83ae5b44bf60b4b38054ae5, type: 3}
   primaryColor: {r: 0, g: 0.4392157, b: 0.9254902, a: 1}
@@ -38,7 +39,7 @@ MonoBehaviour:
     bulletSpeed: 20
   shootDelay: 0.25
   maxEnergy: 28
-  currentEnergy: 28
+  currentEnergy: 15
   energyCost: 0
   limitBulletsOnScreen: 1
   maxBulletsOnScreen: 3
