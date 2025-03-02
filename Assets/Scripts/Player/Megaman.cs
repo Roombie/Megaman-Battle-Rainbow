@@ -718,6 +718,15 @@ public class Megaman : MonoBehaviour
     #endregion
 
     #region Movement
+    /// <summary>
+    /// Returns whether the player character is currently moving.
+    /// Useful external scripts that need to check for player movement.
+    /// </summary>
+    public bool IsMoving()
+    {
+        return isMoving;
+    }
+
     private void Move()
     {
         if (isSliding || isClimbing) return; // Player will use the slide or climbing if is true
@@ -861,6 +870,27 @@ public class Megaman : MonoBehaviour
         inAirFromJump = true;
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         lastJumpTime = Time.time;
+    }
+
+    private void ApplyCornerCorrection()
+    {
+        if (!IsGrounded() && IsFrontCollision() && !IsColAbove())
+        {
+            Vector2 position = (Vector2)transform.position;
+            
+            // Move a small step upwards
+            float cornerCorrectionHeight = 0.5f;
+            Vector2 correctionPos = position + Vector2.up * cornerCorrectionHeight;
+
+            // Check if after moving up, thereâ€™s still a collision
+            bool stillColliding = Physics2D.OverlapBox(correctionPos + frontCheckOffset, frontCheckSize, 0f, groundLayer) != null;
+
+            if (!stillColliding)
+            {
+                // Apply the correction
+                transform.position = correctionPos;
+            }
+        }
     }
     #endregion
 
@@ -1470,7 +1500,7 @@ public class Megaman : MonoBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(new Vector3(ladder.transform.position.x, ladder.posBottomHandlerY, transform.position.z), 0.2f);
 
-            // Optionally, draw a line to indicate the ladder’s full height
+            // Optionally, draw a line to indicate the ladderï¿½s full height
             Gizmos.color = Color.yellow;
             Gizmos.DrawLine(new Vector3(ladder.transform.position.x, ladder.posTopHandlerY, transform.position.z),
                             new Vector3(ladder.transform.position.x, ladder.posBottomHandlerY, transform.position.z));

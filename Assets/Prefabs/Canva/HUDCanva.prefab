@@ -120,14 +120,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5636843337230226393}
   m_Father: {fileID: 7869719135105644834}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 34, y: -155.99991}
+  m_AnchoredPosition: {x: 34, y: -132.1}
   m_SizeDelta: {x: 16, y: 112}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &3776076385174881405
@@ -206,7 +206,7 @@ GameObject:
   - component: {fileID: 4000615166180754421}
   - component: {fileID: 4090561607915440764}
   m_Layer: 5
-  m_Name: ScreenMessagee
+  m_Name: ScreenMessage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -499,7 +499,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 16
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 800, y: 800}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -635,7 +635,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 80, y: -155.99991}
+  m_AnchoredPosition: {x: 80, y: -132.1}
   m_SizeDelta: {x: 16, y: 112}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &2518503944348890607
@@ -700,7 +700,7 @@ GameObject:
   - component: {fileID: 7685530217093107557}
   - component: {fileID: 1607966630042001144}
   - component: {fileID: 6610428645887602529}
-  - component: {fileID: 6978527232233182582}
+  - component: {fileID: 3425790507731228854}
   m_Layer: 5
   m_Name: PlayerHealthBar
   m_TagString: Untagged
@@ -718,14 +718,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5003778559831002731}
   m_Father: {fileID: 7869719135105644834}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -155.99991}
+  m_AnchoredPosition: {x: 50, y: -132.1}
   m_SizeDelta: {x: 16, y: 112}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &1607966630042001144
@@ -766,7 +766,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6978527232233182582
+--- !u!114 &3425790507731228854
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

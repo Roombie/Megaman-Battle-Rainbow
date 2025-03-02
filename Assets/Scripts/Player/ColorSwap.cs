@@ -16,7 +16,7 @@ public class ColorSwap : MonoBehaviour
     Image mImage;
 
     Texture2D mColorSwapTex;
-    public Color[] mSpriteColors;
+    Color[] mSpriteColors;
 
     void Awake()
     {

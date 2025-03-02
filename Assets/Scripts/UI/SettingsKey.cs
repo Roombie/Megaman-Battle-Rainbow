@@ -1,3 +1,10 @@
+public enum SettingType
+{
+    GraphicsQuality,
+    Resolution,
+    Language
+}
+
 class SettingsKeys
 {
     public const string MasterVolumeKey = "MasterVolume";
@@ -10,5 +17,5 @@ class SettingsKeys
     public const string GraphicsQualityKey = "GraphicsQuality";
     public const string LanguageKey = "Language";
     public const string SlideWithDownJumpKey = "SlideWithDown";
-    public const string ControllerVibrationKey = "ControllerVbiration";
+    public const string ControllerVibrationKey = "ControllerVibration";
 }

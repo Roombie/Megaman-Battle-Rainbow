@@ -1,11 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
 public class PageFader : MonoBehaviour
 {
+    [System.Serializable]
+    public class PageEvent
+    {
+        public UnityEvent onPageExit;
+        public UnityEvent onNewPageEnter;
+    }
+
     public List<CanvasGroup> pages;
+    public List<PageEvent> pageEvents;
     public float fadeDuration = 0.5f;
     public float delayBeforeNextPage = 0.5f;
     private int currentPageIndex = 0;
@@ -44,6 +53,8 @@ public class PageFader : MonoBehaviour
         CanvasGroup currentPage = pages[currentPageIndex];
         CanvasGroup nextPage = pages[nextPageIndex];
 
+        InvokePageExitEvent(currentPageIndex);
+
         // Fade out the current page
         yield return StartCoroutine(FadeCanvasGroup(currentPage, 1f, 0f));
         yield return new WaitForSeconds(delayBeforeNextPage);
@@ -57,6 +68,9 @@ public class PageFader : MonoBehaviour
 
         // Update the current page index
         currentPageIndex = nextPageIndex;
+
+        // Invocar evento al entrar en la nueva página
+        InvokeNewPageEnterEvent(currentPageIndex);
     }
 
     private IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float startAlpha, float endAlpha)
@@ -70,5 +84,21 @@ public class PageFader : MonoBehaviour
             yield return null;
         }
         canvasGroup.alpha = endAlpha; // Ensure the final value is set
+    }
+
+    private void InvokePageExitEvent(int pageIndex)
+    {
+        if (pageIndex >= 0 && pageIndex < pageEvents.Count)
+        {
+            pageEvents[pageIndex]?.onPageExit?.Invoke();
+        }
+    }
+
+    private void InvokeNewPageEnterEvent(int pageIndex)
+    {
+        if (pageIndex >= 0 && pageIndex < pageEvents.Count)
+        {
+            pageEvents[pageIndex]?.onNewPageEnter?.Invoke();
+        }
     }
 }

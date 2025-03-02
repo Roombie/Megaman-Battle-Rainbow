@@ -14,9 +14,13 @@ public class WeaponsMenu : MonoBehaviour
         public Button button;        // The button for the item
     }
 
+    [Tooltip("Buttons for weapons/items in the inventory")]
     public ItemButton[] itemButtons;  // Array for item buttons (weapon/utility buttons)
+    [Tooltip("UI Text to display player lives")]
     public TMP_Text playerLivesText;  // TMP for displaying player lives
+    [Tooltip("UI Image to display weapon icons")]
     public Image[] weaponIcons;       // Array for weapon icons in the UI
+    [Tooltip("UI Text to display weapon names")]
     public TMP_Text[] weaponNames;    // Array for weapon names in the UI
     public UIEnergyBar[] weaponEnergyBars;  // Array for weapon energy bars
 
@@ -36,6 +40,7 @@ public class WeaponsMenu : MonoBehaviour
         }
     }
 
+    #region Inventory Management
     private void OnEnable()
     {
         // Subscribe to inventory updates
@@ -47,11 +52,7 @@ public class WeaponsMenu : MonoBehaviour
         // Unsubscribe to prevent memory leaks
         InventoryManager.InventoryUpdated -= UpdateInventoryDisplay;
     }
-
-    private void Start()
-    {
-        
-    }
+    #endregion
 
     public void SetPlayerLives(int lives)
     {
@@ -61,8 +62,10 @@ public class WeaponsMenu : MonoBehaviour
 
     void UpdatePlayerLives()
     {
-        // Update lives in the TMP UI
-        playerLivesText.text = playerLives.ToString("00");
+        if (playerLivesText != null)
+        {
+            playerLivesText.text = playerLives.ToString("00");
+        }
     }
 
     public void SetMenuData(int lives, WeaponTypes weaponType, Megaman.WeaponsStruct[] playerWeapons)
@@ -85,6 +88,9 @@ public class WeaponsMenu : MonoBehaviour
         // Loop through the weapon data and update the corresponding UI elements
         for (int i = 0; i < weaponsData.Length && i < weaponIcons.Length; i++)
         {
+            if (weaponIcons[i] == null || weaponNames[i] == null || weaponEnergyBars[i] == null)
+                continue; // Skip if any element is missing
+
             Megaman.WeaponsStruct currentWeapon = weaponsData[i];
             WeaponData weaponData = currentWeapon.weaponData;
 
@@ -108,18 +114,15 @@ public class WeaponsMenu : MonoBehaviour
                 weaponNames[i].text = weaponData.weaponName;
 
                 // Calculate the energy percentage and update the energy bar
-                float energyPercentage = (float)currentWeapon.weaponData.currentEnergy / weaponData.maxEnergy;
-                weaponEnergyBars[i].SetValue(energyPercentage);
-
-                // Optional: Set a custom energy bar sprite if weapon-specific
-                weaponEnergyBars[i].SetEnergyBar(weaponData.weaponBarSprite);
+                // float energyPercentage = (float)currentWeapon.weaponData.currentEnergy / weaponData.maxEnergy;
+                // weaponEnergyBars[i].SetValue(energyPercentage);
             }
             else
             {
                 // Hide or disable display if the weapon is not enabled
-                weaponIcons[i].enabled = false;
-                weaponNames[i].text = "Locked";  // Show placeholder text for locked weapons
-                weaponEnergyBars[i].SetVisibility(false); // Hide the energy bar
+                // weaponIcons[i].enabled = false;
+                // eaponNames[i].text = "Locked";  // Show placeholder text for locked weapons
+                // weaponEnergyBars[i].SetVisibility(false); // Hide the energy bar
             }
         }
     }
@@ -127,11 +130,10 @@ public class WeaponsMenu : MonoBehaviour
     public void SelectWeapon(WeaponTypes selectedWeaponType)
     {
         currentWeaponType = selectedWeaponType;
-        UpdateWeaponDisplays();  // Update the UI to reflect the new weapon selection
         Debug.Log("Weapon selected: " + selectedWeaponType);
     }
 
-
+    #region Enable/Disable menu
     public void ShowMenu()
     {
         gameObject.SetActive(true);
@@ -143,7 +145,9 @@ public class WeaponsMenu : MonoBehaviour
         gameObject.SetActive(false);
         Debug.Log("Deactivate weapons menu");
     }
+    #endregion
 
+    #region Inventory
     public void UpdateInventoryDisplay(Item.ItemType itemType, int count)
     {
         foreach (var itemButton in itemButtons)
@@ -184,13 +188,17 @@ public class WeaponsMenu : MonoBehaviour
 
         for (int i = 0; i < buttonCount; i++)
         {
-            WeaponTypes weaponType = weaponsData[i].weaponType;  // Get weapon type for the button
+            if (itemButtons[i].button != null)
+            {
+                WeaponTypes weaponType = weaponsData[i].weaponType;  // Get weapon type for the button
 
-            // Remove previous listeners to avoid stacking multiple listeners
-            itemButtons[i].button.onClick.RemoveAllListeners();
+                // Remove previous listeners to avoid stacking multiple listeners
+                itemButtons[i].button.onClick.RemoveAllListeners();
 
-            // Add listener to select the correct weapon when the button is clicked
-            itemButtons[i].button.onClick.AddListener(() => SelectWeapon(weaponType));
+                // Add listener to select the correct weapon when the button is clicked
+                itemButtons[i].button.onClick.AddListener(() => SelectWeapon(weaponType));
+            }
         }
     }
+    #endregion
 }

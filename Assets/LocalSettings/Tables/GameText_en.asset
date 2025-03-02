@@ -95,11 +95,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 171442070085632
-    m_Localized: DOWN + JUMP = SLIDE?
+    m_Localized: DOWN+JUMP=SLIDE?
     m_Metadata:
       m_Items: []
   - m_Id: 172720514916352
-    m_Localized: SAVE AND EXIT
+    m_Localized: EXIT
     m_Metadata:
       m_Items: []
   - m_Id: 175429347434496

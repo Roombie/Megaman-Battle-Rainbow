@@ -3,13 +3,17 @@ using UnityEngine;
 
 public class ArrowSelector : MonoBehaviour
 {
-    [SerializeField] RectTransform[] buttons;
+    [System.Serializable]
+    public struct ButtonData
+    {
+        public RectTransform button;
+        public Vector2 arrowOffset;
+    }
+
+    [SerializeField] ButtonData[] buttons;
     [SerializeField] RectTransform arrowIndicator;
 
-    [SerializeField] Vector2 arrowOffset;
-
     int lastSelected = -1;
-
     bool firstFrame = true;
 
     void LateUpdate()
@@ -18,28 +22,29 @@ public class ArrowSelector : MonoBehaviour
         {
             firstFrame = false;
         }
+
+        if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == null)
+        {
+            arrowIndicator.gameObject.SetActive(false);
+        }
     }
 
     public void PointerEnter(int b)
     {
-        // //print("enter: " + b);
         // MoveIndicator(b);
     }
 
     public void PointerExit(int b)
     {
-        // //print("exit: " + b);
         // MoveIndicator(lastSelected);
     }
 
     public void ButtonSelected(int b)
     {
-        //print("selected: " + b);
         lastSelected = b;
         MoveIndicator(b);
     }
 
-    // Move the indicator based on keyboard input or mouse input
     public void MoveIndicator(int b)
     {
         if (firstFrame)
@@ -48,44 +53,49 @@ public class ArrowSelector : MonoBehaviour
             return;
         }
 
-        print(buttons[b].position);
-        if (b < 0 || b >= buttons.Length)
+        if (b < 0 || b >= buttons.Length || buttons[b].button == null)
         {
-            // make cursor invisible
             arrowIndicator.gameObject.SetActive(false);
             return;
         }
+
         arrowIndicator.gameObject.SetActive(true);
-        //indicator.position = menuBtn[b].position + ((Vector3)indicatorOffset * (Screen.width / 1920f));
-        arrowIndicator.position = buttons[b].position + ((Vector3)arrowOffset * (Screen.height / 1080f));
-        print("set pos to " + arrowIndicator.position);
+        Vector3 calculatedPosition = buttons[b].button.position + ((Vector3)buttons[b].arrowOffset * (Screen.height / 1080f));
+        arrowIndicator.position = calculatedPosition;
     }
 
-    // Fix for weird issue where the button position is wrong on the first frame
     IEnumerator MoveIndicatorLaterCoroutine(int b)
     {
         yield return null;
         MoveIndicator(b);
     }
+
     void OnDrawGizmos()
     {
-        if (arrowIndicator != null && buttons != null && buttons.Length > 0)
+        if (buttons == null || buttons.Length == 0) return;
+
+        Gizmos.color = Color.blue;
+
+        for (int i = 0; i < buttons.Length; i++)
         {
-            // Visualize the position based on the last selected button
-            if (lastSelected >= 0 && lastSelected < buttons.Length)
+            if (buttons[i].button != null)
             {
-                // Calculate the position using the same formula
-                Vector3 calculatedPosition = buttons[lastSelected].position + ((Vector3)arrowOffset * (Screen.height / 1080f));
+                Vector3 buttonPos = buttons[i].button.position;
+                Vector3 offsetPos = buttonPos + ((Vector3)buttons[i].arrowOffset * (Screen.height / 1080f));
 
-                // Draw a sphere at the calculated position
-                Gizmos.color = Color.red; // Set the color of the Gizmo
-                Gizmos.DrawSphere(calculatedPosition, 10f); // Draw a sphere at the calculated position, with a radius of 10 units
-
-                // Optionally, draw a line from the button to the calculated position
+                Gizmos.DrawSphere(buttonPos, 5f);
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawSphere(offsetPos, 7f);
                 Gizmos.color = Color.green;
-                Gizmos.DrawLine(buttons[lastSelected].position, calculatedPosition);
+                Gizmos.DrawLine(buttonPos, offsetPos);
             }
         }
-    }
 
+        if (lastSelected >= 0 && lastSelected < buttons.Length && buttons[lastSelected].button != null)
+        {
+            Gizmos.color = Color.red;
+            Vector3 selectedPos = buttons[lastSelected].button.position + ((Vector3)buttons[lastSelected].arrowOffset * (Screen.height / 1080f));
+            Gizmos.DrawSphere(selectedPos, 10f);
+        }
+    }
 }

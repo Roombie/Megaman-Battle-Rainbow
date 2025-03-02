@@ -6,7 +6,7 @@ public class InventoryManager : MonoBehaviour
     public static InventoryManager Instance;
 
     // used to store item counts
-    private Dictionary<Item.ItemType, int> inventory = new Dictionary<Item.ItemType, int>();
+    private readonly Dictionary<Item.ItemType, int> inventory = new();
 
     public delegate void OnInventoryUpdate(Item.ItemType itemType, int newAmount);
     public static event OnInventoryUpdate InventoryUpdated;

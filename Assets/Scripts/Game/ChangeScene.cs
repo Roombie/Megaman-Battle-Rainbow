@@ -5,7 +5,7 @@ public class ChangeScene : MonoBehaviour
 {
     //This script can be used to load any scene
     public void LoadScene(string sceneName) {
-        SceneManager.LoadScene(sceneName);
+        ScreenFader.Instance.FadeToScene(sceneName);
         // Debug.Log("New level");
     }
 
