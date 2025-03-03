@@ -190,6 +190,10 @@ MonoBehaviour:
     m_Localized: GAME OVER
     m_Metadata:
       m_Items: []
+  - m_Id: 69250235132375040
+    m_Localized: KEYBOARD CONFIGURATION
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

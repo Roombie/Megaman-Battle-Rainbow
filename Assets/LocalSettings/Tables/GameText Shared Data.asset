@@ -187,6 +187,10 @@ MonoBehaviour:
     m_Key: GameOver_GameOverTitle
     m_Metadata:
       m_Items: []
+  - m_Id: 69250235132375040
+    m_Key: OptionsMenu_KeyboardConfigurationTitle
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

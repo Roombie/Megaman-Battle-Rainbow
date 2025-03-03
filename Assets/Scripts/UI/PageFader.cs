@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -18,6 +19,19 @@ public class PageFader : MonoBehaviour
     public float fadeDuration = 0.5f;
     public float delayBeforeNextPage = 0.5f;
     private int currentPageIndex = 0;
+    private bool isTransitioning = false;
+
+    public Dictionary<(int fromPage, int toPage), GameObject> transitionButtons = new Dictionary<(int, int), GameObject>();
+
+    public List<TransitionButton> transitionButtonList;
+
+    [System.Serializable]
+    public class TransitionButton
+    {
+        public int fromPage;
+        public int toPage;
+        public GameObject button;
+    }
 
     private void Start()
     {
@@ -25,35 +39,42 @@ public class PageFader : MonoBehaviour
         {
             ShowPage(currentPageIndex);
         }
+
+        foreach (var tb in transitionButtonList)
+        {
+            transitionButtons[(tb.fromPage, tb.toPage)] = tb.button;
+        }
     }
 
     public void NextPage()
     {
-        StartCoroutine(SwitchPage((currentPageIndex + 1) % pages.Count));
+        GoToPage((currentPageIndex + 1) % pages.Count);
     }
 
     public void PreviousPage()
     {
-        StartCoroutine(SwitchPage((currentPageIndex - 1 + pages.Count) % pages.Count));
+        GoToPage((currentPageIndex - 1 + pages.Count) % pages.Count);
     }
 
-    private void ShowPage(int index)
+    public void GoToPage(int pageIndex)
     {
-        for (int i = 0; i < pages.Count; i++)
-        {
-            pages[i].gameObject.SetActive(i == index);
-        }
+        if (isTransitioning || pages.Count == 0 || pageIndex < 0 || pageIndex >= pages.Count || pageIndex == currentPageIndex)
+            return;
+
+        StartCoroutine(SwitchPage(pageIndex));
     }
 
     private IEnumerator SwitchPage(int nextPageIndex)
     {
-        if (pages.Count == 0 || nextPageIndex == currentPageIndex)
-            yield break;
+        isTransitioning = true;
 
         CanvasGroup currentPage = pages[currentPageIndex];
         CanvasGroup nextPage = pages[nextPageIndex];
 
         InvokePageExitEvent(currentPageIndex);
+
+        EventSystem.current.SetSelectedGameObject(null);
+        yield return new WaitForEndOfFrame();
 
         // Fade out the current page
         yield return StartCoroutine(FadeCanvasGroup(currentPage, 1f, 0f));
@@ -66,11 +87,48 @@ public class PageFader : MonoBehaviour
         // Fade in the next page
         yield return StartCoroutine(FadeCanvasGroup(nextPage, 0f, 1f));
 
-        // Update the current page index
+        int previousPageIndex = currentPageIndex;
+
         currentPageIndex = nextPageIndex;
 
-        // Invocar evento al entrar en la nueva página
+        yield return new WaitForEndOfFrame();
+        
+        SetReturnButton(previousPageIndex, nextPageIndex);
+
+        // Invoke event for entering the new page
         InvokeNewPageEnterEvent(currentPageIndex);
+
+        isTransitioning = false;
+    }
+
+    private void SetReturnButton(int previousPageIndex, int nextPageIndex)
+    {
+        EventSystem.current.SetSelectedGameObject(null);
+
+        if (transitionButtons.TryGetValue((previousPageIndex, nextPageIndex), out GameObject button))
+        {
+            if (button != null && button.activeInHierarchy)
+            {
+                EventSystem.current.SetSelectedGameObject(button);
+                Debug.Log($"Button assigned correctly: {button.name} for the transition {previousPageIndex} -> {nextPageIndex}");
+            }
+            else
+            {
+                Debug.LogWarning($"The button transition {previousPageIndex} -> {nextPageIndex} is not active.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"No button found for the transition {previousPageIndex} -> {nextPageIndex}.");
+        }
+    }
+
+    private void ShowPage(int index)
+    {
+        for (int i = 0; i < pages.Count; i++)
+        {
+            pages[i].gameObject.SetActive(i == index);
+        }
     }
 
     private IEnumerator FadeCanvasGroup(CanvasGroup canvasGroup, float startAlpha, float endAlpha)

@@ -29,8 +29,9 @@ public class OptionsMenu : MonoBehaviour
     public TextMeshProUGUI languageText;
 
     [Header("Additional Settings")]
-    public Toggle slideWithDownJumpToggle;
-    public Image slideWithDownJumpImage;
+    public Toggle[] slideWithDownJumpToggles; // Lista de Toggles (para teclado y gamepad)
+    public Image[] slideWithDownJumpImages;  // Lista de Imágenes (para teclado y gamepad)
+
     public Toggle controllerVibrationToggle;
     public Image controllerVibrationImage;
 
@@ -64,13 +65,21 @@ public class OptionsMenu : MonoBehaviour
 
         fullscreenToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.FullscreenKey, Screen.fullScreen ? 1 : 0) == 1;
         vSyncToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.VSyncKey, QualitySettings.vSyncCount > 0 ? 1 : 0) == 1;
-        slideWithDownJumpToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.SlideWithDownJumpKey, 1) == 1;
         controllerVibrationToggle.isOn = PlayerPrefs.GetInt(SettingsKeys.ControllerVibrationKey, 1) == 1;
+
+        bool slideWithDownJumpEnabled = PlayerPrefs.GetInt(SettingsKeys.SlideWithDownJumpKey, 1) == 1;
+    
+        foreach (Toggle toggle in slideWithDownJumpToggles)
+        {
+            toggle.isOn = slideWithDownJumpEnabled;
+            toggle.onValueChanged.AddListener(SetSlideWithDownJump);
+        }
+
+        UpdateSlideWithDownJumpImages(slideWithDownJumpEnabled);
 
         UpdateGraphicsText();
         UpdateResolutionText();
         UpdateVSyncImage();
-        UpdateSlideWithDownJumpImage();
         UpdateControllerVibrationImage();
         UpdateLanguageText();
     }
@@ -107,9 +116,21 @@ public class OptionsMenu : MonoBehaviour
 
     public void SetSlideWithDownJump(bool isEnabled)
     {
+        // Guardar en PlayerPrefs
         PlayerPrefs.SetInt(SettingsKeys.SlideWithDownJumpKey, isEnabled ? 1 : 0);
         PlayerPrefs.Save();
-        UpdateSlideWithDownJumpImage();
+
+        // Sincronizar todos los toggles
+        foreach (Toggle toggle in slideWithDownJumpToggles)
+        {
+            if (toggle.isOn != isEnabled)
+            {
+                toggle.isOn = isEnabled;
+            }
+        }
+
+        // Actualizar todas las imágenes
+        UpdateSlideWithDownJumpImages(isEnabled);
     }
 
     public void SetControllerVibration(bool isEnabled)
@@ -200,6 +221,14 @@ public class OptionsMenu : MonoBehaviour
         languageText.text = cultureInfo?.NativeName.Split('(')[0].Trim();
     }
 
+    private void UpdateSlideWithDownJumpImages(bool isEnabled)
+    {
+        foreach (Image image in slideWithDownJumpImages)
+        {
+            image.sprite = languageSprites.GetSprite(LocalizationSettings.SelectedLocale, isEnabled);
+        }
+    }
+
     public void SetGraphicsQuality(int index)
     {
         PlayerPrefs.SetInt(SettingsKeys.GraphicsQualityKey, index);
@@ -257,7 +286,7 @@ public class OptionsMenu : MonoBehaviour
         UpdateGraphicsText();
         UpdateVSyncImage();
         UpdateControllerVibrationImage();
-        UpdateSlideWithDownJumpImage();
+        UpdateSlideWithDownJumpImages(PlayerPrefs.GetInt(SettingsKeys.SlideWithDownJumpKey, 1) == 1);
 
         foreach (MenuOptionSelector selector in FindObjectsOfType<MenuOptionSelector>())
         {
@@ -350,7 +379,6 @@ public class OptionsMenu : MonoBehaviour
     }
 
     public void UpdateVSyncImage() => vSyncImage.sprite = languageSprites.GetSprite(LocalizationSettings.SelectedLocale, vSyncToggle.isOn);
-    public void UpdateSlideWithDownJumpImage() => slideWithDownJumpImage.sprite = languageSprites.GetSprite(LocalizationSettings.SelectedLocale, slideWithDownJumpToggle.isOn);
     public void UpdateControllerVibrationImage() => controllerVibrationImage.sprite = languageSprites.GetSprite(LocalizationSettings.SelectedLocale, controllerVibrationToggle.isOn);
     
     private void NotifyMenuOptionSelector(SettingType setting, int index)

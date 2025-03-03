@@ -190,6 +190,10 @@ MonoBehaviour:
     m_Localized: FIN DEL JUEGO
     m_Metadata:
       m_Items: []
+  - m_Id: 69250235132375040
+    m_Localized: "CONFIGURACI\xD3N DE TECLADO"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

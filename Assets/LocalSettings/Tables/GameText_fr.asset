@@ -192,6 +192,10 @@ MonoBehaviour:
     m_Localized: "JEU TERMIN\xC9"
     m_Metadata:
       m_Items: []
+  - m_Id: 69250235132375040
+    m_Localized: CONFIGURATION DU CLAVIER
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

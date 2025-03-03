@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 ////TODO: localization support
 
@@ -231,6 +232,40 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             UpdateBindingDisplay();
         }
 
+        public void ResetBindingToDefault()
+        {
+            if (!ResolveActionAndBinding(out var action, out var bindingIndex))
+                return;
+
+            ResetBinding(action, bindingIndex);
+            UpdateBindingDisplay();
+        }
+
+        private void ResetBinding(InputAction action, int bindingIndex)
+        {
+            if (bindingIndex < 0 || bindingIndex >= action.bindings.Count)
+                return;
+
+            InputBinding newBinding = action.bindings[bindingIndex];
+            string oldOverridePath = newBinding.overridePath;
+
+            action.RemoveBindingOverride(bindingIndex);
+
+            foreach (InputAction otherAction in action.actionMap.actions
+                .Where(a => a != action && a.bindings.Any(b => b.overridePath == newBinding.path)))
+            {
+                for (int i = 0; i < otherAction.bindings.Count; i++)
+                {
+                    InputBinding binding = otherAction.bindings[i];
+                    if (binding.overridePath == newBinding.path)
+                    {
+                        otherAction.ApplyBindingOverride(i, oldOverridePath);
+                    }
+                }
+            }
+        }
+
+
         /// <summary>
         /// Initiate an interactive rebind that lets the player actuate a control to choose a new binding
         /// for the action.
@@ -268,6 +303,9 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
             // Configure the rebind.
             m_RebindOperation = action.PerformInteractiveRebinding(bindingIndex)
+                .WithControlsExcluding("<Mouse>")
+                .WithControlsExcluding("<Mouse>/leftbutton")
+                .WithCancelingThrough("<Keyboard>/escape")
                 .OnCancel(
                     operation =>
                     {
@@ -281,6 +319,15 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
                     {
                         m_RebindOverlay?.SetActive(false);
                         m_RebindStopEvent?.Invoke(this, operation);
+
+                        if (CheckDuplicatesBinding(action, bindingIndex, allCompositeParts)) 
+                        {
+                            action.RemoveBindingOverride(bindingIndex);
+                            CleanUp();
+                            PerformInteractiveRebind(action, bindingIndex, allCompositeParts);
+                            return;
+                        }
+
                         UpdateBindingDisplay();
                         CleanUp();
 
@@ -318,6 +365,39 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             m_RebindStartEvent?.Invoke(this, m_RebindOperation);
 
             m_RebindOperation.Start();
+        }
+
+        private bool CheckDuplicatesBinding(InputAction action, int bindingIndex, bool allCompositeParts = false)
+        {
+            InputBinding newBinding = action.bindings[bindingIndex];
+
+            foreach (InputBinding binding in action.actionMap.bindings)
+            {
+                if (binding.action == newBinding.action)
+                {
+                    continue;
+                }
+
+                if (binding.effectivePath == newBinding.effectivePath) 
+                {
+                    Debug.Log("Duplicate binding found: " + newBinding.effectivePath);
+                    return true;
+                }
+            }
+
+            if (allCompositeParts)
+            {
+                for (int i = 1; i < bindingIndex; i++)
+                {
+                    if (action.bindings[i].effectivePath == newBinding.overridePath)
+                    {
+                        Debug.Log("Duplicate binding found: " + newBinding.effectivePath);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         protected void OnEnable()
