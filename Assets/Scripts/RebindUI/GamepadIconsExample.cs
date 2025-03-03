@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 ////TODO: have updateBindingUIEvent receive a control path string, too (in addition to the device layout name)
@@ -106,6 +107,36 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
                     case "leftStickPress": return leftStickPress;
                     case "rightStickPress": return rightStickPress;
                 }
+                return null;
+            }
+        }
+
+        [Serializable]
+        public class KeyboardIcons
+        {
+            public List<Sprite> keySprites; // Lista de sprites asignados manualmente
+            private Dictionary<string, Sprite> keyIcons = new Dictionary<string, Sprite>();
+
+            public void Initialize()
+            {
+                keyIcons.Clear();
+                foreach (var sprite in keySprites)
+                {
+                    if (sprite != null)
+                    {
+                        string keyName = sprite.name.ToLower();
+                        keyIcons[keyName] = sprite;
+                    }
+                }
+            }
+
+            public Sprite GetSprite(string controlPath)
+            {
+                string keyName = controlPath.Replace("<Keyboard>/", "").ToLower();
+
+                if (keyIcons.ContainsKey(keyName))
+                    return keyIcons[keyName];
+
                 return null;
             }
         }

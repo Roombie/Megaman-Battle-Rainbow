@@ -191,6 +191,11 @@ MonoBehaviour:
     m_Key: OptionsMenu_KeyboardConfigurationTitle
     m_Metadata:
       m_Items: []
+  - m_Id: 69380258082418688
+    m_Key: OptionsScreen/OptionsMenu/Page 2 - Keyboard Controls/Rush&Beat Keyboard
+      Title
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

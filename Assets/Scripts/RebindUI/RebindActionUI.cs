@@ -207,6 +207,11 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             if (m_BindingText != null)
                 m_BindingText.text = displayString;
 
+            if (m_BindingIcon != null)
+            {
+                m_BindingIcon.gameObject.SetActive(!string.IsNullOrEmpty(displayString));
+            }
+
             // Give listeners a chance to configure UI in response.
             m_UpdateBindingUIEvent?.Invoke(this, displayString, deviceLayoutName, controlPath);
         }
@@ -475,6 +480,10 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         [Tooltip("Optional text label that will be updated with prompt for user input.")]
         [SerializeField]
         private TMP_Text m_RebindText;
+
+        [Tooltip("Image component that will show the binding icon.")]
+        [SerializeField] private Image m_BindingIcon;
+        public Image BindingIcon => m_BindingIcon;
 
         [Tooltip("Event that is triggered when the way the binding is display should be updated. This allows displaying "
             + "bindings in custom ways, e.g. using images instead of text.")]
