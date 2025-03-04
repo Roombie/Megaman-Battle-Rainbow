@@ -8,6 +8,7 @@ using System.Linq;
 using System.Collections;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
+using UnityEngine.InputSystem;
 
 public class OptionsMenu : MonoBehaviour
 {
@@ -138,6 +139,29 @@ public class OptionsMenu : MonoBehaviour
         PlayerPrefs.SetInt(SettingsKeys.ControllerVibrationKey, isEnabled ? 1 : 0);
         PlayerPrefs.Save();
         UpdateControllerVibrationImage();
+
+        if (Gamepad.all.Count > 0) // Verifica si hay un gamepad conectado
+        {
+            var gamepad = Gamepad.current;
+            if (gamepad != null)
+            {
+                if (isEnabled)
+                {
+                    gamepad.SetMotorSpeeds(0.5f, 0.5f);
+                    StartCoroutine(StopRumbleAfterDelay(gamepad, 0.1f));
+                }
+                else
+                {
+                    gamepad.SetMotorSpeeds(0f, 0f);
+                }
+            }
+        }
+    }
+
+    private IEnumerator StopRumbleAfterDelay(Gamepad gamepad, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        gamepad.SetMotorSpeeds(0f, 0f);
     }
 
     private void SetVolumes()

@@ -30,8 +30,23 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
         protected void OnUpdateBindingDisplay(RebindActionUI component, string bindingDisplayString, string deviceLayoutName, string controlPath)
         {
-            if (string.IsNullOrEmpty(deviceLayoutName) || string.IsNullOrEmpty(controlPath))
+            if (component == null)
+            {
+                Debug.LogWarning("GamepadIconsExample: component is null in OnUpdateBindingDisplay.");
                 return;
+            }
+
+            if (string.IsNullOrEmpty(bindingDisplayString))
+            {
+                Debug.LogWarning("GamepadIconsExample: bindingDisplayString is null or empty.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(deviceLayoutName) || string.IsNullOrEmpty(controlPath))
+            {
+                Debug.LogWarning("GamepadIconsExample: deviceLayoutName or controlPath is null. Skipping icon update.");
+                return;
+            }
 
             var icon = default(Sprite);
             if (InputSystem.IsFirstLayoutBasedOnSecond(deviceLayoutName, "DualShockGamepad"))
@@ -107,36 +122,6 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
                     case "leftStickPress": return leftStickPress;
                     case "rightStickPress": return rightStickPress;
                 }
-                return null;
-            }
-        }
-
-        [Serializable]
-        public class KeyboardIcons
-        {
-            public List<Sprite> keySprites; // Lista de sprites asignados manualmente
-            private Dictionary<string, Sprite> keyIcons = new Dictionary<string, Sprite>();
-
-            public void Initialize()
-            {
-                keyIcons.Clear();
-                foreach (var sprite in keySprites)
-                {
-                    if (sprite != null)
-                    {
-                        string keyName = sprite.name.ToLower();
-                        keyIcons[keyName] = sprite;
-                    }
-                }
-            }
-
-            public Sprite GetSprite(string controlPath)
-            {
-                string keyName = controlPath.Replace("<Keyboard>/", "").ToLower();
-
-                if (keyIcons.ContainsKey(keyName))
-                    return keyIcons[keyName];
-
                 return null;
             }
         }

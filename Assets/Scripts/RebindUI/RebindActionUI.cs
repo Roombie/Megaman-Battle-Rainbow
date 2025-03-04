@@ -190,29 +190,54 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         /// </summary>
         public void UpdateBindingDisplay()
         {
-            var displayString = string.Empty;
-            var deviceLayoutName = default(string);
-            var controlPath = default(string);
-
-            // Get display string from action.
-            var action = m_Action?.action;
-            if (action != null)
+            if (m_Action == null || m_Action.action == null)
             {
-                var bindingIndex = action.bindings.IndexOf(x => x.id.ToString() == m_BindingId);
-                if (bindingIndex != -1)
-                    displayString = action.GetBindingDisplayString(bindingIndex, out deviceLayoutName, out controlPath, displayStringOptions);
+                Debug.LogWarning("UpdateBindingDisplay: Action reference is null.");
+                return;
             }
 
-            // Set on label (if any).
+            if (string.IsNullOrEmpty(m_BindingId))
+            {
+                Debug.LogWarning("UpdateBindingDisplay: Binding ID is null or empty.");
+                return;
+            }
+
+            var action = m_Action.action;
+            int bindingIndex = -1;
+
+            for (int i = 0; i < action.bindings.Count; i++)
+            {
+                if (action.bindings[i].id.ToString() == m_BindingId)
+                {
+                    bindingIndex = i;
+                    break;
+                }
+            }
+
+            if (bindingIndex == -1)
+            {
+                Debug.LogWarning($"UpdateBindingDisplay: Binding ID {m_BindingId} not found in action {action.name}.");
+                return;
+            }
+
+            // Retrieve the display string safely
+            string displayString = action.GetBindingDisplayString(bindingIndex, out string deviceLayoutName, out string controlPath, displayStringOptions);
+
             if (m_BindingText != null)
+            {
                 m_BindingText.text = displayString;
+            }
+            else
+            {
+                Debug.LogWarning("UpdateBindingDisplay: m_BindingText is null, cannot update binding text.");
+            }
 
             if (m_BindingIcon != null)
             {
                 m_BindingIcon.gameObject.SetActive(!string.IsNullOrEmpty(displayString));
             }
 
-            // Give listeners a chance to configure UI in response.
+            // Safely invoke the event
             m_UpdateBindingUIEvent?.Invoke(this, displayString, deviceLayoutName, controlPath);
         }
 
@@ -224,25 +249,20 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             if (!ResolveActionAndBinding(out var action, out var bindingIndex))
                 return;
 
+            ResetBinding(action, bindingIndex);
+
             if (action.bindings[bindingIndex].isComposite)
             {
-                // It's a composite. Remove overrides from part bindings.
                 for (var i = bindingIndex + 1; i < action.bindings.Count && action.bindings[i].isPartOfComposite; ++i)
                     action.RemoveBindingOverride(i);
             }
-            else
+
+            InputActionAsset bindingAsset = action.actionMap?.asset;
+            if (bindingAsset != null)
             {
-                action.RemoveBindingOverride(bindingIndex);
+                bindingAsset.SaveBindingOverridesAsJson();
             }
-            UpdateBindingDisplay();
-        }
 
-        public void ResetBindingToDefault()
-        {
-            if (!ResolveActionAndBinding(out var action, out var bindingIndex))
-                return;
-
-            ResetBinding(action, bindingIndex);
             UpdateBindingDisplay();
         }
 
@@ -256,20 +276,25 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
             action.RemoveBindingOverride(bindingIndex);
 
-            foreach (InputAction otherAction in action.actionMap.actions
-                .Where(a => a != action && a.bindings.Any(b => b.overridePath == newBinding.path)))
+            foreach (InputAction otherAction in action.actionMap.actions)
             {
-                for (int i = 0; i < otherAction.bindings.Count; i++)
+                foreach (var binding in otherAction.bindings)
                 {
-                    InputBinding binding = otherAction.bindings[i];
                     if (binding.overridePath == newBinding.path)
                     {
-                        otherAction.ApplyBindingOverride(i, oldOverridePath);
+                        otherAction.ApplyBindingOverride(binding.id.ToString(), oldOverridePath);
                     }
                 }
             }
-        }
 
+            InputActionAsset bindingAsset = action.actionMap?.asset;
+            if (bindingAsset != null)
+            {
+                bindingAsset.SaveBindingOverridesAsJson();
+            }
+
+            UpdateBindingDisplay();
+        }
 
         /// <summary>
         /// Initiate an interactive rebind that lets the player actuate a control to choose a new binding
@@ -297,6 +322,18 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
         private void PerformInteractiveRebind(InputAction action, int bindingIndex, bool allCompositeParts = false)
         {
+            if (action == null)
+            {
+                Debug.LogError("PerformInteractiveRebind called with null action!");
+                return;
+            }
+
+            if (bindingIndex < 0 || bindingIndex >= action.bindings.Count)
+            {
+                Debug.LogError("Invalid binding index in PerformInteractiveRebind.");
+                return;
+            }
+
             m_RebindOperation?.Cancel(); // Will null out m_RebindOperation.
 
             void CleanUp()
@@ -411,9 +448,14 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         {
             if (s_RebindActionUIs == null)
                 s_RebindActionUIs = new List<RebindActionUI>();
-            s_RebindActionUIs.Add(this);
+
+            if (!s_RebindActionUIs.Contains(this))
+                s_RebindActionUIs.Add(this);
+
             if (s_RebindActionUIs.Count == 1)
                 InputSystem.onActionChange += OnActionChange;
+
+            RebindSaveLoad.OnBindingsReset += UpdateBindingDisplay;
         }
 
         protected void OnDisable()
@@ -421,12 +463,16 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             m_RebindOperation?.Dispose();
             m_RebindOperation = null;
 
-            s_RebindActionUIs.Remove(this);
-            if (s_RebindActionUIs.Count == 0)
+            if (s_RebindActionUIs != null && s_RebindActionUIs.Contains(this))
+                s_RebindActionUIs.Remove(this);
+
+            if (s_RebindActionUIs != null && s_RebindActionUIs.Count == 0)
             {
                 s_RebindActionUIs = null;
                 InputSystem.onActionChange -= OnActionChange;
             }
+
+            RebindSaveLoad.OnBindingsReset -= UpdateBindingDisplay;
         }
 
         // When the action system re-resolves bindings, we want to update our UI in response. While this will

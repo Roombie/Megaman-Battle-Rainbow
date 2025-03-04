@@ -2822,7 +2822,7 @@ GameObject:
   - component: {fileID: 200103706}
   - component: {fileID: 200103705}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4201,8 +4201,8 @@ GameObject:
   - component: {fileID: 287269048}
   - component: {fileID: 287269049}
   - component: {fileID: 287269050}
-  - component: {fileID: 287269053}
   - component: {fileID: 287269055}
+  - component: {fileID: 287269053}
   m_Layer: 5
   m_Name: OptionsMenu
   m_TagString: Untagged
@@ -4735,7 +4735,7 @@ GameObject:
   - component: {fileID: 322131331}
   - component: {fileID: 322131330}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5015,7 +5015,7 @@ MonoBehaviour:
           value: -301.05005
         - localeIdentifier:
             m_Code: es
-          value: -314.25006
+          value: -335.9
         - localeIdentifier:
             m_Code: fr
           value: -308.45004
@@ -7612,7 +7612,7 @@ MonoBehaviour:
           value: -301.05005
         - localeIdentifier:
             m_Code: es
-          value: -314.25006
+          value: -335.9
         - localeIdentifier:
             m_Code: fr
           value: -308.45004
@@ -7895,7 +7895,7 @@ GameObject:
   - component: {fileID: 508050192}
   - component: {fileID: 508050191}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8703,7 +8703,7 @@ GameObject:
   - component: {fileID: 549104603}
   - component: {fileID: 549104602}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13367,7 +13367,7 @@ GameObject:
   - component: {fileID: 884747953}
   - component: {fileID: 884747952}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14491,7 +14491,7 @@ GameObject:
   - component: {fileID: 1026221025}
   - component: {fileID: 1026221024}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15708,7 +15708,7 @@ MonoBehaviour:
           value: -301.5
         - localeIdentifier:
             m_Code: es
-          value: -314.7
+          value: -335.9
         - localeIdentifier:
             m_Code: fr
           value: -308.9
@@ -16859,7 +16859,7 @@ GameObject:
   - component: {fileID: 1256494412}
   - component: {fileID: 1256494411}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18167,7 +18167,7 @@ MonoBehaviour:
           value: -74
         - localeIdentifier:
             m_Code: es
-          value: -87.00003
+          value: -109.5
         - localeIdentifier:
             m_Code: fr
           value: -82.19998
@@ -19455,7 +19455,7 @@ MonoBehaviour:
           value: -73.5
         - localeIdentifier:
             m_Code: es
-          value: -87.00006
+          value: -109.5
         - localeIdentifier:
             m_Code: fr
           value: -81.69998
@@ -21164,7 +21164,7 @@ GameObject:
   - component: {fileID: 1553875640}
   - component: {fileID: 1553875639}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22777,7 +22777,7 @@ MonoBehaviour:
           value: -73.5
         - localeIdentifier:
             m_Code: es
-          value: -87.00006
+          value: -109.5
         - localeIdentifier:
             m_Code: fr
           value: -81.69998
@@ -22995,7 +22995,7 @@ GameObject:
   - component: {fileID: 1682040993}
   - component: {fileID: 1682040992}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23253,7 +23253,7 @@ MonoBehaviour:
           value: -73.5
         - localeIdentifier:
             m_Code: es
-          value: -87.00006
+          value: -109.5
         - localeIdentifier:
             m_Code: fr
           value: -81.69998
@@ -24878,7 +24878,7 @@ GameObject:
   - component: {fileID: 1841806669}
   - component: {fileID: 1841806668}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25606,7 +25606,7 @@ GameObject:
   - component: {fileID: 1894300499}
   - component: {fileID: 1894300498}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25774,7 +25774,7 @@ MonoBehaviour:
           value: -301.5
         - localeIdentifier:
             m_Code: es
-          value: -314.25006
+          value: -335.9
         - localeIdentifier:
             m_Code: fr
           value: -308.45004
@@ -26627,7 +26627,7 @@ GameObject:
   - component: {fileID: 1973823554}
   - component: {fileID: 1973823553}
   m_Layer: 5
-  m_Name: ActionBindingIcon
+  m_Name: ActionBindingIcon2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

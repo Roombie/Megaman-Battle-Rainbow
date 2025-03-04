@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Gestiona la carga, guardado y reinicio de los bindings en PlayerPrefs.
+/// Manages loading, saving, and resetting input bindings using PlayerPrefs.
 /// </summary>
 public class RebindSaveLoad : MonoBehaviour
 {
@@ -10,13 +11,18 @@ public class RebindSaveLoad : MonoBehaviour
 
     private const string PlayerPrefsKey = "rebinds";
 
+    /// <summary>
+    /// Event triggered when bindings are reset, allowing UI updates.
+    /// </summary>
+    public static event Action OnBindingsReset;
+
     private void Start()
     {
         LoadBindings();
     }
 
     /// <summary>
-    /// Load the saved bindings from PlayerPrefs.
+    /// Loads saved bindings from PlayerPrefs.
     /// </summary>
     public void LoadBindings()
     {
@@ -24,11 +30,13 @@ public class RebindSaveLoad : MonoBehaviour
         {
             string rebinds = PlayerPrefs.GetString(PlayerPrefsKey);
             inputActions.LoadBindingOverridesFromJson(rebinds);
+            SaveBindings();
+            NotifyUI();
         }
     }
 
     /// <summary>
-    /// Save the current bindings in PlayerPrefs.
+    /// Saves the current bindings in PlayerPrefs.
     /// </summary>
     public void SaveBindings()
     {
@@ -37,8 +45,10 @@ public class RebindSaveLoad : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    // KEEP IN MIND THAT THE FOLLOWING METHODS ARE FOR PROJECTS THAT WANT TO SAVE THE CHANGES AS SOON AS YOU DO THE REBIND
+
     /// <summary>
-    /// Reset all bindnigs to their default settings.
+    /// Resets all bindings to default.
     /// </summary>
     public void ResetAllBindings()
     {
@@ -46,14 +56,34 @@ public class RebindSaveLoad : MonoBehaviour
         {
             foreach (var action in map.actions)
             {
-                action.RemoveAllBindingOverrides();
+                ResetBindings(action);
             }
         }
         SaveBindings();
+        NotifyUI();
     }
 
     /// <summary>
-    /// Resets only the keyboard bindings.
+    /// Resets bindings for a specific action.
+    /// </summary>
+    public void ResetSingleActionBinding(string actionName)
+    {
+        foreach (var map in inputActions.actionMaps)
+        {
+            var action = map.FindAction(actionName);
+            if (action != null)
+            {
+                ResetBindings(action);
+                SaveBindings();
+                NotifyUI();
+                return;
+            }
+        }
+        Debug.LogWarning($"Action '{actionName}' not found in input actions.");
+    }
+
+    /// <summary>
+    /// Resets only keyboard bindings.
     /// </summary>
     public void ResetKeyboardBindings()
     {
@@ -61,7 +91,7 @@ public class RebindSaveLoad : MonoBehaviour
     }
 
     /// <summary>
-    /// Reset only the gamepad bindings.
+    /// Resets only gamepad bindings.
     /// </summary>
     public void ResetGamepadBindings()
     {
@@ -69,7 +99,33 @@ public class RebindSaveLoad : MonoBehaviour
     }
 
     /// <summary>
-    /// Resets bindings for a specific type of device.
+    /// Resets all bindings for a given action, including composite parts.
+    /// </summary>
+    private void ResetBindings(InputAction action)
+    {
+        for (int i = action.bindings.Count - 1; i >= 0; i--)
+        {
+            if (action.bindings[i].isComposite)
+            {
+                ResetCompositeBinding(action, i);
+            }
+            action.RemoveBindingOverride(i);
+        }
+    }
+
+    /// <summary>
+    /// Resets a composite binding and all its parts.
+    /// </summary>
+    private void ResetCompositeBinding(InputAction action, int compositeIndex)
+    {
+        for (int j = compositeIndex + 1; j < action.bindings.Count && action.bindings[j].isPartOfComposite; j++)
+        {
+            action.RemoveBindingOverride(j);
+        }
+    }
+
+    /// <summary>
+    /// Resets bindings for a specific device type (Keyboard/Gamepad).
     /// </summary>
     private void ResetBindingsByDevice(string deviceType)
     {
@@ -77,17 +133,26 @@ public class RebindSaveLoad : MonoBehaviour
         {
             foreach (var action in map.actions)
             {
-                for (int i = 0; i < action.bindings.Count; i++)
+                for (int i = action.bindings.Count - 1; i >= 0; i--)
                 {
-                    if (action.bindings[i].isPartOfComposite) continue;
                     if (action.bindings[i].path.Contains(deviceType))
                     {
+                        if (action.bindings[i].isComposite)
+                        {
+                            ResetCompositeBinding(action, i);
+                        }
                         action.RemoveBindingOverride(i);
                     }
                 }
             }
         }
         SaveBindings();
+        NotifyUI();
+    }
+
+    private void NotifyUI()
+    {
+        OnBindingsReset?.Invoke();
     }
 
     private void OnEnable()
@@ -98,5 +163,5 @@ public class RebindSaveLoad : MonoBehaviour
     private void OnDisable()
     {
         SaveBindings();
-    }
+    } 
 }
