@@ -12,8 +12,9 @@ public class ArrowSelector : MonoBehaviour
 
     [SerializeField] ButtonData[] buttons;
     [SerializeField] RectTransform arrowIndicator;
+    [HideInInspector] public bool isSelectingOption = false;
 
-    int lastSelected = -1;
+    [HideInInspector] public int lastSelected = -1;
     bool firstFrame = true;
 
     void LateUpdate()
@@ -23,10 +24,10 @@ public class ArrowSelector : MonoBehaviour
             firstFrame = false;
         }
 
-        if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == null)
-        {
-            arrowIndicator.gameObject.SetActive(false);
-        }
+        if (UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject == null || isSelectingOption)
+    {
+        arrowIndicator.gameObject.SetActive(false);
+    }
     }
 
     public void PointerEnter(int b)
@@ -47,7 +48,7 @@ public class ArrowSelector : MonoBehaviour
 
     public void MoveIndicator(int b)
     {
-        if (firstFrame)
+        if (isSelectingOption || firstFrame)
         {
             StartCoroutine(MoveIndicatorLaterCoroutine(b));
             return;

@@ -19,11 +19,13 @@ public class MenuOptionSelector : MonoBehaviour, ISelectHandler, IDeselectHandle
     private PlayerInputActions inputActions;
     private OptionsMenu optionsMenu;
     private static MenuOptionSelector currentlySelecting = null;
+    private ArrowSelector arrowSelector;
 
     void Awake()
     {
         inputActions = new PlayerInputActions();
         optionsMenu = FindObjectOfType<OptionsMenu>();
+        arrowSelector = FindObjectOfType<ArrowSelector>();
     }
 
     void OnEnable()
@@ -108,6 +110,11 @@ public class MenuOptionSelector : MonoBehaviour, ISelectHandler, IDeselectHandle
             EventSystem.current.sendNavigationEvents = false;
             leftArrow.SetActive(true);
             rightArrow.SetActive(true);
+
+            if (arrowSelector != null)
+            {
+                arrowSelector.isSelectingOption = true; // Deactivate arrow indicator
+            }
         }
         else
         {
@@ -120,6 +127,12 @@ public class MenuOptionSelector : MonoBehaviour, ISelectHandler, IDeselectHandle
             UpdateOptionText();
 
             EventSystem.current.sendNavigationEvents = true;
+
+            if (arrowSelector != null)
+            {
+                arrowSelector.isSelectingOption = false; // Reactivate arrow indicator
+                arrowSelector.MoveIndicator(arrowSelector.lastSelected);
+            }
         }
     }
 

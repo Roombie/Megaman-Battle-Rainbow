@@ -334,6 +334,8 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
                         }
 
                         UpdateBindingDisplay();
+                        // Save the new bindings
+                        FindObjectOfType<RebindSaveLoad>().SaveBindings(); 
                         CleanUp();
 
                         // If there's more composite parts we should bind, initiate a rebind
@@ -514,6 +516,11 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
         }
 
         #endif
+
+        private void Start() {
+            UpdateActionLabel();
+            UpdateBindingDisplay();
+        }
 
         private void UpdateActionLabel()
         {

@@ -1329,9 +1329,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 287269055}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Assembly-CSharp
+        m_MethodName: ResetKeyboardBindings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1858,7 +1858,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &113936517
 MonoBehaviour:
@@ -2845,7 +2845,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &200103705
 MonoBehaviour:
@@ -3251,7 +3251,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &211515926
 MonoBehaviour:
@@ -4202,6 +4202,7 @@ GameObject:
   - component: {fileID: 287269049}
   - component: {fileID: 287269050}
   - component: {fileID: 287269053}
+  - component: {fileID: 287269055}
   m_Layer: 5
   m_Name: OptionsMenu
   m_TagString: Untagged
@@ -4346,7 +4347,7 @@ MonoBehaviour:
   - button: {fileID: 601465274}
     arrowOffset: {x: -50, y: 0}
   - button: {fileID: 352400619}
-    arrowOffset: {x: -126.9, y: 0}
+    arrowOffset: {x: -100, y: 0}
   - button: {fileID: 1355346528}
     arrowOffset: {x: -50, y: 0}
   - button: {fileID: 1689915547}
@@ -4372,11 +4373,11 @@ MonoBehaviour:
   - button: {fileID: 522556264}
     arrowOffset: {x: -50, y: 0}
   - button: {fileID: 693088482}
-    arrowOffset: {x: -137, y: 0}
+    arrowOffset: {x: -50, y: 0}
   - button: {fileID: 91299419}
-    arrowOffset: {x: -137, y: 0}
+    arrowOffset: {x: -50, y: 0}
   - button: {fileID: 387382990}
-    arrowOffset: {x: -126.1, y: 0}
+    arrowOffset: {x: -100, y: 0}
   - button: {fileID: 1121248965}
     arrowOffset: {x: -50, y: 0}
   - button: {fileID: 491039493}
@@ -4402,14 +4403,16 @@ MonoBehaviour:
   - button: {fileID: 384504910}
     arrowOffset: {x: -50, y: 0}
   - button: {fileID: 303339331}
-    arrowOffset: {x: -136.7, y: 0}
+    arrowOffset: {x: -50, y: 0}
   - button: {fileID: 1342110886}
-    arrowOffset: {x: -136.7, y: 0}
+    arrowOffset: {x: -50, y: 0}
   - button: {fileID: 1495251585}
-    arrowOffset: {x: -136.7, y: 0}
+    arrowOffset: {x: -50, y: 0}
   - button: {fileID: 1563980948}
-    arrowOffset: {x: -126.9, y: 0}
+    arrowOffset: {x: -100, y: 0}
   arrowIndicator: {fileID: 1649556901}
+  isSelectingOption: 0
+  lastSelected: -1
 --- !u!114 &287269049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4493,45 +4496,58 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   xbox:
-    buttonSouth: {fileID: 21300000, guid: 31915b3adba16fb40800204bb6361ee9, type: 3}
-    buttonNorth: {fileID: 21300000, guid: ccffa76520875d340872b92c6fac54af, type: 3}
-    buttonEast: {fileID: 21300000, guid: a545fab205901cc488c705dd3fb0be9b, type: 3}
-    buttonWest: {fileID: 21300000, guid: 9c404c1ee29a78d4185ad76f4cb94a52, type: 3}
-    startButton: {fileID: 21300000, guid: 5c1e24bea89729e4a8ed25e26a432f84, type: 3}
-    selectButton: {fileID: 21300000, guid: 89e77ea85ddec46498d9ce8fcf38b613, type: 3}
-    leftTrigger: {fileID: 21300000, guid: 0817b0f8045b5f64899a6bb7c766e47f, type: 3}
-    rightTrigger: {fileID: 21300000, guid: 3a26baefceb243d4f87e4ae697305b7a, type: 3}
-    leftShoulder: {fileID: 21300000, guid: ed77e633a542f274b985cd73c136eab2, type: 3}
-    rightShoulder: {fileID: 21300000, guid: f8b237afc4bae9a43a02be46842c1fd3, type: 3}
-    dpad: {fileID: 21300000, guid: ef1e2f3814caea14299a4a3419bc0782, type: 3}
-    dpadUp: {fileID: 21300000, guid: 2e0e8070ea97b8443a4a1458b44fd0cd, type: 3}
-    dpadDown: {fileID: 21300000, guid: 5c188333c2b7a8248b20f9cbcff3b025, type: 3}
-    dpadLeft: {fileID: 21300000, guid: ef61c6f2dc560ea49a505103000634a7, type: 3}
-    dpadRight: {fileID: 21300000, guid: 1d9abff977c715b419e016cbfd2b9633, type: 3}
-    leftStick: {fileID: 21300000, guid: 1aecedd10ce5806438c4ff8c96e3a85b, type: 3}
-    rightStick: {fileID: 21300000, guid: 07a8affd7334ec644b071403e1b3f0aa, type: 3}
-    leftStickPress: {fileID: 0}
-    rightStickPress: {fileID: 0}
+    buttonSouth: {fileID: -887904771, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    buttonNorth: {fileID: -1390124048, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    buttonEast: {fileID: -1429823645, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    buttonWest: {fileID: 1906276452, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    startButton: {fileID: -698931651, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    selectButton: {fileID: -1260251291, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    leftTrigger: {fileID: -1834509143, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    rightTrigger: {fileID: 596564547, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    leftShoulder: {fileID: 1180007212, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    rightShoulder: {fileID: 1495804474, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    dpad: {fileID: -1700948066, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    dpadUp: {fileID: 1134574612, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    dpadDown: {fileID: 1375363351, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    dpadLeft: {fileID: 845658728, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    dpadRight: {fileID: 1401811373, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    leftStick: {fileID: 1924722651, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    rightStick: {fileID: -1708832093, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    leftStickPress: {fileID: -628585677, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    rightStickPress: {fileID: -1789479057, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
   ps4:
-    buttonSouth: {fileID: 21300000, guid: 4660f34ca6619534a9723b395f88d702, type: 3}
-    buttonNorth: {fileID: 21300000, guid: a796050c269d09440ab5f0925358f6e6, type: 3}
-    buttonEast: {fileID: 21300000, guid: 63421c0c6d4bede4cbf888ce3c2dc83a, type: 3}
-    buttonWest: {fileID: 21300000, guid: 24afa7e8db868624cb9aa66750c0da9a, type: 3}
-    startButton: {fileID: 21300000, guid: cbda4f70b6998f44eb2ec5318f74a818, type: 3}
-    selectButton: {fileID: 21300000, guid: 885d2ffaf4607404a8e39517d06a78b2, type: 3}
-    leftTrigger: {fileID: 21300000, guid: 50c46ec82ff4ed440b442db5715e9e22, type: 3}
-    rightTrigger: {fileID: 21300000, guid: f4b94060416fb3742b08f3a1c086900a, type: 3}
-    leftShoulder: {fileID: 21300000, guid: 65c0980a7e3e0e847b966af9fb3cbecb, type: 3}
-    rightShoulder: {fileID: 21300000, guid: 437f2c37fc0515b4291de82106b7978f, type: 3}
-    dpad: {fileID: 21300000, guid: 65758bfbe0a1e2840b272745e80d8be8, type: 3}
-    dpadUp: {fileID: 21300000, guid: da98e414e18f7724bafde44e2c517d90, type: 3}
-    dpadDown: {fileID: 21300000, guid: b34cda426104da04cae66f19bd0e8d3a, type: 3}
-    dpadLeft: {fileID: 21300000, guid: 5426f9d727719f44eb1b5e69475fa0aa, type: 3}
-    dpadRight: {fileID: 21300000, guid: 7be235c412ba7b64fbb7e4b071647f38, type: 3}
-    leftStick: {fileID: 21300000, guid: 722286b75a19f944e8ca2625ad5d9d6e, type: 3}
-    rightStick: {fileID: 21300000, guid: f1c064faf28b22e4084f8c543eeaadc7, type: 3}
-    leftStickPress: {fileID: 0}
-    rightStickPress: {fileID: 0}
+    buttonSouth: {fileID: 1265772326, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    buttonNorth: {fileID: 697223807, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    buttonEast: {fileID: -1554184209, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    buttonWest: {fileID: 1574998120, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    startButton: {fileID: 540968596, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    selectButton: {fileID: -1242103805, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    leftTrigger: {fileID: 1930931194, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    rightTrigger: {fileID: -752756526, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    leftShoulder: {fileID: -289869253, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    rightShoulder: {fileID: -1693424033, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    dpad: {fileID: -102143597, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    dpadUp: {fileID: 571466769, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    dpadDown: {fileID: -1118770983, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    dpadLeft: {fileID: 675883039, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    dpadRight: {fileID: -919559787, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    leftStick: {fileID: 889969512, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    rightStick: {fileID: -1656168237, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    leftStickPress: {fileID: 150704362, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+    rightStickPress: {fileID: -1703984180, guid: 13fa24b1eb1bf4e4b8ecbdeb20d38e45, type: 3}
+--- !u!114 &287269055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287269042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec9146498a5a7104385be2d9cf251ce3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputActions: {fileID: -944628639613478452, guid: 216aac8fed4874842aaf4f1bec997fe6, type: 3}
 --- !u!1 &303339330
 GameObject:
   m_ObjectHideFlags: 0
@@ -4742,7 +4758,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &322131330
 MonoBehaviour:
@@ -7752,7 +7768,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &501245196
 MonoBehaviour:
@@ -7902,7 +7918,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &508050191
 MonoBehaviour:
@@ -8710,7 +8726,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &549104602
 MonoBehaviour:
@@ -11021,7 +11037,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &687105882
 MonoBehaviour:
@@ -13374,7 +13390,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &884747952
 MonoBehaviour:
@@ -13996,7 +14012,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &949309102
 MonoBehaviour:
@@ -14498,7 +14514,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1026221024
 MonoBehaviour:
@@ -15538,7 +15554,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1119232652
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16118,7 +16134,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1203047540
 MonoBehaviour:
@@ -16791,7 +16807,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1249699706
 MonoBehaviour:
@@ -16866,7 +16882,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1256494411
 MonoBehaviour:
@@ -17186,7 +17202,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1329357568
 MonoBehaviour:
@@ -19510,7 +19526,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1433321756
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20202,7 +20218,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1477320887
 MonoBehaviour:
@@ -20936,10 +20952,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.InputSystem.Samples.RebindUI.RebindActionUI,
-          Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 287269055}
+        m_TargetAssemblyTypeName: RebindSaveLoad, Assembly-CSharp
+        m_MethodName: ResetGamepadBindings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -21172,7 +21187,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1553875639
 MonoBehaviour:
@@ -23003,7 +23018,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1682040992
 MonoBehaviour:
@@ -24302,7 +24317,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1784635752
 MonoBehaviour:
@@ -24886,7 +24901,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1841806668
 MonoBehaviour:
@@ -25216,7 +25231,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1847039931
 MonoBehaviour:
@@ -25614,7 +25629,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1894300498
 MonoBehaviour:
@@ -25756,7 +25771,7 @@ MonoBehaviour:
         m_VariantData:
         - localeIdentifier:
             m_Code: en
-          value: -301.05005
+          value: -301.5
         - localeIdentifier:
             m_Code: es
           value: -314.25006
@@ -26560,7 +26575,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1946780378
 MonoBehaviour:
@@ -26635,7 +26650,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 24, y: 24}
+  m_SizeDelta: {x: 36, y: 36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1973823553
 MonoBehaviour:
